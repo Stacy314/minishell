@@ -8,9 +8,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define TOKEN_BUFFER_SIZE 1024 //64
+//#define TOKEN_BUFFER_SIZE 1024 //64
 
-//перелічувальний тип (enum)
+//перелічувальний тип (enum) 
 typedef enum e_token_type {
     WORD,         // 0
     PIPE,         // 1
@@ -25,6 +25,7 @@ typedef struct s_token
 {
 	char	*value;
 	t_token_type type;
+	int index;
 }	t_token;
 
 t_token	split_to_token(char *str);
