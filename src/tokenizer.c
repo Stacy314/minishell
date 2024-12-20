@@ -35,7 +35,7 @@ char *join_with_space(const char *s1, const char *s2)
     return (result);
 }
 
-t_token	split_to_token(char *str)
+t_token	**split_to_token(char *str)
 {
 	t_token **tokens;
 	char *token_str;
@@ -82,5 +82,5 @@ t_token	split_to_token(char *str)
 	for (int i = 0; tokens[i] != NULL; i++)
 		printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
 	//free_tokens(tokens);
-    return (**tokens);
+    return (tokens);
 }

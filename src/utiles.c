@@ -5,7 +5,9 @@ void free_tokens(t_token **tokens)
 	int i;
 
 	i = 0;
-   	while (tokens[i] != NULL)
+	if (!tokens)
+        return;
+   	while (tokens[i])
 	{
         free(tokens[i]->value);
         free(tokens[i]);

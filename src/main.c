@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/18 21:57:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/12/20 19:24:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,12 @@ int		main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	(void)env;
-    char *input;
+    char	*input;
+	t_data	data;
+	t_token	**tokens;
 	 
+
+	data.exit_status = 0;  //change
 	//validation(argc, argv)
 	//if (argc < 1)
 	//	return(0);
@@ -28,14 +32,23 @@ int		main(int argc, char **argv, char **env)
         if (!input)
 		{ 
             printf("\n");
+			// Handle CTRL+D or EOF
 			//free(input);
             break;
         }
 		add_history(input);
         //printf("You entered: %s\n", input);
-		split_to_token(input);
-        free(input);
+		tokens = split_to_token(input);
+		//if (!tokens)
+		//{
+        //    fprintf(stderr, "Error: Failed to tokenize input\n");
+        //    free(input);
+        //    continue;
+        //}
+		execute(tokens, &data);
+		//free_tokens(tokens);
+		free(input);
     }
 	clear_history();
-	return(0);
+	return(data.exit_status);
 }
