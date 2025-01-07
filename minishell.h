@@ -48,6 +48,8 @@ void	builtin_unset(t_data g_data);
 void	builtin_env(t_data g_data);
 void	builtin_exit(t_data g_data);
 
+t_token **split_to_tokens(const char *str);
+
 // utils_builtins
 char* 	skip_spaces(char *str);
 

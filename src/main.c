@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2024/12/20 19:24:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/07 16:33:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,19 @@ int		main(int argc, char **argv, char **env)
         }
 		add_history(input);
         //printf("You entered: %s\n", input);
-		tokens = split_to_token(input);
+		tokens = split_to_tokens(input);
 		//if (!tokens)
 		//{
         //    fprintf(stderr, "Error: Failed to tokenize input\n");
         //    free(input);
         //    continue;
         //}
-		execute(tokens, &data);
+		//execute(tokens, &data);
 		//free_tokens(tokens);
 		free(input);
     }
 	clear_history();
 	return(data.exit_status);
 }
+
+
