@@ -8,8 +8,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-//#define TOKEN_BUFFER_SIZE 1024 //64
-
 //enum
 typedef enum e_token_type {
     WORD,
@@ -23,9 +21,9 @@ typedef enum e_token_type {
 
 typedef struct s_token
 {
-	char	*value;
-	t_token_type type;
-	int index;
+	char			*value;
+	t_token_type	type;
+	int				index;
 }	t_token;
 
 typedef struct s_data
@@ -49,5 +47,8 @@ void	builtin_export(t_data g_data);
 void	builtin_unset(t_data g_data);
 void	builtin_env(t_data g_data);
 void	builtin_exit(t_data g_data);
+
+// utils_builtins
+char* 	skip_spaces(char *str);
 
 #endif

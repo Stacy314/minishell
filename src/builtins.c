@@ -4,6 +4,7 @@ void	builtin_echo(t_data data)
 {
 	int		i;
 	
+	skip_spaces(data.cmd[1]);
 	i = 1;
 	while (data.cmd[i])
 	{
