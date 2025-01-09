@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 15:53:13 by apechkov          #+#    #+#             */
-/*   Updated: 2024/04/02 15:53:15 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/09 15:48:31 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+int	ft_strncmp(const char *s1, const char *s2, size_t n) //need to inprove
 {
 	size_t	i;
 

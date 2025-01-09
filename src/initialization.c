@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_builtins.c                                   :+:      :+:    :+:   */
+/*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/09 16:32:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/09 16:32:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char* skip_spaces(char *str)
+void	init_structure(t_data *data, char **env)
 {
-    while (*str != '\0' && *str == ' ')
-		str++;
-	return (str);
+	data->env = env;
+	data->exit_status = 0;
+	data->cmd = NULL;
+	data->arg = NULL;
+	return ;
 }

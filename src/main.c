@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/07 16:33:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/09 16:34:48 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,32 +22,33 @@ int		main(int argc, char **argv, char **env)
 	t_token	**tokens;
 	 
 
-	data.exit_status = 0;  //change
-	//validation(argc, argv)
-	//if (argc < 1)
-	//	return(0);
+	init_structure(&data, env);
+	signal_handler(); //(CTRL+C, CTRL+D, CTRL+\)
     while (1) //
 	{
+
         input = readline("minishell$ ");
         if (!input)
 		{ 
             printf("\n");
-			// Handle CTRL+D or EOF
 			//free(input);
             break;
         }
-		add_history(input);
+		//if(*input)
+		add_history(input); // need to handel
         //printf("You entered: %s\n", input);
+		
 		tokens = split_to_tokens(input);
-		//if (!tokens)
-		//{
-        //    fprintf(stderr, "Error: Failed to tokenize input\n");
-        //    free(input);
-        //    continue;
-        //}
-		//execute(tokens, &data);
+		if (!tokens)
+		{
+            fprintf(stderr, "Error: Failed to tokenize input\n");
+            free(input);
+            continue;
+        }
+		//printf("before execute\n");
+		execute(tokens, &data);
 		//free_tokens(tokens);
-		free(input);
+		//free(input);
     }
 	clear_history();
 	return(data.exit_status);

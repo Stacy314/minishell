@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/01/09 16:32:24 by apechkov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 t_token *create_token(const char *value, t_token_type type, int index)
@@ -20,18 +32,6 @@ t_token *create_token(const char *value, t_token_type type, int index)
     return new;
 }
 
-//// Free all tokens
-//void free_tokens(t_token **tokens)
-//{
-//    if (!tokens)
-//        return;
-//    for (int i = 0; tokens[i]; i++)
-//    {
-//        free(tokens[i]->value);
-//        free(tokens[i]);
-//    }
-//    free(tokens);
-//}
 
 t_token **split_to_tokens(const char *str)
 {
@@ -123,5 +123,5 @@ t_token **split_to_tokens(const char *str)
 	// print
 	for (int i = 0; tokens[i] != NULL; i++)
 		printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
-    return tokens;
+    return (tokens);
 }
