@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/09 16:34:48 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:34:48 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int		main(int argc, char **argv, char **env)
             fprintf(stderr, "Error: Failed to tokenize input\n");
             free(input);
             continue;
-        }
+		}
+		parse_tokens(tokens);
 		//printf("before execute\n");
 		execute(tokens, &data);
 		//free_tokens(tokens);

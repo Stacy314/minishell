@@ -12,6 +12,8 @@
 // Global flag for prompt control
 //volatile sig_atomic_t g_prompt_flag = 0; 
 
+#  define MAX_COMMANDS 265 // 128
+
 //enum
 typedef enum e_token_type {
     WORD,
@@ -44,6 +46,17 @@ typedef struct s_data
 	int		exit_status;
 }	t_data;
 
+typedef struct s_command {
+    char **args;
+    char *input_redirect;
+    char *output_redirect;
+    char *append_redirect;
+    char *heredoc_delimiter;
+    int pipe_in;
+    int pipe_out;
+	t_data *data;
+} t_command;
+
 void	init_structure(t_data *data, char **env);
 
 t_token	**split_to_token(char *str);
@@ -68,5 +81,8 @@ t_token **split_to_tokens(const char *str);
 
 // utils_builtins
 char* 	skip_spaces(char *str);
+
+//parsing
+t_command *parse_tokens(t_token **tokens);
 
 #endif
