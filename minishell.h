@@ -44,6 +44,16 @@ typedef struct s_data
 	int		exit_status;
 }	t_data;
 
+typedef struct s_command {
+    char **args;              // Аргументы команды (включая саму команду)
+    char *input_redirect;     // Файл для ввода (<)
+    char *output_redirect;    // Файл для вывода (>)
+    char *append_redirect;    // Файл для добавления (>>)
+    char *heredoc_delimiter;  // Делимитер для << (heredoc)
+    int pipe_in;              // Входящий пайп
+    int pipe_out;             // Исходящий пайп
+} t_command;
+
 void	init_structure(t_data *data, char **env);
 
 t_token	**split_to_token(char *str);
