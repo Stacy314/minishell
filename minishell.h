@@ -12,6 +12,8 @@
 // Global flag for prompt control
 //volatile sig_atomic_t g_prompt_flag = 0; 
 
+#  define MAX_COMMANDS 265 // 128
+
 //enum
 typedef enum e_token_type {
     WORD,
@@ -45,13 +47,14 @@ typedef struct s_data
 }	t_data;
 
 typedef struct s_command {
-    char **args;              // Аргументы команды (включая саму команду)
-    char *input_redirect;     // Файл для ввода (<)
-    char *output_redirect;    // Файл для вывода (>)
-    char *append_redirect;    // Файл для добавления (>>)
-    char *heredoc_delimiter;  // Делимитер для << (heredoc)
-    int pipe_in;              // Входящий пайп
-    int pipe_out;             // Исходящий пайп
+    char **args;
+    char *input_redirect;
+    char *output_redirect;
+    char *append_redirect;
+    char *heredoc_delimiter;
+    int pipe_in;
+    int pipe_out;
+	t_data *data;
 } t_command;
 
 void	init_structure(t_data *data, char **env);
@@ -78,5 +81,8 @@ t_token **split_to_tokens(const char *str);
 
 // utils_builtins
 char* 	skip_spaces(char *str);
+
+//parsing
+t_command *parse_tokens(t_token **tokens);
 
 #endif
