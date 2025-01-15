@@ -1,36 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_builtins.c                                   :+:      :+:    :+:   */
+/*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 22:04:38 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/15 16:49:20 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int is_option(const char *arg)
+int contains_special_char(t_cmd *cmd)
 {
-    return (arg && ft_strncmp(arg, "-n", 2) == 0);
-}
-
-char *get_env_value(char **env, const char *key)
-{
-	int len;
 	int i;
-   
-	len = strlen(key);
+
 	i = 0;
-    while (env[i])
+    while (cmd->args[i])
 	{
-        if (strncmp(env[i], key, len) == 0 && env[i][len] == '=')
+        
+        if (strchr(cmd->args[i], '|') || strchr(cmd->args[i], '<')
+			|| strchr(cmd->args[i], '>'))
 		{
-            return env[i] + len + 1;
+            return (1);
         }
 		i++;
     }
-    return (NULL);
+    return (0);
 }

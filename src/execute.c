@@ -6,40 +6,47 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/09 16:31:59 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/15 22:07:45 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	execute(t_token **tokens, t_data *g_data)
+void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 {
-	//printf("execute run\n");
 	int i;
 	
 	i = 0;
-	while (tokens[i] != NULL)
 	{
 		if (tokens[i]->type == WORD)
 		{
-			//printf("tokens[%i]->value: %s\n", i, tokens[i]->value);
 			if (ft_strncmp(tokens[i]->value, "echo", 4) == 0)
-				builtin_echo(*g_data);
+				return (builtin_echo(cmd, data));
 			else if (ft_strncmp(tokens[i]->value, "cd", 2) == 0)
-				builtin_cd(*g_data);
+				return (builtin_cd(cmd, data));
 			else if (ft_strncmp(tokens[i]->value, "pwd", 3) == 0)
-				builtin_pwd(*g_data);
+				return (builtin_pwd(cmd));
 			else if (ft_strncmp(tokens[i]->value, "export", 6) == 0)
-				builtin_export(*g_data);
+				return (builtin_export(cmd));
 			else if (ft_strncmp(tokens[i]->value, "unset", 5) == 0)
-				builtin_unset(*g_data);
+				return (builtin_unset(cmd));
 			else if (ft_strncmp(tokens[i]->value, "env", 3) == 0)
-				builtin_env(*g_data);
+				return (builtin_env(cmd, *data));
 			else if (ft_strncmp(tokens[i]->value, "exit", 4) == 0)
-				builtin_exit(*g_data);
-			//else
-			//	printf("minishell: command not found: %s", tokens[i]->value);
+				return (builtin_exit(cmd));
+			else
+			{
+				//printf("minishell: command not found: %s\n", tokens[i]->value);
+				return ;
+			}
 		}
 		i++;
 	}
+}
+
+void	execute_for_many(t_token **tokens, t_cmd *cmd)
+{
+	(void)tokens;
+	(void)cmd;
+	printf("execute for many run\n");
 }

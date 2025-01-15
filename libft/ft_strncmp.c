@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 15:53:13 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/09 15:48:31 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/15 18:25:27 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n) //need to inprove
 	}
 	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));
 }
-/*int main() 
-{
-	printf("%d", ft_strncmp("Hello1", "Hellooo", 100));
-}*/
+//int main() 
+//{
+//	printf("%d", ft_strncmp("nn-nn", "-nn", 100));
+//}

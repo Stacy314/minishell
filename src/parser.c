@@ -31,14 +31,14 @@ char **append_to_args(char **args, char *new_arg)
     return (new_args);
 }
 
-t_command *parse_tokens(t_token **tokens)
+t_cmd *parse_tokens(t_token **tokens)
 {
-	t_command	*commands;
+	t_cmd	*cmd;
 	int			cmd_count;
 	int			i;
 
-    commands = malloc(sizeof(t_command) * MAX_COMMANDS);
-    if (!commands)
+    cmd = malloc(sizeof(t_cmd) * MAX_COMMANDS);
+    if (!cmd)
     {
         perror("malloc");
 		//free(tokens);
@@ -46,13 +46,13 @@ t_command *parse_tokens(t_token **tokens)
     }
     cmd_count = 0;
     i = 0;
-    commands[cmd_count] = (t_command){NULL, NULL, NULL, NULL, NULL, 0, 0};
+    cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, 0, 0, NULL};
     while (tokens[i])
     {
         if (tokens[i]->type == PIPE)
         {
             cmd_count++;
-            commands[cmd_count] = (t_command){NULL, NULL, NULL, NULL, NULL, 1, 0};
+            cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, 1, 0, NULL};
         }
         else if (tokens[i]->type == REDIRECT_IN || tokens[i]->type == REDIRECT_OUT ||
                  tokens[i]->type == APPEND || tokens[i]->type == HEREDOC)
@@ -60,28 +60,28 @@ t_command *parse_tokens(t_token **tokens)
             if (tokens[i + 1] && tokens[i + 1]->type == WORD)
             {
                 if (tokens[i]->type == REDIRECT_IN)
-                    commands[cmd_count].input_redirect = strdup(tokens[i + 1]->value);
+                    cmd[cmd_count].input_redirect = strdup(tokens[i + 1]->value);
                 else if (tokens[i]->type == REDIRECT_OUT)
-                    commands[cmd_count].output_redirect = strdup(tokens[i + 1]->value);
+                    cmd[cmd_count].output_redirect = strdup(tokens[i + 1]->value);
                 else if (tokens[i]->type == APPEND)
-                    commands[cmd_count].append_redirect = strdup(tokens[i + 1]->value);
+                    cmd[cmd_count].append_redirect = strdup(tokens[i + 1]->value);
                 else if (tokens[i]->type == HEREDOC)
-                    commands[cmd_count].heredoc_delimiter = strdup(tokens[i + 1]->value);
+                    cmd[cmd_count].heredoc_delimiter = strdup(tokens[i + 1]->value);
                 i++;
             }
             else
             {
                 fprintf(stderr, "Syntax error near unexpected token `%s`\n", tokens[i]->value);
-                free(commands);
+                free(cmd);
                 return (NULL);
             }
         }
         else
         {
-            commands[cmd_count].args = append_to_args(commands[cmd_count].args, tokens[i]->value);
+            cmd[cmd_count].args = append_to_args(cmd[cmd_count].args, tokens[i]->value);
         }
         i++;
     }
 
-    return (commands);
+    return (cmd);
 }

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/09 16:40:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/15 22:04:09 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,13 @@ void	handle_sigquit(int sig)
 	printf("Quit: 3\n");
 }
 
-//void	signal_handler(void)
-//{
-//    signal(SIGINT, handle_sigint);   // Handle CTRL-C
-//    signal(SIGQUIT, handle_sigquit); // Ignore CTRL-
-//}
-
 void signal_handler(void)
 {
     struct sigaction sa;
 
     // Handle SIGINT (CTRL-C)
     sa.sa_handler = handle_sigint;
-    sa.sa_flags = SA_RESTART; // Restart interrupted system calls
+    sa.sa_flags = SA_RESTART;
     sigemptyset(&sa.sa_mask);
     sigaction(SIGINT, &sa, NULL);
 

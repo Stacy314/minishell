@@ -8,11 +8,15 @@
 # include <stdbool.h>
 # include <stdlib.h>
 # include <signal.h>
+#include <sys/wait.h>
+
 
 // Global flag for prompt control
 //volatile sig_atomic_t g_prompt_flag = 0; 
 
 #  define MAX_COMMANDS 265 // 128
+
+# define _DEFAULT_SOURSE
 
 //enum
 typedef enum e_token_type {
@@ -34,48 +38,55 @@ typedef struct s_token
 
 typedef struct s_data
 {
-	char	**cmd; //cat, ls, grep? 
+	//char	**cmd; //cat, ls, grep? 
 	//char	**path;
 	//char	*input;
 	//char	*output;
 	//char	*append;
 	//char	*heredoc;
-	char	**arg;
-	char	**option;
-	char	**env;
-	int		exit_status;
+	//char			**arg;
+	//char			**option;
+	char			**env;
+	int				exit_status;
+	struct s_cmd	*cmd;
 }	t_data;
 
-typedef struct s_command {
-    char **args;
-    char *input_redirect;
-    char *output_redirect;
-    char *append_redirect;
-    char *heredoc_delimiter;
-    int pipe_in;
-    int pipe_out;
-	t_data *data;
-} t_command;
+typedef struct s_cmd {
+    char	**args;
+    char	*input_redirect;
+    char	*output_redirect;
+    char	*append_redirect;
+    char	*heredoc_delimiter;
+    int		pipe_in;
+    int		pipe_out;
+	t_data	*data;
+} t_cmd;
 
 void	init_structure(t_data *data, char **env);
+void execute_command(char *cmd, t_data data, char **args, char **env);
 
 t_token	**split_to_token(char *str);
 int		validation(int argc, char **argv);
 char	*ft_strtok(char *str, const char *delim);
 void	free_tokens(t_token **tokens);
-void	execute(t_token **tokens, t_data *g_data);
-
+void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data);
+void	execute_for_many(t_token **tokens, t_cmd *cmd);
+int		contains_special_char(t_cmd *cmd);
 // signals
 void	signal_handler(void);
 
 // builtins
-void	builtin_echo(t_data g_data);
-void	builtin_cd(t_data g_data);
-void	builtin_pwd(t_data g_data);
-void	builtin_export(t_data g_data);
-void	builtin_unset(t_data g_data);
-void	builtin_env(t_data g_data);
-void	builtin_exit(t_data g_data);
+void	builtin_echo(t_cmd *cmd, t_data *data);
+//void	builtin_cd(t_cmd *cmd);
+void	builtin_pwd(t_cmd *cmd);
+void	builtin_export(t_cmd *cmd);
+void	builtin_unset(t_cmd *cmd);
+void	builtin_env(t_cmd *cmd, t_data data);
+void	builtin_exit(t_cmd *cmd);
+//int is_option(char *str);
+int is_option(const char *arg);
+void	builtin_cd(t_cmd *cmd, t_data *data);
+char *get_env_value(char **env, const char *key);
 
 t_token **split_to_tokens(const char *str);
 
@@ -83,6 +94,6 @@ t_token **split_to_tokens(const char *str);
 char* 	skip_spaces(char *str);
 
 //parsing
-t_command *parse_tokens(t_token **tokens);
+t_cmd *parse_tokens(t_token **tokens);
 
 #endif
