@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 21:58:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/15 22:25:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int		main(int argc, char **argv, char **env)
 		{
     		execute_for_one(tokens, cmd, &data);
 		}
-		execute_command(cmd->args[0], data, cmd->args, env);
+		execute_command(cmd->args[0], data, cmd->args, env); // need ecsept for builtins
 		free(cmd);
 		free_tokens(tokens);
     }
