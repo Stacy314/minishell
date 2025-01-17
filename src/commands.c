@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 22:03:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:49:48 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 char *get_path_from_env(char **env)
 {
-    for (int i = 0; env[i] != NULL; i++) {
+    for (int i = 0; env[i] != NULL; i++)
+	{
         if (strncmp(env[i], "PATH=", 5) == 0)
 		{
             return env[i] + 5; // Пропустити "PATH="
@@ -23,7 +24,8 @@ char *get_path_from_env(char **env)
     return NULL;
 }
 
-char **split_path(const char *path) {
+char **split_path(const char *path)
+{
     char **paths = malloc(128 * sizeof(char *));
     int i = 0;
     char *path_copy = strdup(path);
@@ -52,7 +54,7 @@ char *find_executable(const char *cmd, char **paths)
     return NULL;
 }
 
-void execute_command(char *cmd, t_data data, char **args, char **env)
+int execute_command(char *cmd, t_data data, char **args)
 {
 	//ls | wc -l
 	pid_t pid;
@@ -65,45 +67,48 @@ void execute_command(char *cmd, t_data data, char **args, char **env)
 	if (pid == -1)
 	{
 		perror("fork");
-		return ;
+		return (0);
 	}
 	if (pid == 0)
 	{
-		path = get_path_from_env(env);
-		if (!path) {
+		path = get_path_from_env(data.env);
+		if (!path)
+		{
 			fprintf(stderr, "Error: PATH not found in environment\n");
-			//exit(127); 
+			exit(127); 
 			//data->exit_status = 127;
-			return ;
+			//return (0);
 		}
 		paths = split_path(path);
 		executable = find_executable(cmd, paths);
 		if (!executable)
 		{
-			fprintf(stderr, "Error: command '%s' not found\n", cmd);
+			fprintf(stderr, "%s: command not found\n", cmd);
 			for (int i = 0; paths[i]; i++) free(paths[i]);
 			free(paths);
-			//exit(127);
-			return ;
+			exit(127);
+			//return (0);
 		}
-		execve(executable, args, env);
+		execve(executable, args, data.env);
 		perror("execve");
 		for (int i = 0; paths[i]; i++) free(paths[i]);
 		free(paths);
 		free(executable);
-		// exit(1);
-		return ;
+		exit(1);
+		//return (0);
 	}
 	else
 	{ // Parent process
         waitpid(pid, &status, 0); // Wait for the child process to finish
-        //if (WIFEXITED(status)) {
-        //    printf("Command exited with status: %d\n", WEXITSTATUS(status));
-        //} else {
-        //    printf("Command did not exit normally\n");
-        //}
+        if (WIFEXITED(status))
+		{
+            printf("Command exited with status: %d\n", WEXITSTATUS(status));
+        } else {
+            printf("Command did not exit normally\n");
+        }
    
-}
+	}
+	return (1);
 }
 
 //// Тестування

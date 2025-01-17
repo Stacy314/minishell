@@ -63,7 +63,7 @@ typedef struct s_cmd {
 } t_cmd;
 
 void	init_structure(t_data *data, char **env);
-void execute_command(char *cmd, t_data data, char **args, char **env);
+int	execute_command(char *cmd, t_data data, char **args);
 
 t_token	**split_to_token(char *str);
 int		validation(int argc, char **argv);
@@ -82,18 +82,18 @@ void	builtin_pwd(t_cmd *cmd);
 void	builtin_export(t_cmd *cmd);
 void	builtin_unset(t_cmd *cmd);
 void	builtin_env(t_cmd *cmd, t_data data);
-void	builtin_exit(t_cmd *cmd);
+void	builtin_exit(t_cmd *cmd, t_data *data);
 //int is_option(char *str);
 int is_option(const char *arg);
 void	builtin_cd(t_cmd *cmd, t_data *data);
-char *get_env_value(char **env, const char *key);
+char	*get_env_value(char **env, const char *key);
 
 t_token **split_to_tokens(const char *str);
 
 // utils_builtins
-char* 	skip_spaces(char *str);
+char	*skip_spaces(char *str);
 
 //parsing
-t_cmd *parse_tokens(t_token **tokens);
+t_cmd	*parse_tokens(t_token **tokens);
 
 #endif

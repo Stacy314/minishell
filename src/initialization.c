@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 21:51:34 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:37:05 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,16 @@
 void	initialize_data(t_data *data, char **env)
 {
 	data->env = env;
-	//printf("env: %s\n", env[33]); HOME
+	//printf("env: %s\n", env[33]); //HOME
 	data->exit_status = 0;
 	data->cmd = NULL;
-	//data->arg = NULL;
 	return ;
 }
-t_cmd *initialize_cmd(t_data *data) {
-    t_cmd *cmd = malloc(sizeof(t_cmd));
+t_cmd *initialize_cmd(t_data *data)
+{
+	t_cmd *cmd;
+	
+    cmd = malloc(sizeof(t_cmd));
     if (!cmd) {
         perror("malloc failed");
         exit(EXIT_FAILURE);
@@ -35,13 +37,11 @@ t_cmd *initialize_cmd(t_data *data) {
     cmd->pipe_in = -1;
     cmd->pipe_out = -1;
     cmd->data = data;
-    return cmd;
+    return (cmd);
 }
 
 void init_structure(t_data *data, char **env)
 {
-	(void)data;
-	(void)env;
-	void	initialize_data(t_data *data, char **env);
-	t_cmd	*initialize_cmd(t_data *data);	
+	initialize_data(data, env);
+	initialize_cmd(data);
 }

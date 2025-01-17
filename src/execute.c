@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 22:07:45 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:41:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 			else if (ft_strncmp(tokens[i]->value, "env", 3) == 0)
 				return (builtin_env(cmd, *data));
 			else if (ft_strncmp(tokens[i]->value, "exit", 4) == 0)
-				return (builtin_exit(cmd));
+				return (builtin_exit(cmd, data));
 			else
 			{
-				//printf("minishell: command not found: %s\n", tokens[i]->value);
+				execute_command(cmd->args[0], *data, cmd->args);
 				return ;
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 21:13:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:56:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,31 +139,26 @@ void	builtin_env(t_cmd *cmd, t_data data)
 	}
 }
 
-void	builtin_exit(t_cmd *cmd)
+//after wrong command (127), need to exit twice 
+void	builtin_exit(t_cmd *cmd, t_data *data)
 {
-	(void)cmd;
-	printf("exit run\n");
+	int i;
 	
-	int i = 0;
+	i = 0;
 	if (cmd->args[1])
 	{
 		while (cmd->args[1][i])
 		{
 			if (!ft_isdigit(cmd->args[1][i]))
 			{
+				printf("exit\n"); ///
 				printf("minishell: exit: %s: numeric argument required\n", cmd->args[1]);
-				exit(255);
+				exit(2);
 			}
 			i++;
 		}
+		data->exit_status = ft_atoi(cmd->args[1]);
 	}
-	//{
-	//	if (data.arg[1])
-	//	{
-	//		data.exit_status = ft_atoi(data.arg[1]);
-	//	}
-	//}
-	//else
-	//	data.exit_status = 0;
-	exit(0);
+	printf("exit status - %d\n", data->exit_status);
+	exit(data->exit_status);
 }
