@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 22:04:38 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/17 16:59:34 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,14 @@ char *get_env_value(char **env, const char *key)
 		i++;
     }
     return (NULL);
+}
+int find_env_var(char **env, const char *var)
+{
+    int len = strlen(var);
+    for (int i = 0; env[i]; i++) {
+        if (strncmp(env[i], var, len) == 0 && env[i][len] == '=') {
+            return i; // Індекс знайденої змінної
+        }
+    }
+    return -1; // Не знайдено
 }

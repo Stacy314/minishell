@@ -79,14 +79,15 @@ void	signal_handler(void);
 void	builtin_echo(t_cmd *cmd, t_data *data);
 //void	builtin_cd(t_cmd *cmd);
 void	builtin_pwd(t_cmd *cmd);
-void	builtin_export(t_cmd *cmd);
-void	builtin_unset(t_cmd *cmd);
-void	builtin_env(t_cmd *cmd, t_data data);
+void builtin_export(t_cmd *cmd, t_data *data);
+void builtin_unset(t_cmd *cmd, t_data *data);
+void	builtin_env(t_cmd *cmd, t_data *data);
 void	builtin_exit(t_cmd *cmd, t_data *data);
 //int is_option(char *str);
 int is_option(const char *arg);
 void	builtin_cd(t_cmd *cmd, t_data *data);
 char	*get_env_value(char **env, const char *key);
+int find_env_var(char **env, const char *var);
 
 t_token **split_to_tokens(const char *str);
 
