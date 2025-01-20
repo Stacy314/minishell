@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path.c                                             :+:      :+:    :+:   */
+/*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/17 15:49:48 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:55:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int execute_command(char *cmd, t_data data, char **args)
         waitpid(pid, &status, 0); // Wait for the child process to finish
         if (WIFEXITED(status))
 		{
-            printf("Command exited with status: %d\n", WEXITSTATUS(status));
+            //printf("Command exited with status: %d\n", WEXITSTATUS(status));
         } else {
             printf("Command did not exit normally\n");
         }

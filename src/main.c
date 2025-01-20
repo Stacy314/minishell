@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/17 13:22:12 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:25:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +67,21 @@ int		main(int argc, char **argv, char **env)
 		//}
 		//printf("%d", data.exit_status);
 		
-		if (contains_special_char(cmd))
+				
+		//if (contains_special_char(cmd, '<') || contains_special_char(cmd, '>'))
+
+		if (contains_special_char(cmd, '|'))
 		{
 			//execute_for_many(tokens, cmd);
-			printf("execute for many run\n");
+			execute_pipeline(&cmd, data.env);
+			//printf("execute for many run\n");
 		}
 		else
 		{
     		execute_for_one(tokens, cmd, &data);
 		}
+		if (execute_redirection(cmd,env) == 1)
+			continue;
 		 // need ecsept for builtins
 		free(cmd);
 		free_tokens(tokens);

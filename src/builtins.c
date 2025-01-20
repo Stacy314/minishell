@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/18 20:01:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/20 16:08:04 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ void builtin_export(t_cmd *cmd, t_data *data)
             new_env[env_size] = strdup(arg);
             new_env[env_size + 1] = NULL;
 
-            free(data->env);
+           	//free(data->env);
             data->env = new_env;
         }
     }
@@ -213,10 +213,11 @@ void builtin_unset(t_cmd *cmd, t_data *data)
             continue;
         }
 
-        free(data->env[var_index]);
+        //free(data->env[var_index]);
         for (int j = var_index; data->env[j]; j++) {
             data->env[j] = data->env[j + 1];
         }
+		data->env[var_index] = NULL;
     }
 }
 
@@ -277,6 +278,6 @@ void	builtin_exit(t_cmd *cmd, t_data *data)
 		}
 		data->exit_status = ft_atoi(cmd->args[1]);
 	}
-	printf("exit status - %d\n", data->exit_status);
+	//printf("exit status - %d\n", data->exit_status);
 	exit(data->exit_status);
 }

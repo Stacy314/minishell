@@ -5,12 +5,13 @@ LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
 SRC_FILES = main.c utils_main.c tokenizer.c utils_tokenizer.c builtins.c utils_builtins.c \
-			execute.c parser.c signals.c initialization.c commands.c
+			execute.c parser.c signals.c initialization.c commands.c pipe.c redirection.c
 OBJ_FILES = $(SRC_FILES:.c=.o)
 OBJS =  $(OBJ_DIR)/main.o $(OBJ_DIR)/tokenizer.o  $(OBJ_DIR)/utils_tokenizer.o \
 		$(OBJ_DIR)/builtins.o $(OBJ_DIR)/utils_builtins.o $(OBJ_DIR)/execute.o \
 		$(OBJ_DIR)/parser.o $(OBJ_DIR)/signals.o $(OBJ_DIR)/initialization.o \
-		$(OBJ_DIR)/utils_main.o $(OBJ_DIR)/commands.o
+		$(OBJ_DIR)/utils_main.o $(OBJ_DIR)/commands.o $(OBJ_DIR)/pipe.o \
+		$(OBJ_DIR)/redirection.o
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/17 17:01:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/20 16:36:20 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 	}
 }
 
-void	execute_for_many(t_token **tokens, t_cmd *cmd)
-{
-	(void)tokens;
-	(void)cmd;
-	printf("execute for many run\n");
-}
+//void	execute_for_many(t_token **tokens, t_cmd *cmd)
+//{
+//	(void)tokens;
+//	(void)cmd;
+//	printf("execute for many run\n");
+//}

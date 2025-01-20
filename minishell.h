@@ -9,6 +9,7 @@
 # include <stdlib.h>
 # include <signal.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 
 // Global flag for prompt control
@@ -64,14 +65,15 @@ typedef struct s_cmd {
 
 void	init_structure(t_data *data, char **env);
 int	execute_command(char *cmd, t_data data, char **args);
-
+void execute_pipeline(t_cmd **cmd, char **env);
 t_token	**split_to_token(char *str);
 int		validation(int argc, char **argv);
 char	*ft_strtok(char *str, const char *delim);
 void	free_tokens(t_token **tokens);
 void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data);
 void	execute_for_many(t_token **tokens, t_cmd *cmd);
-int		contains_special_char(t_cmd *cmd);
+int		contains_special_char(t_cmd *cmd, char delimiter);
+int execute_redirection(t_cmd *cmd, char **env);
 // signals
 void	signal_handler(void);
 
