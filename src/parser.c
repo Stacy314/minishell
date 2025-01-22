@@ -1,5 +1,28 @@
 #include "../minishell.h"
 
+//need to fix: 
+//			; (segfault)
+//               ; (segfault)
+//"" (should be empty arg)
+//" " (should be empty arg)
+//| echo hi  (bash: syntax error near unexpected token `|')
+//echo hi | echo hi | (error with pipe, in bash opened input)
+//echo "" (should print a new line)
+//exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit,
+//		in bash - bash: exit: 1111111111111111111111111111111111: numeric argument required?)
+//exit asdf (in bash - bash: exit: asdf: numeric argument required, exit and return value 2)
+//exit 123 asdf (in bash - bash: exit: too many arguments and didn't exit, exit and return value 1?)
+//echo $SHLVL (parse of env, also with "" and '')
+//echo "" "        h           a           " (should print         h           a           ),
+//		but this is right (echo          h           a)
+//"echo hi" and 'echo hi' (should pars as one arg, echo hi: command not found)
+//"echo" hi (should print hi)
+//"ls" and 'ls' (should work as regular ls)
+//e"ch"o hi (should print hi)
+//'echo' hi (should print hi)
+//echo hi '$USER is great, home is $HOME' (hi $USER is great, home is $HOME)
+//echo hi "$USER is great, home is $HOME" (hi apechkov is great, home is /home/apechkov)
+
 char **append_to_args(char **args, char *new_arg)
 {
     int		len;

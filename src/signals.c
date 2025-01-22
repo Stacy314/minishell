@@ -6,11 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 22:04:09 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/21 12:28:32 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+// ./minishell -> ./minishell (echo $SHLVL)
 
 void	handle_sigint(int sig)
 {

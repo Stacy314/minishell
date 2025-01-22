@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/20 15:55:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/21 14:26:39 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,54 +14,72 @@
 
 char *get_path_from_env(char **env)
 {
-    for (int i = 0; env[i] != NULL; i++)
+	int i;
+	
+	i = 0;
+    while (env[i] != NULL)
 	{
         if (strncmp(env[i], "PATH=", 5) == 0)
 		{
-            return env[i] + 5; // Пропустити "PATH="
+            return env[i] + 5; // skip PATH
         }
+		i++;
     }
     return NULL;
 }
 
 char **split_path(const char *path)
 {
-    char **paths = malloc(128 * sizeof(char *));
-    int i = 0;
-    char *path_copy = strdup(path);
-    char *token = strtok(path_copy, ":");
-
-    while (token) {
-        paths[i++] = strdup(token);
-        token = strtok(NULL, ":");
+	char **paths;
+	int i;
+	char *path_copy;
+	char *token;
+	
+    paths = ft_calloc(128 * sizeof(char *), 1); //why 128?
+    path_copy = ft_strdup(path);
+    token = strtok(path_copy, ":"); //need to cange
+	i = 0;
+    while (token)
+	{
+        paths[i++] = ft_strdup(token);
+        token = strtok(NULL, ":"); //need to cange
     }
     paths[i] = NULL;
     free(path_copy);
-    return paths;
+    return (paths);
 }
 
 char *find_executable(const char *cmd, char **paths)
 {
-    char *full_path = malloc(1024);
-    for (int i = 0; paths[i] != NULL; i++) {
-        snprintf(full_path, 1024, "%s/%s", paths[i], cmd);
-        if (access(full_path, X_OK) == 0) {
+	char *full_path;
+	int i;
+	
+    full_path = malloc(1024); //why 1024?
+	i = 0;
+    while (paths[i] != NULL)
+	{
+        snprintf(full_path, 1024, "%s/%s", paths[i], cmd); //need to change
+        if (access(full_path, X_OK) == 0)
+		{
 			//printf("full_path = %s\n", full_path);
             return full_path;
         }
+		i++;
     }
     free(full_path);
-    return NULL;
+    return (NULL);
 }
 
+//ls | wc -l
 int execute_command(char *cmd, t_data data, char **args)
 {
-	//ls | wc -l
 	pid_t pid;
 	int status;
 	char *path;
 	char *executable;
 	char **paths;
+	int i;
+	
 	(void)data;
 	pid = fork();
 	if (pid == -1)
@@ -76,30 +94,26 @@ int execute_command(char *cmd, t_data data, char **args)
 		{
 			fprintf(stderr, "Error: PATH not found in environment\n");
 			exit(127); 
-			//data->exit_status = 127;
-			//return (0);
 		}
 		paths = split_path(path);
 		executable = find_executable(cmd, paths);
 		if (!executable)
 		{
-			fprintf(stderr, "%s: command not found\n", cmd);
-			for (int i = 0; paths[i]; i++) free(paths[i]);
+			fprintf(stderr, "%s: command not found\n", cmd); //need to change
+			for (i = 0; paths[i]; i++) free(paths[i]); //need to change
 			free(paths);
 			exit(127);
-			//return (0);
 		}
 		execve(executable, args, data.env);
-		perror("execve");
-		for (int i = 0; paths[i]; i++) free(paths[i]);
+		//perror("execve");
+		for (int i = 0; paths[i]; i++) free(paths[i]); //need to change
 		free(paths);
 		free(executable);
 		exit(1);
-		//return (0);
 	}
 	else
-	{ // Parent process
-        waitpid(pid, &status, 0); // Wait for the child process to finish
+	{
+        waitpid(pid, &status, 0); // need to check
         if (WIFEXITED(status))
 		{
             //printf("Command exited with status: %d\n", WEXITSTATUS(status));
