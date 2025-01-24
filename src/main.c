@@ -6,11 +6,66 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/22 17:00:45 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/24 22:45:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+
+void print_cmd_list(t_cmd *cmd_list, size_t count)
+{
+    for (size_t i = 0; i < count; i++)
+    {
+        printf("=== Command %zu ===\n", i);
+        
+        // Print args
+        printf("args: ");
+        if (cmd_list[i].args)
+        {
+            size_t arg_index = 0;
+            while (cmd_list[i].args[arg_index])
+            {
+                printf("\"%s\" ", cmd_list[i].args[arg_index]);
+                arg_index++;
+            }
+        }
+        else
+        {
+            printf("(none)");
+        }
+        printf("\n");
+        
+        // Print redirections
+        printf("input_redirect:   %s\n",
+               cmd_list[i].input_redirect ? cmd_list[i].input_redirect : "(none)");
+        printf("output_redirect:  %s\n",
+               cmd_list[i].output_redirect ? cmd_list[i].output_redirect : "(none)");
+        printf("append_redirect:  %s\n",
+               cmd_list[i].append_redirect ? cmd_list[i].append_redirect : "(none)");
+        printf("heredoc_delimiter:%s\n",
+               cmd_list[i].heredoc_delimiter ? cmd_list[i].heredoc_delimiter : "(none)");
+        
+        // Print pipe fields
+        printf("pipe_in:          %d\n", cmd_list[i].pipe_in);
+        printf("pipe_out:         %d\n", cmd_list[i].pipe_out);
+
+        // Print data if relevant
+        if (cmd_list[i].data)
+        {
+            // Adjust depending on your t_data structure
+            printf("data->some_value: %d\n", cmd_list[i].data->some_value);
+        }
+        else
+        {
+            printf("data:            (null)\n");
+        }
+        
+        printf("\n");
+    }
+}
+
+
 
 int		main(int argc, char **argv, char **env)
 {
@@ -56,6 +111,7 @@ int		main(int argc, char **argv, char **env)
             ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
             exit(EXIT_FAILURE); //need to check
         }
+		print_cmd_list(cmd,2);
 		//int i = 0;
 		//while(cmd->args[i])
 		//{
@@ -68,7 +124,8 @@ int		main(int argc, char **argv, char **env)
 		
 				
 		//if (contains_special_char(cmd, '<') || contains_special_char(cmd, '>'))
-
+		if (execute_redirection(cmd,env) == 1)
+			continue;
 		if (contains_special_char(cmd, '|'))
 		{
 			//execute_for_many(tokens, cmd);
@@ -79,8 +136,7 @@ int		main(int argc, char **argv, char **env)
 		{
     		execute_for_one(tokens, cmd, &data);
 		}
-		if (execute_redirection(cmd,env) == 1)
-			continue;
+
 		 // need ecsept for builtins
 		free(cmd);
 		free_tokens(tokens);

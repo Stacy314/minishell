@@ -47,6 +47,7 @@ typedef struct s_data
 	//char	*heredoc;
 	//char			**arg;
 	//char			**option;
+    int 			some_value;
 	char			**env;
 	int				exit_status;
 	struct s_cmd	*cmd;

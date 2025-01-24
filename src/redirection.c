@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/22 13:17:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/24 22:24:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	handle_redirections(t_cmd *cmd)
         }
 		else
 		{
+			printf("reached here\n");
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
@@ -86,6 +87,7 @@ void handle_heredoc(t_cmd *cmd) {
 
     if (pid == 0)
 	{
+		//printf("here\n");
         close(pipe_fd[0]);
         while (1) {
             line = readline("> ");
@@ -118,6 +120,7 @@ int execute_redirection(t_cmd *cmd, char **env)
 
     if (pid == 0)
 	{
+		//printf("here we are\n");
         if (cmd->heredoc_delimiter)
             handle_heredoc(cmd);
         handle_redirections(cmd);
