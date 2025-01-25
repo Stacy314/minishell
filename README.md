@@ -1,4 +1,4 @@
-Minishell 🐚
+Minishell 🐚 \n
 Minishell is a simple Unix shell written in C that supports command execution, 
 redirections (<, >, >>), heredoc (<<) pipes (|), and built-in shell commands 
 like cd, echo, pwd, env, export, and unset. It mimics the behavior of bash 
