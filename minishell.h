@@ -73,7 +73,7 @@ void	builtin_echo(t_cmd *cmd, t_data *data);
 void	builtin_pwd(t_cmd *cmd);
 void	builtin_export(t_cmd *cmd, t_data *data);
 void	builtin_unset(t_cmd *cmd, t_data *data);
-void	builtin_env(t_cmd *cmd, t_data *data);
+void	builtin_env(t_data *data);
 void	builtin_exit(t_cmd *cmd, t_data *data);
 void	builtin_cd(t_cmd *cmd, t_data *data);
 char	*get_env_value(char **env, const char *key);

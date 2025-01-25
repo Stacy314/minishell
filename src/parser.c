@@ -27,6 +27,7 @@
 //<: command not found (in bash), in minishell - it is a command 
 
 //echo "|" echo (need to add in structure pipe maybe, look at my func foe pipe)
+//echo " | "
 //| echo (in bash)
 
 //echo hi>>4 >>5 >>6 (should create be 3 append's redirects)

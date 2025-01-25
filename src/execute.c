@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/21 14:27:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 19:35:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 			else if (ft_strncmp(tokens[i]->value, "unset", 5) == 0)
 				return (builtin_unset(cmd, data));
 			else if (ft_strncmp(tokens[i]->value, "env", 3) == 0)
-				return (builtin_env(cmd, data));
+				return (builtin_env(data));
 			else if (ft_strncmp(tokens[i]->value, "exit", 4) == 0)
 				return (builtin_exit(cmd, data));
 			else

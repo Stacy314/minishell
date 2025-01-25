@@ -6,19 +6,19 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/20 16:33:59 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 18:51:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 	
-void free_tokens(t_token **tokens)
+void	free_tokens(t_token **tokens)
 {
 	int i;
 
 	i = 0;
 	if (!tokens)
-        return;
+        return ;
    	while (tokens[i])
 	{
         free(tokens[i]->value);

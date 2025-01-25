@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/25 18:44:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 19:41:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@
 
 void builtin_echo(t_cmd *cmd, t_data *data)
 {
-    pid_t pid = fork();
+	pid_t pid;
+	int i;
+	int n_flag;
+	
+    pid = fork();
     if (pid == -1)
-	{
-        perror("fork");
-        return;
-    }
+        return (perror("fork"));
     if (pid == 0)
 	{
-        int i = 1;
-        int n_flag = 0;
-
+        i = 1;
+        n_flag = 0;
         while (cmd->args[i] != NULL && is_option(cmd->args[i]))
 		{
             n_flag = 1;
@@ -51,7 +51,6 @@ void builtin_echo(t_cmd *cmd, t_data *data)
     waitpid(pid, NULL, 0);
 }
 
-//cd ~ (home directory)
 void builtin_cd(t_cmd *cmd, t_data *data)
 {
     char *path;
@@ -60,25 +59,17 @@ void builtin_cd(t_cmd *cmd, t_data *data)
 	{
         path = get_env_value(data->env, "HOME");
         if (!path)
-		{
-            fprintf(stderr, "minishell: cd: HOME not set\n");
-            return;
-        }
+			return (ft_putendl_fd("minishell: cd: HOME not set", 2));
     }
 	else if (ft_strncmp(cmd->args[1], "~", 1) == 0)
 	{
 		path = get_env_value(data->env, "HOME");
 		if (!path)
-		{
-			fprintf(stderr, "minishell: cd: HOME not set\n");
-			return;
-		}
+			return (ft_putendl_fd("minishell: cd: HOME not set", 2));
 		path = ft_strjoin(path, cmd->args[1] + 1);
 	}
 	else
-	{
         path = cmd->args[1];
-    }
     if (chdir(path) == -1)
 	{
         ft_putstr_fd("cd: no such file or directory: ", 2);
@@ -110,9 +101,7 @@ void builtin_pwd(t_cmd *cmd)
             ft_putendl_fd("pwd: error retrieving current directory: getcwd: cannot access parent directories\n", 2);
             exit(1);
         }
-        ft_putendl_fd(buf, 1);
-        free(buf);
-        exit(0);
+        return (ft_putendl_fd(buf, 1),free(buf), exit(0));
     }
     waitpid(pid, NULL, 0);
 }
@@ -143,7 +132,6 @@ void builtin_export(t_cmd *cmd, t_data *data)
         }
         return;
     }
-
 	i = 1;
     while(cmd->args[i])
 	{
@@ -190,6 +178,7 @@ void builtin_unset(t_cmd *cmd, t_data *data)
 {
 	int i;
 	int j;
+	int var_index;
 	
     if (!cmd->args[1])
 	{
@@ -199,11 +188,9 @@ void builtin_unset(t_cmd *cmd, t_data *data)
 	i = 1;
     while (cmd->args[i])
 	{
-        int var_index = find_env_var(data->env, cmd->args[i]);
+        var_index = find_env_var(data->env, cmd->args[i]);
         if (var_index == -1)
-		{
             continue;
-        }
         //free(data->env[var_index]);
 		j = var_index;
         while (data->env[j])
@@ -216,20 +203,21 @@ void builtin_unset(t_cmd *cmd, t_data *data)
     }
 }
 
-void builtin_env(t_cmd *cmd, t_data *data)
+void builtin_env(t_data *data)
 {
-	(void)cmd; //need to change
+	pid_t pid;
 	
-    pid_t pid = fork();
+    pid = fork();
     if (pid == -1)
 	{
         perror("fork");
-        return;
+        return ;
     }
     if (pid == 0)
 	{
         int i = 0;
-        while (data->env[i]) {
+        while (data->env[i])
+		{
             ft_putstr_fd(data->env[i], 1);
             ft_putstr_fd("\n", 1);
             i++;
