@@ -1,15 +1,15 @@
 #include "../minishell.h"
 
 //need to fix: 
-//			; (segfault)
-//               ; (segfault)
+//empty line (segfault), should print prompt again
+//			 (segfault) - tab
+//                (segfault) - space
 //"" (should be empty arg)
 //" " (should be empty arg)
-//| echo hi  (bash: syntax error near unexpected token `|')
 //echo hi | echo hi | (error with pipe, in bash opened input)
 //echo "" (should print a new line)
 //exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit,
-//		in bash - bash: exit: 1111111111111111111111111111111111: numeric argument required?)
+//		in bash - bash: exit: 1111111111111111111111111111111111: numeric argument required)
 //exit asdf (in bash - bash: exit: asdf: numeric argument required, exit and return value 2)
 //exit 123 asdf (in bash - bash: exit: too many arguments and didn't exit, exit and return value 1?)
 //echo $SHLVL (parse of env, also with "" and '')
@@ -23,6 +23,13 @@
 //echo hi '$USER is great, home is $HOME' (hi $USER is great, home is $HOME)
 //echo hi "$USER is great, home is $HOME" (hi apechkov is great, home is /home/apechkov)
 
+ //"<" sasdad
+//<: command not found (in bash), in minishell - it is a command 
+
+//echo "|" echo (need to add in structure pipe maybe, look at my func foe pipe)
+//| echo (in bash)
+
+//echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
 char **append_to_args(char **args, char *new_arg)
 {
     int		len;

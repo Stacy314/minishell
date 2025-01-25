@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/24 22:45:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 18:14:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,6 @@ void print_cmd_list(t_cmd *cmd_list, size_t count)
 
 int		main(int argc, char **argv, char **env)
 {
-	(void)argc;
-	(void)argv;
     char	*input;
 	t_data	data;
 	t_token	**tokens;
@@ -78,26 +76,22 @@ int		main(int argc, char **argv, char **env)
 	
 	if (argv && argc > 1)
 	{
-		ft_putstr_fd("Minishell cannot take arguments\n", STDOUT_FILENO);
+		ft_putstr_fd("Minishell cannot accept arguments\n", STDOUT_FILENO);
 		return (EXIT_FAILURE);
 	}
-	init_structure(&data, env);
+	cmd = init_structure(&data, env);
 	signal_handler(); //(CTRL+C, CTRL+D, CTRL+\)
-	
-    while (1) //
+    while (1)
 	{
 
         input = readline("minishell$ ");
         if (!input)
 		{ 
             printf("\n");
-			//free(input);
             break;
         }
 		if(*input)
-			add_history(input); // need to handel
-        //printf("You entered: %s\n", input);
-		
+			add_history(input);
 		tokens = split_to_tokens(input);
 		free(input);
 		if (!tokens)
@@ -111,7 +105,8 @@ int		main(int argc, char **argv, char **env)
             ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
             exit(EXIT_FAILURE); //need to check
         }
-		print_cmd_list(cmd,2);
+		
+		//print_cmd_list(cmd,1);
 		//int i = 0;
 		//while(cmd->args[i])
 		//{
@@ -122,24 +117,27 @@ int		main(int argc, char **argv, char **env)
 		//}
 		//printf("%d", data.exit_status);
 		
-				
-		//if (contains_special_char(cmd, '<') || contains_special_char(cmd, '>'))
-		if (execute_redirection(cmd,env) == 1)
-			continue;
-		if (contains_special_char(cmd, '|'))
-		{
-			//execute_for_many(tokens, cmd);
-			execute_pipeline(&cmd, data.env);
-			//printf("execute for many run\n");
-		}
-		else
-		{
-    		execute_for_one(tokens, cmd, &data);
-		}
-
-		 // need ecsept for builtins
-		free(cmd);
-		free_tokens(tokens);
+		
+			//printf("we are here\n");
+			if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect)
+			{
+				//printf("we are here\n"); 
+				if (execute_redirection(cmd,env) == 1)
+					continue;
+			}
+			if (contains_special_char(cmd, '|'))
+			{
+				//execute_for_many(tokens, cmd);
+				execute_pipeline(&cmd, data.env);
+				//printf("execute for many run\n");
+			}
+			else
+			{
+				execute_for_one(tokens, cmd, &data);
+			}
+	//	 // need ecsept for builtins
+	//	free(cmd);
+	//	free_tokens(tokens);
     }
 	clear_history();
 	return(data.exit_status);

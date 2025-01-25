@@ -6,13 +6,14 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/22 13:18:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 18:44:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 //expansions
+
 void builtin_echo(t_cmd *cmd, t_data *data)
 {
     pid_t pid = fork();
@@ -64,6 +65,16 @@ void builtin_cd(t_cmd *cmd, t_data *data)
             return;
         }
     }
+	else if (ft_strncmp(cmd->args[1], "~", 1) == 0)
+	{
+		path = get_env_value(data->env, "HOME");
+		if (!path)
+		{
+			fprintf(stderr, "minishell: cd: HOME not set\n");
+			return;
+		}
+		path = ft_strjoin(path, cmd->args[1] + 1);
+	}
 	else
 	{
         path = cmd->args[1];

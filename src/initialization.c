@@ -6,27 +6,20 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/17 13:37:05 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 16:09:32 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	initialize_data(t_data *data, char **env)
-{
-	data->env = env;
-	//printf("env: %s\n", env[33]); //HOME
-	data->exit_status = 0;
-	data->cmd = NULL;
-	return ;
-}
 t_cmd *initialize_cmd(t_data *data)
 {
 	t_cmd *cmd;
 	
-    cmd = malloc(sizeof(t_cmd));
-    if (!cmd) {
-        perror("malloc failed");
+    cmd = ft_calloc(sizeof(t_cmd), 1);
+    if (!cmd)
+	{
+        perror("calloc");
         exit(EXIT_FAILURE);
     }
     cmd->args = NULL;
@@ -37,11 +30,17 @@ t_cmd *initialize_cmd(t_data *data)
     cmd->pipe_in = -1;
     cmd->pipe_out = -1;
     cmd->data = data;
-    return (cmd);
+	return (cmd);
 }
 
-void init_structure(t_data *data, char **env)
+t_cmd *init_structure(t_data *data, char **env)
 {
-	initialize_data(data, env);
-	initialize_cmd(data);
+	t_cmd *cmd;
+	
+	data->env = env;
+	//printf("env: %s\n", env[33]); //HOME
+	data->exit_status = 0;
+	cmd = initialize_cmd(data);
+	data->cmd = cmd;
+	return (cmd);
 }

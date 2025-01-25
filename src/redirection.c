@@ -6,71 +6,119 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/24 22:24:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 17:44:54 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	handle_redirections(t_cmd *cmd)
+void	handle_input_redirect(t_cmd *cmd)
 {
-    int	fd;
+	int	fd;
 	int	i;
 	
 	i = 0;
 	while (cmd[i].input_redirect)
 	{
-        fd = open(cmd[i].input_redirect, O_RDONLY);
+		fd = open(cmd[i].input_redirect, O_RDONLY);
 		if (fd == -1)
 		{
-            printf("minishell: %s : No such file or directory\n", cmd[i].input_redirect);
+			printf("minishell: %s: No such file or directory\n", cmd[i].input_redirect);
 		}
 		else
 		{
 		    dup2(fd, STDIN_FILENO);
-        	close(fd);
+			close(fd);
 		}
 		i++;
-    }
-	
-    //echo hi > a (didn't save hi)
-    if (cmd->output_redirect)
-	{ 
-        fd = open(cmd->output_redirect, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
-		{
-            //perror("minishell: output redirection");
-			printf("minishell: %s : No such file or directory\n", cmd->input_redirect);
-            //exit(1);
-        }
-		else
-		{
-			printf("reached here\n");
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
 	}
-	
-	//echo hi >>4 >>5 >>6 this is a test (should create 3 files(4,5,6) and write into three: hi this is a test (do it twice - and the message should be twice inside))
-    if (cmd->append_redirect)
-	{
-        fd = open(cmd->append_redirect, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd == -1) {
-            //perror("minishell: append redirection");
-			printf("minishell: %s : No such file or directory\n", cmd->input_redirect);
-            //exit(1);
-        }
-		else
-		{
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
-
-    }
 }
 
-// cat << EOF
-void handle_heredoc(t_cmd *cmd) {
+void	handle_output_redirect(t_cmd *cmd)
+{
+	int	fd;
+	int	i;
+	
+	i = 0;
+	while (cmd[i].output_redirect)
+	{
+		fd = open(cmd[i].output_redirect, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd == -1)
+		{
+			printf("minishell: %s: No such file or directory\n", cmd[i].output_redirect);
+		}
+		else
+		{
+			dup2(fd, STDOUT_FILENO);
+			write(fd, cmd->args[1], ft_strlen(cmd->args[1]));
+			write(fd, "\n", 1);
+			close(fd);
+		}
+		i++;
+	}
+	//	printf("redirect: %s\n", cmd->args[1]);
+    //  fd = open(cmd->output_redirect, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	//	if (fd == -1)
+	//	{
+	//		printf("minishell: %s : No such file or directory\n", cmd->output_redirect);
+    //      //exit(1);
+    //  }
+	//	else
+	//	{
+	//		dup2(fd, STDOUT_FILENO);
+	//		write(fd, cmd->args[1], ft_strlen(cmd->args[1]));
+	//		close(fd);
+	//	}
+}
+
+//echo hi >>4 >>5 >>6 this is a test (should create 3 files(4,5,6) and write into three: hi this is a test (do it twice - and the message should be twice inside))
+void	handle_append_redirect(t_cmd *cmd)
+{
+	int	fd;
+	int	i;
+	int	j;
+	char **append_files;
+	
+	append_files = ft_split(cmd->append_redirect, ' ');
+	i = 0;
+	j = 0;
+	while (cmd[j].append_redirect)
+	{
+		//printf("cmd->append_redirect: %s\n", cmd[j].append_redirect);
+		while (append_files[i])
+		{
+			//printf("append_files[%d]: %s\n", i, append_files[i]);
+			fd = open(cmd[i].append_redirect, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (fd == -1)
+			{
+				printf("minishell: %s: No such file or directory\n", cmd[i].append_redirect);
+			}
+			else
+			{
+				dup2(fd, STDOUT_FILENO);
+				write(fd, cmd->args[1], ft_strlen(cmd->args[1]));
+				write(fd, "\n", 1);
+				close(fd);
+			}
+			i++;
+		}
+		j++;
+	}
+//		fd = open(cmd->append_redirect, O_WRONLY | O_CREAT | O_APPEND, 0644);
+//		if (fd == -1) {
+//            //perror("minishell: append redirection");
+//			printf("minishell: %s : No such file or directory\n", cmd->input_redirect);
+//            //exit(1);
+//        }
+//		else
+//		{
+//			dup2(fd, STDOUT_FILENO);
+//			close(fd);
+//		}
+}
+
+void handle_heredoc(t_cmd *cmd)
+{
     int pipe_fd[2];
     char *line;
 
@@ -87,16 +135,16 @@ void handle_heredoc(t_cmd *cmd) {
 
     if (pid == 0)
 	{
-		//printf("here\n");
         close(pipe_fd[0]);
-        while (1) {
+        while (1)
+		{
             line = readline("> ");
             if (!line || strcmp(line, cmd->heredoc_delimiter) == 0)
 			{
                 free(line);
                 break;
             }
-            write(pipe_fd[1], line, strlen(line));
+            write(pipe_fd[1], line, ft_strlen(line));
             write(pipe_fd[1], "\n", 1);
             free(line);
         }
@@ -109,23 +157,33 @@ void handle_heredoc(t_cmd *cmd) {
     close(pipe_fd[0]);
 }
 
-//< nonexist | < exists | < nonexistent
 int execute_redirection(t_cmd *cmd, char **env)
 {
     pid_t pid = fork();
-    if (pid == -1) {
+    if (pid == -1)
+	{
         perror("fork");
         return (0);
     }
-
     if (pid == 0)
 	{
-		//printf("here we are\n");
         if (cmd->heredoc_delimiter)
             handle_heredoc(cmd);
-        handle_redirections(cmd);
+		if (cmd->input_redirect)
+        	handle_input_redirect(cmd);
+		if (cmd->output_redirect)
+			handle_output_redirect(cmd);
+		if (cmd->append_redirect)
+			handle_append_redirect(cmd);
 		//printf("cmd->args[0]: %s\n", cmd->args[0]);
-        execve(cmd->args[0], cmd->args, env);
+		
+        //if (!cmd->args || !cmd->args[0]) // Якщо немає команди після `>`, просто виходимо
+        //    exit(0);
+		
+		//if (cmd->args[0]) { // **Якщо є команда, виконуємо її**
+        //    execve(cmd->args[0], cmd->args, env);
+        //}
+		execve(cmd->args[0], cmd->args, env);
         //perror("execve");
         exit(127);
     }

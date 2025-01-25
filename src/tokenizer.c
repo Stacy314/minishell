@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/21 14:28:36 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/25 15:34:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 t_token *create_token(const char *value, t_token_type type, int index)
 {
-    t_token *new = malloc(sizeof(t_token));
+    t_token *new = ft_calloc(sizeof(t_token), 1);
     if (!new)
     {
-        perror("malloc");
+        perror("calloc");
         exit(EXIT_FAILURE);
     }
-    new->value = strdup(value);
+    new->value = ft_strdup(value);
     if (!new->value)
     {
         perror("strdup");
@@ -41,8 +41,8 @@ t_token **split_to_tokens(const char *str)
     if (!str)
         return NULL;
 
-    capacity = strlen(str) + 1;
-    tokens   = calloc(capacity, sizeof(t_token *));
+    capacity = ft_strlen(str) + 1;
+    tokens   = ft_calloc(capacity, sizeof(t_token *));
     if (!tokens)
     {
         perror("calloc");
