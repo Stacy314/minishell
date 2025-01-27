@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/25 18:14:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/27 18:52:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,13 @@ int		main(int argc, char **argv, char **env)
 	signal_handler(); //(CTRL+C, CTRL+D, CTRL+\)
     while (1)
 	{
-
+		//printf("exit status in main start - %d\n", data.exit_status);
         input = readline("minishell$ ");
         if (!input)
 		{ 
             printf("\n");
-            break;
+
+            exit(EXIT_FAILURE);
         }
 		if(*input)
 			add_history(input);
@@ -96,50 +97,38 @@ int		main(int argc, char **argv, char **env)
 		free(input);
 		if (!tokens)
 		{
-            fprintf(stderr, "Error: Failed to tokenize input\n");
+            printf("Error: Failed to tokenize input\n");
             continue;
 		}
 		cmd = parse_tokens(tokens);
         if (!cmd)
 		{
             ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
-            exit(EXIT_FAILURE); //need to check
+            exit(EXIT_FAILURE);
         }
 		
-		//print_cmd_list(cmd,1);
-		//int i = 0;
-		//while(cmd->args[i])
-		//{
-		//	printf("args: %s\n", cmd->args[i]);
-		//	cmd->args++;
-		//	if (cmd->args[i] == '|' || cmd->args[i] == '<' || cmd->args[i] == '>')
-		//		break;
-		//}
-		//printf("%d", data.exit_status);
+		////////////////////////
+		print_cmd_list(cmd,4);
 		
-		
-			//printf("we are here\n");
-			if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect)
-			{
-				//printf("we are here\n"); 
-				if (execute_redirection(cmd,env) == 1)
-					continue;
-			}
-			if (contains_special_char(cmd, '|'))
-			{
-				//execute_for_many(tokens, cmd);
-				execute_pipeline(&cmd, data.env);
-				//printf("execute for many run\n");
-			}
-			else
-			{
-				execute_for_one(tokens, cmd, &data);
-			}
-	//	 // need ecsept for builtins
+		if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect)
+		{
+			if (execute_redirection(cmd,env) == 1)
+				continue;
+		}
+		if (contains_special_char(tokens, '|'))
+		{
+			execute_pipeline(&cmd, &data, data.env);
+		}
+		else
+			execute_for_one(tokens, cmd, &data);
 	//	free(cmd);
-	//	free_tokens(tokens);
+		free_cmd(cmd);
+		free_tokens(tokens);
+		//printf("exit status in main end - %d\n", data.exit_status);
     }
 	clear_history();
+	//free_cmd(cmd);
+	//rl_clear_history();
 	return(data.exit_status);
 }
 

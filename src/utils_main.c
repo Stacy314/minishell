@@ -6,27 +6,91 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/25 18:51:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/27 18:35:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int contains_special_char(t_cmd *cmd, char delimiter)
+int contains_special_char(t_token	**tokens, char delimiter)
 {
+	//printf("contains_special_char\n");
 	int i;
-
-	if (!cmd || !cmd->args)
-        return (0);
+	
 	i = 0;
-    while (cmd->args[i])
+	while (tokens[i])
 	{
-        
-        if (ft_strchr(cmd->args[i], delimiter)) 
+		if (ft_strchr(tokens[i]->value, delimiter))
 		{
-            return (1);
-        }
+			return (1);
+		}
 		i++;
-    }
-    return (0);
+	}
+	return (0);
+}
+
+//void free_cmd(t_cmd *cmd)
+//{
+//	//int i = 0;
+//    if (!cmd)
+//        return;
+//	//while (cmd)	
+//    //{
+//		while (cmd->args)
+//		{
+//			free(cmd->args);
+//			cmd->args++;
+//		}
+//		while (cmd->input_redirect)
+//		{
+//			free(cmd->input_redirect);
+//			cmd->input_redirect++;
+//		}
+//		while (cmd->output_redirect)
+//		{
+//			free(cmd->output_redirect);
+//			cmd->output_redirect++;
+//		}
+//		while (cmd->append_redirect)
+//		{
+//			free(cmd->append_redirect);
+//			cmd->append_redirect++;
+//		}
+//		while(cmd->heredoc_delimiter)
+//		{
+//			free(cmd->heredoc_delimiter);
+//			cmd->heredoc_delimiter++;
+//		}
+//	//cmd++;
+//	//}
+//    //free(cmd);
+//}
+void free_cmd(t_cmd *cmd)
+{
+    if (!cmd)
+        return;
+
+    if (cmd->args)
+        free(cmd->args);
+    if (cmd->input_redirect)
+        free(cmd->input_redirect);
+    if (cmd->output_redirect)
+        free(cmd->output_redirect);
+    if (cmd->append_redirect)
+        free(cmd->append_redirect);
+    if (cmd->heredoc_delimiter)
+        free(cmd->heredoc_delimiter);
+
+    free(cmd);
+}
+
+
+
+int careful_exit(t_data data, t_cmd *cmd, int exit_status)
+{
+	(void)exit_status;
+	free_cmd(cmd);
+	free(data.env);
+	//free(data.);
+	exit(data.exit_status);
 }

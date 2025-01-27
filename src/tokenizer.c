@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/25 19:34:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/27 14:07:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_token *create_token(const char *value, t_token_type type, int index)
     }
     new->type = type;
     new->index = index;
-    return new;
+    return (new);
 }
 
 t_token **split_to_tokens(const char *str)

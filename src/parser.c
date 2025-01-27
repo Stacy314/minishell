@@ -10,8 +10,7 @@
 //echo "" (should print a new line)
 //exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit,
 //		in bash - bash: exit: 1111111111111111111111111111111111: numeric argument required)
-//exit asdf (in bash - bash: exit: asdf: numeric argument required, exit and return value 2)
-//exit 123 asdf (in bash - bash: exit: too many arguments and didn't exit, exit and return value 1?)
+
 //echo $SHLVL (parse of env, also with "" and '')
 //echo "" "        h           a           " (should print         h           a           ),
 //		but this is right (echo          h           a)

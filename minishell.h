@@ -53,11 +53,15 @@ typedef struct s_cmd {
     char	*heredoc_delimiter;
     int		pipe_in;
     int		pipe_out;
-	t_data	*data;
+	t_data	*data; //delete
 } t_cmd;
 
+void free_cmd(t_cmd *cmd);
+int contains_special_char(t_token	**tokens, char delimiter);
+
 //initialization
-t_cmd *init_structure(t_data *data, char **env);
+t_cmd	*init_structure(t_data *data, char **env);
+
 // signals
 void	signal_handler(void);
 
@@ -83,10 +87,10 @@ char	*skip_spaces(char *str);
 
 //execution
 int		execute_command(char *cmd, t_data data, char **args);
-void	execute_pipeline(t_cmd **cmd, char **env);
+void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
 void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data);
 void	execute_for_many(t_token **tokens, t_cmd *cmd);
-int		contains_special_char(t_cmd *cmd, char delimiter);
+//int		contains_special_char(t_cmd *cmd, char delimiter);
 int		execute_redirection(t_cmd *cmd, char **env);
 
 #endif

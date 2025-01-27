@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/25 19:41:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/27 17:43:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void builtin_export(t_cmd *cmd, t_data *data)
     while(cmd->args[i])
 	{
         arg = cmd->args[i];
-        equal_sign = strchr(arg, '=');
+        equal_sign = ft_strchr(arg, '=');
         if (!equal_sign)
 		{
             printf("minishell: export: `%s': not a valid identifier\n", arg);
@@ -227,14 +227,13 @@ void builtin_env(t_data *data)
     waitpid(pid, NULL, 0);
 }
 
-
-//after wrong command print 0, instead 127
 void	builtin_exit(t_cmd *cmd, t_data *data)
 {
 	int i;
 	
 	i = 0;
-	if (cmd->args[1])
+
+	if (cmd->args[1] != NULL) //segfault
 	{
 		while (cmd->args[1][i])
 		{
@@ -248,7 +247,15 @@ void	builtin_exit(t_cmd *cmd, t_data *data)
 		}
 		data->exit_status = ft_atoi(cmd->args[1]);
 	}
-	//printf("exit status - %d\n", data->exit_status);
+	if (cmd->args[2] != NULL)
+	{
+		printf("exit\n");
+		printf("minishell: exit: too many arguments\n");
+		//printf("%s\n", cmd->args[2]);
+		return ;
+	}
+	//data->exit_status = 0;
+	//printf("exit status in exit - %d\n", data->exit_status);
 	printf("exit\n"); // add to another place?
 	exit(data->exit_status);
 }

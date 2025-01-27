@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/21 12:28:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/27 16:50:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	// rl_clear_history();
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
