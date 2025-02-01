@@ -20,19 +20,19 @@ RM = rm -f
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(AR) $(NAME) $(OBJ)
+	 @$(AR) $(NAME) $(OBJ)
 
 %.o: %.c libft.h
-	$(CC) $(CFlags) -c $< -o $@
+	 @$(CC) $(CFlags) -c $< -o $@
 	
 bonus: $(BOBJ) $(OBJ)
-	$(AR) $(NAME) $(BOBJ) $(OBJ)
+	 @$(AR) $(NAME) $(BOBJ) $(OBJ)
 
 clean:
-	$(RM) $(OBJ) $(BOBJ)
+	 @$(RM) $(OBJ) $(BOBJ)
 
 fclean: clean
-	$(RM) $(NAME)
+	 @$(RM) $(NAME)
 
 re: fclean all
 

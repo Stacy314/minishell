@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/27 18:52:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/31 18:39:38 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,30 @@ void print_cmd_list(t_cmd *cmd_list, size_t count)
     }
 }
 
+void print_data(t_data *data)
+{
+    if (!data)
+    {
+        printf("t_data is NULL\n");
+        return;
+    }
+
+    printf("\n=== t_data ===\n");
+    printf("Exit Status: %d\n", data->exit_status);
+
+    // Вивід змінних оточення (env)
+    //printf("Environment Variables:\n");
+    //for (int i = 0; data->env && data->env[i]; i++)
+    //    printf("  [%d] %s\n", i, data->env[i]);
+
+    printf("=================\n");
+}
+
+// Global flag for prompt control
+//volatile sig_atomic_t g_prompt_flag = 0; 
 
 
+//print error with bonus
 int		main(int argc, char **argv, char **env)
 {
     char	*input;
@@ -83,6 +105,12 @@ int		main(int argc, char **argv, char **env)
 	signal_handler(); //(CTRL+C, CTRL+D, CTRL+\)
     while (1)
 	{
+		// if (g_prompt_flag) // Якщо після сигналу треба вивести промпт
+        //{
+        //    printf("\nminishell$ ");
+        //    fflush(stdout);
+        //    g_prompt_flag = 0; // Скидаємо прапорець
+        //}
 		//printf("exit status in main start - %d\n", data.exit_status);
         input = readline("minishell$ ");
         if (!input)
@@ -103,21 +131,21 @@ int		main(int argc, char **argv, char **env)
 		cmd = parse_tokens(tokens);
         if (!cmd)
 		{
-            ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
-            exit(EXIT_FAILURE);
+            //ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
+            exit(0);
         }
 		
 		////////////////////////
-		print_cmd_list(cmd,4);
+		//print_cmd_list(cmd,4);
 		
-		if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect)
+		if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect) //try to move to execute.c and pipe.c
 		{
 			if (execute_redirection(cmd,env) == 1)
 				continue;
 		}
 		if (contains_special_char(tokens, '|'))
 		{
-			execute_pipeline(&cmd, &data, data.env);
+			execute_pipeline(&cmd, &data,data.env);
 		}
 		else
 			execute_for_one(tokens, cmd, &data);

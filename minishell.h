@@ -12,8 +12,17 @@
 #include <fcntl.h>
 
 
-// Global flag for prompt control
-//volatile sig_atomic_t g_prompt_flag = 0; 
+# define PERMISSION_DENIED 126 //need to check all error codes
+# define COMMAND_NOT_FOUND 127
+# define ERROR_CODE_MALLOC 1
+# define ERROR_CODE_GENERAL 7
+# define ERROR_CODE_QUOTES 8
+# define ERROR_CODE_AMBIGUOUS_REDIRECT 9
+# define ERROR_CODE_INVALID_VAR_NAME 10
+# define ERROR_CODE_NO_PATH 11
+
+//extern volatile sig_atomic_t g_prompt_flag;
+
 
 #  define MAX_COMMANDS 265 // 128
 
@@ -51,10 +60,20 @@ typedef struct s_cmd {
     char	*output_redirect;
     char	*append_redirect;
     char	*heredoc_delimiter;
-    int		pipe_in;
-    int		pipe_out;
+    //int		pipe_in;
+    //int		pipe_out;
 	t_data	*data; //delete
+	struct s_cmd	*next;
+	//struct s_cmd	*prev;
 } t_cmd;
+
+//delete after
+void print_cmd_list(t_cmd *cmd_list, size_t count);
+void print_data(t_data *data);
+
+char *find_executable(const char *cmd, char **paths);
+char *get_path_from_env(char **env);
+char **split_path(const char *path);
 
 void free_cmd(t_cmd *cmd);
 int contains_special_char(t_token	**tokens, char delimiter);
@@ -88,8 +107,8 @@ char	*skip_spaces(char *str);
 //execution
 int		execute_command(char *cmd, t_data data, char **args);
 void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
+//void	execute_pipeline(t_cmd **cmd, t_data *data, t_token *token, char **env);
 void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data);
-void	execute_for_many(t_token **tokens, t_cmd *cmd);
 //int		contains_special_char(t_cmd *cmd, char delimiter);
 int		execute_redirection(t_cmd *cmd, char **env);
 
