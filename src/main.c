@@ -92,19 +92,33 @@ int		main(int argc, char **argv, char **env)
         }
 		if(*input)
 			add_history(input);
-		tokens = split_to_tokens(input);
-		free(input);
-		if (!tokens)
-		{
+		if (!input || *input == '\0')
+        {
+            free(input);
+            continue;
+        }
+
+        tokens = split_to_tokens(input);
+        free(input);
+
+        if (tokens == (t_token **)(-1))
+        {
+            continue;
+        }
+
+        if (!tokens)
+        {
             fprintf(stderr, "Error: Failed to tokenize input\n");
             continue;
-		}
-		cmd = parse_tokens(tokens);
-        if (!cmd)
-		{
-            ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
-            exit(EXIT_FAILURE); //need to check
         }
+
+        cmd = parse_tokens(tokens);
+        if (!cmd)
+        {
+            ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
+            exit(EXIT_FAILURE);
+        }
+
 		
 		//print_cmd_list(cmd,1);
 		//int i = 0;
