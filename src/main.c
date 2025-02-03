@@ -12,6 +12,18 @@
 
 #include "../minishell.h"
 
+int ft_str_only_spaces(const char *str)
+{
+    int i = 0;
+    while (str[i])
+    {
+        if (str[i] != ' ' && str[i] != '\t')
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
 
 void print_cmd_list(t_cmd *cmd_list, size_t count)
 {
@@ -121,19 +133,35 @@ int		main(int argc, char **argv, char **env)
         }
 		if(*input)
 			add_history(input);
-		tokens = split_to_tokens(input);
-		free(input);
-		if (!tokens)
-		{
-            printf("Error: Failed to tokenize input\n");
+		if (!input || *input == '\0' || ft_str_only_spaces(input))
+        {
+            free(input);
             continue;
-		}
-		cmd = parse_tokens(tokens);
+        }
+
+        tokens = split_to_tokens(input);
+        free(input);
+
+        if (tokens == (t_token **)(-1))
+        {
+            continue;
+        }
+
+        if (!tokens)
+        {
+            fprintf(stderr, "Error: Failed to tokenize input\n");
+
+            continue;
+        }
+
+        cmd = parse_tokens(tokens);
         if (!cmd)
+
 		{
             //ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
             exit(0);
         }
+
 		
 		////////////////////////
 		//print_cmd_list(cmd,4);
