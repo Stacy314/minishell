@@ -35,14 +35,13 @@ t_token *create_token(const char *value, t_token_type type, int index)
 t_token **split_to_tokens(const char *str)
 {
     t_token **tokens;
-    int      capacity;
-    int      i;
+    int capacity, i, j, index;
 
-    if (!str)
+    if (!str || ft_strlen(str) == 0)
         return NULL;
 
     capacity = ft_strlen(str) + 1;
-    tokens   = ft_calloc(capacity, sizeof(t_token *));
+    tokens = ft_calloc(capacity, sizeof(t_token *));
     if (!tokens)
     {
         perror("calloc");
@@ -50,72 +49,64 @@ t_token **split_to_tokens(const char *str)
     }
 
     i = 0;
-	int j = 0; 
-    int index = 0;
+    j = 0;
+    index = 0;
+
     while (str[j])
     {
         while (str[j] && str[j] == ' ')
             j++;
         if (str[j] == '\0')
             break;
-        if (str[j] == '|')
-        {
-            tokens[i] = create_token("|", PIPE, index++);
-            i++;
-            j++; 
-            continue;
-        }
-		if (str[j] == '>')
-        {
-			if (str[j + 1] == '>')
-			{
-				tokens[i] = create_token(">>", APPEND, index++);
-				i++;
-				j += 2; 
-				continue;
-			}
-			else
-			{
-				tokens[i] = create_token(">", REDIRECT_OUT, index++);
-				i++;
-				j++; 
-				continue;
-			}
-        }
-		if (str[j] == '<')
-        {
-			if (str[j + 1] == '<')
-			{
-				tokens[i] = create_token("<<", HEREDOC, index++);
-				i++;
-				j += 2; 
-				continue;
-			}
-			else
-			{
-				tokens[i] = create_token("<", REDIRECT_IN, index++);
-				i++;
-				j++; 
-				continue;
-			}
-        }
 
+        char buffer[1024];
+        int k = 0;
+
+        // Проверяем кавычки
+        if (str[j] == '\'' || str[j] == '\"')
         {
-            char   buffer[1024];
-            size_t k = 0;
+            char quote = str[j++];
+            while (str[j] && str[j] != quote)
+            {
+                if (k < (int)(sizeof(buffer) - 1))
+                    buffer[k++] = str[j++];
+            }
+
+            // Если кавычка не закрылась, выводим ошибку и выходим
+            if (str[j] != quote)
+            {
+                fprintf(stderr, "minishell: syntax error: unclosed quotes\n");
+                free(tokens);
+                return (t_token **)(-1);
+            }
+
+            j++; // Пропускаем закрывающую кавычку
+
+            // "" or " "
+            buffer[k] = '\0';
+            tokens[k] = create_token(buffer, WORD, index++);
+        }
+        else
+        {
+            // Читаем обычное слово
             while (str[j] && !isspace((unsigned char)str[j]) && str[j] != '|' && str[j] != '<' && str[j] != '>')
             {
-                buffer[k++] = str[j];
-                j++;
-                if (k >= sizeof(buffer) - 1)
-                    break;
+                if (k < (int)(sizeof(buffer) - 1))
+                    buffer[k++] = str[j++];
             }
-            buffer[k] = '\0';
-
-            tokens[i] = create_token(buffer, WORD, index++);
-            i++;
         }
+
+        buffer[k] = '\0';
+        if (buffer[0] != '\0')
+            tokens[i++] = create_token(buffer, WORD, index++);
     }
+
+    if (i == 0)
+    {
+        free(tokens);
+        return NULL;
+    }
+
     tokens[i] = NULL;
 
 	//handel "" and '' (echo " | ")
