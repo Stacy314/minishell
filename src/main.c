@@ -12,6 +12,18 @@
 
 #include "../minishell.h"
 
+int ft_str_only_spaces(const char *str)
+{
+    int i = 0;
+    while (str[i])
+    {
+        if (str[i] != ' ' && str[i] != '\t')
+            return 0;
+        i++;
+    }
+    return 1;
+}
+
 
 void print_cmd_list(t_cmd *cmd_list, size_t count)
 {
@@ -92,7 +104,7 @@ int		main(int argc, char **argv, char **env)
         }
 		if(*input)
 			add_history(input);
-		if (!input || *input == '\0')
+		if (!input || *input == '\0' || ft_str_only_spaces(input))
         {
             free(input);
             continue;

@@ -81,6 +81,10 @@ t_token **split_to_tokens(const char *str)
             }
 
             j++; // Пропускаем закрывающую кавычку
+
+            // "" or " "
+            buffer[k] = '\0';
+            tokens[k] = create_token(buffer, WORD, index++);
         }
         else
         {
