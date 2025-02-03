@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g 
 LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
@@ -12,29 +12,32 @@ OBJS =  $(OBJ_DIR)/main.o $(OBJ_DIR)/tokenizer.o  $(OBJ_DIR)/utils_tokenizer.o \
 		$(OBJ_DIR)/parser.o $(OBJ_DIR)/signals.o $(OBJ_DIR)/initialization.o \
 		$(OBJ_DIR)/utils_main.o $(OBJ_DIR)/commands.o $(OBJ_DIR)/pipe.o \
 		$(OBJ_DIR)/redirection.o
+MAKEFLAGS += --no-print-directory
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 all: $(LIBFT) $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LDFLAGS)
+	 @$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -c $< -o $@
+	 @$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -c $< -o $@
 
 $(OBJ_DIR): 
-	mkdir -p $(OBJ_DIR)
+	 @mkdir -p $(OBJ_DIR)
 
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+	 @$(MAKE) -C $(LIBFT_DIR)
 
 clean:
-	rm -rf $(OBJ_DIR)
-	$(MAKE) -C $(LIBFT_DIR) clean
+	 @rm -rf $(OBJ_DIR)
+	 @$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME)
-	$(MAKE) -C $(LIBFT_DIR) fclean
+	 @rm -f $(NAME)
+	 @$(MAKE) -C $(LIBFT_DIR) fclean
 
-re: fclean all
+re:  fclean all
+
+.PHONY: all clean fclean re 

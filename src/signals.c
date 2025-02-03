@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/21 12:28:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/31 17:47:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,12 @@
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	// rl_clear_history();
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	//g_prompt_flag = 1; // Встановлюємо прапорець, що треба вивести новий промпт
+    //write(STDOUT_FILENO, "\nminishell$ ", 12); // Друкуємо новий рядок і промпт вручну
 }
 
 void	handle_sigquit(int sig)

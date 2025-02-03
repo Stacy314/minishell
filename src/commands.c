@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/21 14:26:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/31 18:35:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char *get_path_from_env(char **env)
 	i = 0;
     while (env[i] != NULL)
 	{
-        if (strncmp(env[i], "PATH=", 5) == 0)
+        if (ft_strncmp(env[i], "PATH=", 5) == 0)
 		{
             return env[i] + 5; // skip PATH
         }
@@ -114,15 +114,20 @@ int execute_command(char *cmd, t_data data, char **args)
 	else
 	{
         waitpid(pid, &status, 0); // need to check
-        if (WIFEXITED(status))
+		if (WIFEXITED(status))
 		{
             //printf("Command exited with status: %d\n", WEXITSTATUS(status));
-        } else {
-            printf("Command did not exit normally\n");
+			data.exit_status = WEXITSTATUS(status);
+			//printf("exit status in commands = %d\n", WEXITSTATUS(status));
+        }
+		else
+		{
+            //printf("Command did not exit normally\n");
+			data.exit_status = 1;
         }
    
 	}
-	return (1);
+	return (data.exit_status);
 }
 
 //// Тестування

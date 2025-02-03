@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/25 17:44:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/30 14:38:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	handle_input_redirect(t_cmd *cmd)
 		if (fd == -1)
 		{
 			printf("minishell: %s: No such file or directory\n", cmd[i].input_redirect);
+			//close(fd);
 		}
 		else
 		{
@@ -46,6 +47,7 @@ void	handle_output_redirect(t_cmd *cmd)
 		if (fd == -1)
 		{
 			printf("minishell: %s: No such file or directory\n", cmd[i].output_redirect);
+			//close(fd);
 		}
 		else
 		{
@@ -91,6 +93,7 @@ void	handle_append_redirect(t_cmd *cmd)
 			fd = open(cmd[i].append_redirect, O_WRONLY | O_CREAT | O_APPEND, 0644);
 			if (fd == -1)
 			{
+				//close(fd);
 				printf("minishell: %s: No such file or directory\n", cmd[i].append_redirect);
 			}
 			else

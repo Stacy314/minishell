@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/25 18:14:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/01/31 18:39:38 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,30 @@ void print_cmd_list(t_cmd *cmd_list, size_t count)
     }
 }
 
+void print_data(t_data *data)
+{
+    if (!data)
+    {
+        printf("t_data is NULL\n");
+        return;
+    }
+
+    printf("\n=== t_data ===\n");
+    printf("Exit Status: %d\n", data->exit_status);
+
+    // Вивід змінних оточення (env)
+    //printf("Environment Variables:\n");
+    //for (int i = 0; data->env && data->env[i]; i++)
+    //    printf("  [%d] %s\n", i, data->env[i]);
+
+    printf("=================\n");
+}
+
+// Global flag for prompt control
+//volatile sig_atomic_t g_prompt_flag = 0; 
 
 
+//print error with bonus
 int		main(int argc, char **argv, char **env)
 {
     char	*input;
@@ -95,12 +117,19 @@ int		main(int argc, char **argv, char **env)
 	signal_handler(); //(CTRL+C, CTRL+D, CTRL+\)
     while (1)
 	{
-
+		// if (g_prompt_flag) // Якщо після сигналу треба вивести промпт
+        //{
+        //    printf("\nminishell$ ");
+        //    fflush(stdout);
+        //    g_prompt_flag = 0; // Скидаємо прапорець
+        //}
+		//printf("exit status in main start - %d\n", data.exit_status);
         input = readline("minishell$ ");
         if (!input)
 		{ 
             printf("\n");
-            break;
+
+            exit(EXIT_FAILURE);
         }
 		if(*input)
 			add_history(input);
@@ -121,51 +150,41 @@ int		main(int argc, char **argv, char **env)
         if (!tokens)
         {
             fprintf(stderr, "Error: Failed to tokenize input\n");
+
             continue;
         }
 
         cmd = parse_tokens(tokens);
         if (!cmd)
-        {
-            ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
-            exit(EXIT_FAILURE);
+
+		{
+            //ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
+            exit(0);
         }
 
 		
-		//print_cmd_list(cmd,1);
-		//int i = 0;
-		//while(cmd->args[i])
-		//{
-		//	printf("args: %s\n", cmd->args[i]);
-		//	cmd->args++;
-		//	if (cmd->args[i] == '|' || cmd->args[i] == '<' || cmd->args[i] == '>')
-		//		break;
-		//}
-		//printf("%d", data.exit_status);
+		////////////////////////
+		//print_cmd_list(cmd,4);
 		
-		
-			//printf("we are here\n");
-			if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect)
-			{
-				//printf("we are here\n"); 
-				if (execute_redirection(cmd,env) == 1)
-					continue;
-			}
-			if (contains_special_char(cmd, '|'))
-			{
-				//execute_for_many(tokens, cmd);
-				execute_pipeline(&cmd, data.env);
-				//printf("execute for many run\n");
-			}
-			else
-			{
-				execute_for_one(tokens, cmd, &data);
-			}
-	//	 // need ecsept for builtins
+		if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect) //try to move to execute.c and pipe.c
+		{
+			if (execute_redirection(cmd,env) == 1)
+				continue;
+		}
+		if (contains_special_char(tokens, '|'))
+		{
+			execute_pipeline(&cmd, &data,data.env);
+		}
+		else
+			execute_for_one(tokens, cmd, &data);
 	//	free(cmd);
-	//	free_tokens(tokens);
+		free_cmd(cmd);
+		free_tokens(tokens);
+		//printf("exit status in main end - %d\n", data.exit_status);
     }
 	clear_history();
+	//free_cmd(cmd);
+	//rl_clear_history();
 	return(data.exit_status);
 }
 

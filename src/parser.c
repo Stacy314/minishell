@@ -10,8 +10,7 @@
 //echo "" (should print a new line)
 //exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit,
 //		in bash - bash: exit: 1111111111111111111111111111111111: numeric argument required)
-//exit asdf (in bash - bash: exit: asdf: numeric argument required, exit and return value 2)
-//exit 123 asdf (in bash - bash: exit: too many arguments and didn't exit, exit and return value 1?)
+
 //echo $SHLVL (parse of env, also with "" and '')
 //echo "" "        h           a           " (should print         h           a           ),
 //		but this is right (echo          h           a)
@@ -27,9 +26,49 @@
 //<: command not found (in bash), in minishell - it is a command 
 
 //echo "|" echo (need to add in structure pipe maybe, look at my func foe pipe)
+//echo " | "
 //| echo (in bash)
 
 //echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
+
+//Test  21: ❌ echo $?HELLO 
+//mini output = (0)
+//bash output = (0HELLO)
+
+//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
+//mini output = ()
+//bash output = (exit_code ->$? user ->$USER home -> $HOME)
+
+//Test  15: ❌ echo "exit_code ->$? user ->$USER home -> $HOME" 
+//mini output = ()
+//bash output = (exit_code ->0 user ->apechkov home -> /home/apechkov)
+
+//Test  14: ❌ echo '> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<' 
+//mini output = ()
+//bash output = (> >> < " "' ' '" $HOME" $HOME' bash_outfiles bash.supp bonus bonus_bonus builtins extras local.supp loop.out manual_tests mini_outfiles os_specific out outfiles pipes README.md redirects syntax tester test_files wildcards " ' [ ] | ; [ ] || && ( ) & # $ <<)
+//mini exit code = 1
+//bash exit code = 0
+//mini error = (Syntax error near unexpected token `>` Failed to parse tokens)
+//bash error = ()
+
+//Test  13: ❌ echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
+//mini output = ()
+//bash output = (> >> < " "' ' '" $HOME" $HOME' bash_outfiles bash.supp bonus bonus_bonus builtins extras local.supp loop.out manual_tests mini_outfiles os_specific out outfiles pipes README.md redirects syntax tester test_files wildcards " ' [ ] | ; [ ] || && ( ) & # $ <<)
+//mini exit code = 1
+//bash exit code = 0
+//mini error = (Syntax error near unexpected token `>` Failed to parse tokens)
+//bash error = ()
+
+//Test  39: ⚠️  cd $PWD 
+//mini error = ( $PWD)
+//bash error = ()
+
+//Test  45: ❌ exit "+100" 
+//mini output = (minishell: exit: "+100": numeric argument required)
+//bash output = ()
+//mini exit code = 2
+//bash exit code = 100
+
 char **append_to_args(char **args, char *new_arg)
 {
     int		len;
@@ -76,13 +115,13 @@ t_cmd *parse_tokens(t_token **tokens)
     }
     cmd_count = 0;
     i = 0;
-    cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, 0, 0, NULL};
+    cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     while (tokens[i])
     {
         if (tokens[i]->type == PIPE)
         {
             cmd_count++;
-            cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, 1, 0, NULL};
+            cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, NULL, NULL};
         }
         else if (tokens[i]->type == REDIRECT_IN || tokens[i]->type == REDIRECT_OUT ||
                  tokens[i]->type == APPEND || tokens[i]->type == HEREDOC)
@@ -101,7 +140,7 @@ t_cmd *parse_tokens(t_token **tokens)
             }
             else
             {
-                fprintf(stderr, "Syntax error near unexpected token `%s`\n", tokens[i]->value);
+               // fprintf(stderr, "Syntax error near unexpected token `%s`\n", tokens[i]->value);
                 free(cmd);
                 return (NULL);
             }
