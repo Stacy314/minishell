@@ -59,8 +59,8 @@ void print_cmd_list(t_cmd *cmd_list, size_t count)
                cmd_list[i].heredoc_delimiter ? cmd_list[i].heredoc_delimiter : "(none)");
         
         // Print pipe fields
-        printf("pipe_in:          %d\n", cmd_list[i].pipe_in);
-        printf("pipe_out:         %d\n", cmd_list[i].pipe_out);
+        // printf("pipe_in:          %d\n", cmd_list[i].pipe_in);
+        // printf("pipe_out:         %d\n", cmd_list[i].pipe_out);
 
         // Print data if relevant
         if (cmd_list[i].data)

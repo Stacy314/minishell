@@ -61,39 +61,29 @@ t_token **split_to_tokens(const char *str)
 
         char buffer[1024];
         int k = 0;
+        int inside_quotes = 0;
+        char quote_type = 0;
 
-        // Проверяем кавычки
-        if (str[j] == '\'' || str[j] == '\"')
+        while (str[j] && (!isspace((unsigned char)str[j]) || inside_quotes))
         {
-            char quote = str[j++];
-            while (str[j] && str[j] != quote)
+            if ((str[j] == '\'' || str[j] == '\"') && (!inside_quotes || str[j] == quote_type))
             {
-                if (k < (int)(sizeof(buffer) - 1))
-                    buffer[k++] = str[j++];
+                if (!inside_quotes)
+                {
+                    inside_quotes = 1;
+                    quote_type = str[j]; // Запоминаем тип кавычек
+                }
+                else if (inside_quotes && str[j] == quote_type)
+                {
+                    inside_quotes = 0;
+                    quote_type = 0; // Закрываем кавычки
+                }
+                j++; // Пропускаем кавычки
+                continue;
             }
 
-            // Если кавычка не закрылась, выводим ошибку и выходим
-            if (str[j] != quote)
-            {
-                fprintf(stderr, "minishell: syntax error: unclosed quotes\n");
-                free(tokens);
-                return (t_token **)(-1);
-            }
-
-            j++; // Пропускаем закрывающую кавычку
-
-            // "" or " "
-            buffer[k] = '\0';
-            tokens[k] = create_token(buffer, WORD, index++);
-        }
-        else
-        {
-            // Читаем обычное слово
-            while (str[j] && !isspace((unsigned char)str[j]) && str[j] != '|' && str[j] != '<' && str[j] != '>')
-            {
-                if (k < (int)(sizeof(buffer) - 1))
-                    buffer[k++] = str[j++];
-            }
+            if (k < (int)(sizeof(buffer) - 1))
+                buffer[k++] = str[j++];
         }
 
         buffer[k] = '\0';
@@ -109,9 +99,9 @@ t_token **split_to_tokens(const char *str)
 
     tokens[i] = NULL;
 
-	//handel "" and '' (echo " | ")
-	// print
-	//for (int i = 0; tokens[i] != NULL; i++)
-	//	printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
-    return (tokens);
+    // Debug print
+    for (int i = 0; tokens[i] != NULL; i++)
+        printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
+    
+    return tokens;
 }

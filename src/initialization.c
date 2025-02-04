@@ -27,8 +27,8 @@ t_cmd *initialize_cmd(t_data *data)
     cmd->output_redirect = NULL;
     cmd->append_redirect = NULL;
     cmd->heredoc_delimiter = NULL;
-    cmd->pipe_in = -1;
-    cmd->pipe_out = -1;
+    /* cmd->pipe_in = -1;
+    cmd->pipe_out = -1; */
     cmd->data = data;
 	cmd->next = NULL;
 	return (cmd);
@@ -65,8 +65,8 @@ t_cmd *create_cmd(void)
     new_cmd->output_redirect = NULL;
     new_cmd->append_redirect = NULL;
     new_cmd->heredoc_delimiter = NULL;
-    new_cmd->pipe_in = 0;
-    new_cmd->pipe_out = 0;
+    /* new_cmd->pipe_in = 0;
+    new_cmd->pipe_out = 0; */
     new_cmd->data = NULL;
     
     // Initialize next to NULL for a brand-new node
