@@ -12,6 +12,35 @@
 
 #include "../minishell.h"
 
+char *expand_variable(const char *str, int *j, t_data *data)
+{
+    char var_name[256];
+    int k = 0;
+    (*j)++;
+
+    while (str[*j] && (ft_isalnum(str[*j]) || str[*j] == '_'))
+    {
+        if (k < 255)
+            var_name[k++] = str[*j];
+        (*j)++;
+    }
+    var_name[k] = '\0';
+
+    if (k == 0)
+        return ft_strdup("$");
+
+    char **env = data->env; // ✅ Берём env из t_data
+    int i = 0;
+    while (env[i])
+    {
+        if (!ft_strncmp(env[i], var_name, k) && env[i][k] == '=')
+            return ft_strdup(env[i] + k + 1);
+        i++;
+    }
+    return ft_strdup("");
+}
+
+
 t_token *create_token(const char *value, t_token_type type, int index)
 {
     t_token *new = ft_calloc(sizeof(t_token), 1);
@@ -32,7 +61,7 @@ t_token *create_token(const char *value, t_token_type type, int index)
     return (new);
 }
 
-t_token **split_to_tokens(const char *str)
+t_token **split_to_tokens(const char *str, t_data *data)
 {
     t_token **tokens;
     int capacity, i, j, index;
@@ -82,8 +111,28 @@ t_token **split_to_tokens(const char *str)
                 continue;
             }
 
+            if (str[j] == '$' && quote_type != '\'') // ✅ Переменные НЕ заменяются в ' '
+            {
+                char *expanded = expand_variable(str, &j, data);
+                size_t len = ft_strlen(expanded);
+                if (k + len < sizeof(buffer))
+                {
+                    ft_strlcpy(&buffer[k], expanded, sizeof(buffer) - k);
+                    k += len;
+                }
+                free(expanded);
+                continue;
+            }
+
             if (k < (int)(sizeof(buffer) - 1))
                 buffer[k++] = str[j++];
+        }
+
+        if (inside_quotes) // Ошибка: незакрытая кавычка
+        {
+            fprintf(stderr, "minishell: syntax error: unclosed quotes\n");
+            free_tokens(tokens);
+            return (t_token **)(-1);
         }
 
         buffer[k] = '\0';

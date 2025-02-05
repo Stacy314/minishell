@@ -139,7 +139,7 @@ int		main(int argc, char **argv, char **env)
             continue;
         }
 
-        tokens = split_to_tokens(input);
+        tokens = split_to_tokens(input, &data);
         free(input);
 
         if (tokens == (t_token **)(-1))

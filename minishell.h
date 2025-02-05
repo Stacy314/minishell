@@ -85,7 +85,7 @@ t_cmd	*init_structure(t_data *data, char **env);
 void	signal_handler(void);
 
 //tokenization
-t_token **split_to_tokens(const char *str);
+t_token **split_to_tokens(const char *str, t_data *data);
 void	free_tokens(t_token **tokens);
 
 //parsing
