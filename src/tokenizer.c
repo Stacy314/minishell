@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/27 14:07:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/10 13:28:23 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char *expand_variable(const char *str, int *j, t_data *data)
     if (k == 0)
         return ft_strdup("$");
 
-    char **env = data->env; // ✅ Берём env из t_data
+    char **env = data->env;
     int i = 0;
     while (env[i])
     {
@@ -100,18 +100,18 @@ t_token **split_to_tokens(const char *str, t_data *data)
                 if (!inside_quotes)
                 {
                     inside_quotes = 1;
-                    quote_type = str[j]; // Запоминаем тип кавычек
+                    quote_type = str[j];
                 }
                 else if (inside_quotes && str[j] == quote_type)
                 {
                     inside_quotes = 0;
-                    quote_type = 0; // Закрываем кавычки
+                    quote_type = 0;
                 }
-                j++; // Пропускаем кавычки
+                j++;
                 continue;
             }
 
-            if (str[j] == '$' && quote_type != '\'') // ✅ Переменные НЕ заменяются в ' '
+            if (str[j] == '$' && quote_type != '\'')
             {
                 char *expanded = expand_variable(str, &j, data);
                 size_t len = ft_strlen(expanded);
@@ -128,7 +128,7 @@ t_token **split_to_tokens(const char *str, t_data *data)
                 buffer[k++] = str[j++];
         }
 
-        if (inside_quotes) // Ошибка: незакрытая кавычка
+        if (inside_quotes)
         {
             fprintf(stderr, "minishell: syntax error: unclosed quotes\n");
             free_tokens(tokens);
@@ -151,6 +151,6 @@ t_token **split_to_tokens(const char *str, t_data *data)
     // Debug print
     for (int i = 0; tokens[i] != NULL; i++)
         printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
-    
+
     return tokens;
 }
