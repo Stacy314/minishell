@@ -69,6 +69,43 @@
 //mini exit code = 2
 //bash exit code = 100
 
+void print_cmds(t_cmd *cmd)
+{
+    int i;
+    int cmd_index = 0;
+
+    while (cmd)
+    {
+        printf("\nCommand[%d]:\n", cmd_index);
+
+        // Печатаем аргументы команды
+        printf("  Args: ");
+        if (cmd->args)
+        {
+            i = 0;
+            while (cmd->args[i])
+            {
+                printf("\"%s\" ", cmd->args[i]);
+                i++;
+            }
+        }
+        else
+            printf("(null)");
+
+        printf("\n");
+
+        // Печатаем редиректы
+        printf("  Input Redirect: %s\n", cmd->input_redirect ? cmd->input_redirect : "(null)");
+        printf("  Output Redirect: %s\n", cmd->output_redirect ? cmd->output_redirect : "(null)");
+        printf("  Append Redirect: %s\n", cmd->append_redirect ? cmd->append_redirect : "(null)");
+        printf("  Heredoc Delimiter: %s\n", cmd->heredoc_delimiter ? cmd->heredoc_delimiter : "(null)");
+
+        cmd = cmd->next;
+        cmd_index++;
+    }
+}
+
+
 char **append_to_args(char **args, char *new_arg)
 {
     int		len;
@@ -151,6 +188,6 @@ t_cmd *parse_tokens(t_token **tokens)
         }
         i++;
     }
-
+    print_cmds(cmd);
     return (cmd);
 }
