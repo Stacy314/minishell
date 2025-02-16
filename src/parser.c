@@ -1,47 +1,20 @@
 #include "../minishell.h"
 
 //need to fix: 
-//empty line (segfault), should print prompt again
-//			 (segfault) - tab
-//                (segfault) - space
-//"" (should be empty arg)
-//" " (should be empty arg)
-//echo hi | echo hi | (error with pipe, in bash opened input)
-//echo "" (should print a new line)
-//exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit,
-//		in bash - bash: exit: 1111111111111111111111111111111111: numeric argument required)
 
-//echo $SHLVL (parse of env, also with "" and '')
-//echo "" "        h           a           " (should print         h           a           ),
-//		but this is right (echo          h           a)
+//| echo hi (bash: syntax error near unexpected token `|', in our minishell - 
+//execve: No such file or directory + Conditional jump)
+
+//echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
+//or directory)
+
 //"echo hi" and 'echo hi' (should pars as one arg, echo hi: command not found)
-//"echo" hi (should print hi)
-//"ls" and 'ls' (should work as regular ls)
-//e"ch"o hi (should print hi)
-//'echo' hi (should print hi)
-//echo hi '$USER is great, home is $HOME' (hi $USER is great, home is $HOME)
-//echo hi "$USER is great, home is $HOME" (hi apechkov is great, home is /home/apechkov)
 
- //"<" sasdad
-//<: command not found (in bash), in minishell - it is a command 
+//echo "|" echo (should print - | echo)
 
-//echo "|" echo (need to add in structure pipe maybe, look at my func foe pipe)
-//echo " | "
-//| echo (in bash)
+//echo " | "(should print -  | )
 
 //echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
-
-//Test  21: ❌ echo $?HELLO 
-//mini output = (0)
-//bash output = (0HELLO)
-
-//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
-//mini output = ()
-//bash output = (exit_code ->$? user ->$USER home -> $HOME)
-
-//Test  15: ❌ echo "exit_code ->$? user ->$USER home -> $HOME" 
-//mini output = ()
-//bash output = (exit_code ->0 user ->apechkov home -> /home/apechkov)
 
 //Test  14: ❌ echo '> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<' 
 //mini output = ()
@@ -58,6 +31,62 @@
 //bash exit code = 0
 //mini error = (Syntax error near unexpected token `>` Failed to parse tokens)
 //bash error = ()
+
+//new (extras)
+// Test   2: ❌ $PWD 
+// mini exit code = 127
+// bash exit code = 126
+// mini error = ( command not found)
+// bash error = ( Is a directory)
+
+// Test   3: ✅⚠️  $EMPTY 
+// mini error = ( Failed to tokenize input)
+// bash error = ()
+
+// Test   5: ❌ ./test_files/invalid_permission 
+// mini exit code = 127
+// bash exit code = 126
+// mini error = ( command not found)
+// bash error = ( Permission denied)
+
+// Test   6: ✅⚠️  ./missing.out 
+// mini error = ( command not found)
+// bash error = ( No such file or directory)
+
+// Test  10: ❌ ./test_files 
+// mini exit code = 127
+// bash exit code = 126
+// mini error = ( command not found)
+// bash error = ( Is a directory)
+
+// est  11: ✅⚠️  /test_files 
+// mini error = ( command not found)
+// bash error = ( No such file or directory)
+
+
+
+
+//fixed
+//empty line (segfault), should print prompt again
+//			 (segfault) - tab
+//                (segfault) - space
+//"" (should be empty arg)
+//" " (should be empty arg)
+//echo "" (should print a new line)
+//echo $SHLVL (parse of env, also with "" and '')
+//echo "" "        h           a           " (should print         h           a           )
+//"echo" hi (should print hi)
+//"ls" and 'ls' (should work as regular ls)
+//e"ch"o hi (should print hi)
+//'echo' hi (should print hi)
+//echo hi '$USER is great, home is $HOME' (hi $USER is great, home is $HOME)
+//echo hi "$USER is great, home is $HOME" (hi apechkov is great, home is /home/apechkov)
+ //"<" sasdad
+//<: command not found (in bash), in minishell - it is a command 
+
+//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
+//mini output = ()
+//bash output = (exit_code ->$? user ->$USER home -> $HOME)
 
 //Test  39: ⚠️  cd $PWD 
 //mini error = ( $PWD)
@@ -188,6 +217,6 @@ t_cmd *parse_tokens(t_token **tokens)
         }
         i++;
     }
-    print_cmds(cmd);
+    //print_cmds(cmd);
     return (cmd);
 }

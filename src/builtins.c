@@ -3,17 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/01 17:18:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/16 16:24:03 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <stdio.h>
 
-//expansions
+//Test  15: ❌ echo "exit_code ->$? user ->$USER home -> $HOME" 
+//mini output = (exit_code ->$? user ->anastasiia home -> /home/anastasiia)
+//bash output = (exit_code ->0 user ->apechkov home -> /home/apechkov)
+
+//Test  21: ❌ echo $?HELLO 
+//mini output = (0)
+//bash output = (0HELLO)
 
 void builtin_echo(t_cmd *cmd, t_data *data)
 {
@@ -254,6 +260,8 @@ void builtin_env(t_data *data)
 		i++;
 	}
 }
+
+//exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit)
 
 void	builtin_exit(t_cmd *cmd, t_data *data)
 {
