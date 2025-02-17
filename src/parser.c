@@ -16,28 +16,12 @@
 
 //echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
 
-//Test  14: ❌ echo '> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<' 
-//mini output = ()
-//bash output = (> >> < " "' ' '" $HOME" $HOME' bash_outfiles bash.supp bonus bonus_bonus builtins extras local.supp loop.out manual_tests mini_outfiles os_specific out outfiles pipes README.md redirects syntax tester test_files wildcards " ' [ ] | ; [ ] || && ( ) & # $ <<)
-//mini exit code = 1
-//bash exit code = 0
-//mini error = (Syntax error near unexpected token `>` Failed to parse tokens)
-//bash error = ()
-
-//Test  13: ❌ echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
-//mini output = ()
-//bash output = (> >> < " "' ' '" $HOME" $HOME' bash_outfiles bash.supp bonus bonus_bonus builtins extras local.supp loop.out manual_tests mini_outfiles os_specific out outfiles pipes README.md redirects syntax tester test_files wildcards " ' [ ] | ; [ ] || && ( ) & # $ <<)
-//mini exit code = 1
-//bash exit code = 0
-//mini error = (Syntax error near unexpected token `>` Failed to parse tokens)
-//bash error = ()
+//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
+//mini output = (exit_code ->0 user ->$USER home -> $HOME)
+//bash output = (exit_code ->$? user ->$USER home -> $HOME)
 
 //new (extras)
-// Test   2: ❌ $PWD 
-// mini exit code = 127
-// bash exit code = 126
-// mini error = ( command not found)
-// bash error = ( Is a directory)
+
 
 // Test   3: ✅⚠️  $EMPTY 
 // mini error = ( Failed to tokenize input)
@@ -97,19 +81,6 @@
  //"<" sasdad
 //<: command not found (in bash), in minishell - it is a command 
 
-//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
-//mini output = ()
-//bash output = (exit_code ->$? user ->$USER home -> $HOME)
-
-//Test  39: ⚠️  cd $PWD 
-//mini error = ( $PWD)
-//bash error = ()
-
-//Test  45: ❌ exit "+100" 
-//mini output = (minishell: exit: "+100": numeric argument required)
-//bash output = ()
-//mini exit code = 2
-//bash exit code = 100
 
 void print_cmds(t_cmd *cmd)
 {

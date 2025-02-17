@@ -10,7 +10,8 @@
 # include <signal.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
 
 # define PERMISSION_DENIED 126 //need to check all error codes
 # define COMMAND_NOT_FOUND 127
@@ -105,11 +106,13 @@ int		is_option(const char *arg);
 char	*skip_spaces(char *str);
 
 //execution
-int		execute_command(char *cmd, t_data data, char **args);
+int		execute_command(char *cmd, t_data *data, char **args, char **env);
 void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
 //void	execute_pipeline(t_cmd **cmd, t_data *data, t_token *token, char **env);
-void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data);
+void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 //int		contains_special_char(t_cmd *cmd, char delimiter);
 int		execute_redirection(t_cmd *cmd, char **env);
 
+//expantion
+char *expand_variables(char *str, t_data *data);
 #endif

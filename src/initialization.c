@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/30 17:01:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/17 17:23:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,17 @@ void append_cmd(t_cmd **head, t_cmd *new_cmd)
 
     if (!head || !new_cmd)
         return ;
-    // If the list is empty, the new node becomes the head
     if (*head == NULL)
     {
         *head = new_cmd;
         return ;
     }
-    // Otherwise, traverse to the last node
     temp = *head;
     while (temp->next)
         temp = temp->next;
-    // Attach new_cmd at the end
     temp->next = new_cmd;
 }
+
 t_cmd *create_cmd(void)
 {
     t_cmd *new_cmd;
@@ -68,23 +66,48 @@ t_cmd *create_cmd(void)
     /* new_cmd->pipe_in = 0;
     new_cmd->pipe_out = 0; */
     new_cmd->data = NULL;
-    
-    // Initialize next to NULL for a brand-new node
     new_cmd->next = NULL;
 
     return new_cmd;
 }
 
+void increment_shlvl(t_data *data)
+{
+    int     i = 0;
+    int     shlvl_value;
+    char    *new_shlvl;
+    char    *shlvl_str;
 
+    while (data->env[i])
+    {
+        if (ft_strncmp(data->env[i], "SHLVL=", 6) == 0)
+        {
+            shlvl_value = ft_atoi(data->env[i] + 6);
+            shlvl_value++;
+            shlvl_str = ft_itoa(shlvl_value);
+
+            new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
+            free(shlvl_str);
+            //free(data->env[i]);
+            data->env[i] = new_shlvl;
+            return;
+        }
+        i++;
+    }
+    data->env[i] = ft_strdup("SHLVL=1");
+    data->env[i + 1] = NULL;
+}
 
 t_cmd *init_structure(t_data *data, char **env)
 {
-	t_cmd *cmd;
-	
-	data->env = env;
-	//printf("env: %s\n", env[33]); //HOME
-	data->exit_status = 0;
-	cmd = initialize_cmd(data);
-	data->cmd = cmd;
-	return (cmd);
+    t_cmd *cmd;
+    
+    data->env = env;
+    data->exit_status = 0;
+    
+    increment_shlvl(data);
+
+    cmd = initialize_cmd(data);
+    data->cmd = cmd;
+    return (cmd);
 }

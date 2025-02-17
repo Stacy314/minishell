@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/27 17:23:56 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/17 17:42:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
+void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
 	int i;
 	
@@ -36,7 +36,7 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 				return (builtin_exit(cmd, data));
 			else
 			{
-				data->exit_status = execute_command(cmd->args[0], *data, cmd->args);
+				data->exit_status = execute_command(cmd->args[0], data, cmd->args, env);
 				return ;
 			}
 		}

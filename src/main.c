@@ -6,13 +6,14 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/17 15:15:20 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/17 16:50:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 //minishell -> minishell
+//need print error for bonus
 
 int ft_str_only_spaces(const char *str)
 {
@@ -151,7 +152,7 @@ int		main(int argc, char **argv, char **env)
 
         if (!tokens)
         {
-            fprintf(stderr, "Error: Failed to tokenize input\n");
+            //fprintf(stderr, "Error: Failed to tokenize input\n");
 
             continue;
         }
@@ -178,7 +179,7 @@ int		main(int argc, char **argv, char **env)
 			execute_pipeline(&cmd, &data,data.env);
 		}
 		else
-			execute_for_one(tokens, cmd, &data);
+			execute_for_one(tokens, cmd, &data, env);
 	//	free(cmd);
 		free_cmd(cmd);
 		free_tokens(tokens);

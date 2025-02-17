@@ -3,29 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/16 16:24:03 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/02/17 17:38:52 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include <stdio.h>
-
-//Test  15: ❌ echo "exit_code ->$? user ->$USER home -> $HOME" 
-//mini output = (exit_code ->$? user ->anastasiia home -> /home/anastasiia)
-//bash output = (exit_code ->0 user ->apechkov home -> /home/apechkov)
-
-//Test  21: ❌ echo $?HELLO 
-//mini output = (0)
-//bash output = (0HELLO)
 
 void builtin_echo(t_cmd *cmd, t_data *data)
 {
 
 	int i;
 	int n_flag;
+	int j;
+	char *arg;
 	
 	i = 1;
 	n_flag = 0;
@@ -34,23 +27,33 @@ void builtin_echo(t_cmd *cmd, t_data *data)
     	n_flag = 1;
    		i++;
 	}
-	if (cmd->args[i] != NULL && ft_strncmp(cmd->args[i], "$?", 2) == 0)
-	{
-		printf("%d\n", data->exit_status);
-		data->exit_status = 0;
-		return ; 
-	}
-	while (cmd->args[i] != NULL)
-	{
-		printf("%s", cmd->args[i]);
-		if (cmd->args[i + 1] != NULL)
-			printf(" ");
-		i++;
-	}
+	while (cmd->args[i])
+    {
+        arg = cmd->args[i];
+        j = 0;
+        while (arg[j])
+        {
+            if (arg[j] == '$' && arg[j + 1] == '?')
+            {
+                printf("%d", data->exit_status);
+                j += 2;
+            }
+            else
+            {
+                ft_putchar_fd(arg[j], 1);
+                j++;
+            }
+        }
+        if (cmd->args[i + 1])
+            printf(" ");
+        i++;
+    }
 	if (!n_flag)
 		printf("\n");
 	data->exit_status = 0;
 }
+
+
 
 void builtin_cd(t_cmd *cmd, t_data *data)
 {
