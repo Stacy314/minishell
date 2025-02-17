@@ -63,7 +63,20 @@
 // mini error = ( command not found)
 // bash error = ( No such file or directory)
 
+//(redir)
+//Test   1: ❌ grep hi <./test_files/infile 
+//mini output = ()
+//bash output = (hi)
+//mini exit code = 2
+//bash exit code = 0
+//mini error = ( No such file or directory)
+//bash error = ()
 
+//Test   2: ❌ grep hi "<infile" <         ./test_files/infile 
+//mini output = (./test_files/infile:hi)
+//bash output = ()
+//mini error = ( No such file or directory No such file or directory)
+//bash error = ( No such file or directory)
 
 
 //fixed

@@ -1,149 +1,125 @@
-[0;31m🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-                                                                                             
- ██    ██ █ ██    █ █ █████ █   █ █████ █     █       ██████ █████ █████ ██████ █████ █████  
- ███  ███ █ ███   █ █ █     █   █ █     █     █         ██   █     █       ██   █     █   ██ 
- █ ████ █ █ █ ██  █ █ █████ █████ ████  █     █         ██   ████  █████   ██   ████  █████  
- █  ██  █ █ █  ██ █ █     █ █   █ █     █     █         ██   █         █   ██   █     █   ██ 
- █      █ █ █   ███ █ █████ █   █ █████ █████ █████     ██   █████ █████   ██   █████ █   ██ 
-                                                                                             
-🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-                                                                                              
-[0;31m———————————— redirects
-[0;33mTest   1: ❌[38;5;244m grep hi <./test_files/infile 
-[0mmini output = ()
-bash output = (hi)
-mini exit code = 2
-bash exit code = 0
-mini error = ( No such file or directory)
-bash error = ()
-[0;33mTest   2: ❌[38;5;244m grep hi "<infile" <         ./test_files/infile 
-[0mmini output = (./test_files/infile:hi)
-bash output = ()
-mini error = ( No such file or directory No such file or directory)
-bash error = ( No such file or directory)
-[0;33mTest   3: ❌[38;5;244m echo hi < ./test_files/infile bye bye 
-[0mmini output = (hi < ./test_files/infile bye bye)
+Test   3: ❌ echo hi < ./test_files/infile bye bye 
+mini output = (hi < ./test_files/infile bye bye)
 bash output = (hi bye bye)
-[0;33mTest   4: ❌[38;5;244m grep hi <./test_files/infile_big <./test_files/infile 
-[0mmini output = ()
+Test   4: ❌ grep hi <./test_files/infile_big <./test_files/infile 
+mini output = ()
 bash output = (hi)
 mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest   5: ❌[38;5;244m echo <"./test_files/infile" "bonjour       42" 
-[0mmini output = (<./test_files/infile bonjour 42)
+Test   5: ❌ echo <"./test_files/infile" "bonjour       42" 
+mini output = (<./test_files/infile bonjour 42)
 bash output = (bonjour 42)
-[0;33mTest   6: ❌[38;5;244m cat <"./test_files/file name with spaces" 
-[0mmini output = ()
+Test   6: ❌ cat <"./test_files/file name with spaces" 
+mini output = ()
 bash output = (😈 😈 😈 This will break your minishell 😈 😈 😈)
 mini exit code = 1
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest   7: ❌[38;5;244m cat <./test_files/infile_big ./test_files/infile 
-[0mmini exit code = 1
+Test   7: ❌ cat <./test_files/infile_big ./test_files/infile 
+mini exit code = 1
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest   8: ✅[38;5;244m cat <"1""2""3""4""5" 
-[0m[0;33mTest   9: ❌[38;5;244m echo <"./test_files/infile" <missing <"./test_files/infile" 
-[0mmini output = (<./test_files/infile <missing <./test_files/infile)
+Test   9: ❌ echo <"./test_files/infile" <missing <"./test_files/infile" 
+mini output = (<./test_files/infile <missing <./test_files/infile)
 bash output = ()
 mini exit code = 0
 bash exit code = 1
 mini error = ()
 bash error = ( No such file or directory)
-[0;33mTest  10: ❌[38;5;244m echo <missing <"./test_files/infile" <missing 
-[0mmini output = (<missing <./test_files/infile <missing)
+Test  10: ❌ echo <missing <"./test_files/infile" <missing 
+mini output = (<missing <./test_files/infile <missing)
 bash output = ()
 mini exit code = 0
 bash exit code = 1
 mini error = ()
 bash error = ( No such file or directory)
-[0;33mTest  11: ❌[38;5;244m cat <"./test_files/infile" 
-[0mmini output = ()
+Test  11: ❌ cat <"./test_files/infile" 
+mini output = ()
 bash output = (hi hello world 42)
 mini exit code = 1
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  12: ❌[38;5;244m echo <"./test_files/infile_big" | cat <"./test_files/infile" 
-[0mmini output = ()
-bash output = (hi hello world 42)
-mini exit code =
-bash exit code = 0
-mini error = ( No such file or directory)
-bash error = ()
-[0;33mTest  13: ❌[38;5;244m echo <"./test_files/infile_big" | cat "./test_files/infile" 
-[0mmini output = ()
+Test  12: ❌ echo <"./test_files/infile_big" | cat <"./test_files/infile" 
+mini output = ()
 bash output = (hi hello world 42)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  14: ❌[38;5;244m echo <"./test_files/infile_big" | echo <"./test_files/infile" 
-[0mmini exit code = 127
-bash exit code = 0
-mini error = ( No such file or directory)
-bash error = ()
-[0;33mTest  15: ❌[38;5;244m echo hi | cat <"./test_files/infile" 
-[0mmini output = ()
+Test  13: ❌ echo <"./test_files/infile_big" | cat "./test_files/infile" 
+mini output = ()
 bash output = (hi hello world 42)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  16: ❌[38;5;244m echo hi | cat "./test_files/infile" 
-[0mmini output = ()
+Test  14: ❌ echo <"./test_files/infile_big" | echo <"./test_files/infile" 
+mini exit code = 127
+bash exit code = 0
+mini error = ( No such file or directory)
+bash error = ()
+Test  15: ❌ echo hi | cat <"./test_files/infile" 
+mini output = ()
 bash output = (hi hello world 42)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  17: ❌[38;5;244m cat <"./test_files/infile" | echo hi 
-[0mmini output = ()
+Test  16: ❌ echo hi | cat "./test_files/infile" 
+mini output = ()
+bash output = (hi hello world 42)
+mini exit code = 127
+bash exit code = 0
+mini error = ( No such file or directory)
+bash error = ()
+Test  17: ❌ cat <"./test_files/infile" | echo hi 
+mini output = ()
 bash output = (hi)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ( Broken pipe)
-[0;33mTest  18: ❌[38;5;244m cat <"./test_files/infile" | grep hello 
-[0mmini output = ()
+Test  18: ❌ cat <"./test_files/infile" | grep hello 
+mini output = ()
 bash output = (hello)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  19: ❌[38;5;244m cat <"./test_files/infile_big" | echo hi 
-[0mmini output = ()
+Test  19: ❌ cat <"./test_files/infile_big" | echo hi 
+mini output = ()
 bash output = (hi)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ( Broken pipe)
-[0;33mTest  20: ✅[38;5;244m cat <missing 
-[0m[0;33mTest  21: ❌[38;5;244m cat <missing | cat 
-[0mmini exit code = 127
+Test  21: ❌ cat <missing | cat 
+mini exit code = 127
 bash exit code = 0
-[0;33mTest  22: ❌[38;5;244m cat <missing | echo oi 
-[0mmini output = ()
+Test  22: ❌ cat <missing | echo oi 
+mini output = ()
 bash output = (oi)
 mini exit code = 127
 bash exit code = 0
-[0;33mTest  23: ❌[38;5;244m cat <missing | cat <"./test_files/infile" 
-[0mmini output = ()
+Test  23: ❌ cat <missing | cat <"./test_files/infile" 
+mini output = ()
 bash output = (hi hello world 42)
 mini exit code = 127
 bash exit code = 0
-[0;33mTest  24: ❌[38;5;244m echo <123 <456 hi | echo 42 
-[0mmini output = ()
+Test  24: ❌ echo <123 <456 hi | echo 42 
+mini output = ()
 bash output = (42)
 mini exit code = 127
 bash exit code = 0
-[0;33mTest  25: ❌[38;5;244m ls >./outfiles/outfile01 
-[0mOnly in ./bash_outfiles: outfile01
+Test  25: ❌ ls >./outfiles/outfile01 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -151,7 +127,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -176,9 +151,10 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  26: ❌[38;5;244m ls >         ./outfiles/outfile01 
-[0mOnly in ./bash_outfiles: outfile01
+Test  26: ❌ ls >         ./outfiles/outfile01 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -186,7 +162,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -211,17 +186,19 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  27: ❌[38;5;244m echo hi >         ./outfiles/outfile01 bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  27: ❌ echo hi >         ./outfiles/outfile01 bye 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi bye
 mini output = (hi > ./outfiles/outfile01 bye)
 bash output = ()
-[0;33mTest  28: ❌[38;5;244m ls >./outfiles/outfile01 >./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+Test  28: ❌ ls >./outfiles/outfile01 >./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -229,7 +206,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -254,17 +230,19 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  29: ❌[38;5;244m ls >./outfiles/outfile01 >./test_files/invalid_permission 
-[0mOnly in ./bash_outfiles: outfile01
+Test  29: ❌ ls >./outfiles/outfile01 >./test_files/invalid_permission 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  30: ❌[38;5;244m ls >"./outfiles/outfile with spaces" 
-[0mOnly in ./bash_outfiles: outfile with spaces
+Test  30: ❌ ls >"./outfiles/outfile with spaces" 
+Only in ./bash_outfiles: outfile with spaces
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -272,7 +250,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -297,9 +274,10 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  31: ❌[38;5;244m ls >"./outfiles/outfile""1""2""3""4""5" 
-[0mOnly in ./bash_outfiles: outfile12345
+Test  31: ❌ ls >"./outfiles/outfile""1""2""3""4""5" 
+Only in ./bash_outfiles: outfile12345
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -307,7 +285,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -332,22 +309,24 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  32: ❌[38;5;244m ls >"./outfiles/outfile01" >./test_files/invalid_permission >"./outfiles/outfile02" 
-[0mOnly in ./bash_outfiles: outfile01
+Test  32: ❌ ls >"./outfiles/outfile01" >./test_files/invalid_permission >"./outfiles/outfile02" 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  33: ❌[38;5;244m ls >./test_files/invalid_permission >"./outfiles/outfile01" >./test_files/invalid_permission 
-[0mmini exit code = 2
+Test  33: ❌ ls >./test_files/invalid_permission >"./outfiles/outfile01" >./test_files/invalid_permission 
+mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  34: ❌[38;5;244m cat <"./test_files/infile" >"./outfiles/outfile01" 
-[0mOnly in ./bash_outfiles: outfile01
+Test  34: ❌ cat <"./test_files/infile" >"./outfiles/outfile01" 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi
 hello
@@ -357,9 +336,10 @@ mini exit code = 1
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  35: ❌[38;5;244m echo hi >./outfiles/outfile01 | echo bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  35: ❌ echo hi >./outfiles/outfile01 | echo bye 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi
 mini output = ()
@@ -368,10 +348,11 @@ mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  36: ❌[38;5;244m echo hi >./outfiles/outfile01 >./outfiles/outfile02 | echo bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  36: ❌ echo hi >./outfiles/outfile01 >./outfiles/outfile02 | echo bye 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi
 mini output = ()
@@ -380,29 +361,32 @@ mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  37: ❌[38;5;244m echo hi | echo >./outfiles/outfile01 bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  37: ❌ echo hi | echo >./outfiles/outfile01 bye 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 bye
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
-bash error = ( Broken pipe)
-[0;33mTest  38: ❌[38;5;244m echo hi | echo bye >./outfiles/outfile01 >./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+bash error = ()
+Test  38: ❌ echo hi | echo bye >./outfiles/outfile01 >./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 bye
-mini exit code =
+mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  39: ❌[38;5;244m echo hi >./outfiles/outfile01 | echo bye >./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+Test  39: ❌ echo hi >./outfiles/outfile01 | echo bye >./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi
 bye
@@ -410,9 +394,10 @@ mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  40: ❌[38;5;244m echo hi >./outfiles/outfile01 >./test_files/invalid_permission | echo bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  40: ❌ echo hi >./outfiles/outfile01 >./test_files/invalid_permission | echo bye 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini output = ()
 bash output = (bye)
@@ -420,68 +405,72 @@ mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  41: ❌[38;5;244m echo hi >./test_files/invalid_permission | echo bye 
-[0mmini output = ()
+Test  41: ❌ echo hi >./test_files/invalid_permission | echo bye 
+mini output = ()
 bash output = (bye)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  42: ❌[38;5;244m echo hi >./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
-[0mmini output = ()
+Test  42: ❌ echo hi >./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
+mini output = ()
 bash output = (bye)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  43: ❌[38;5;244m echo hi | echo bye >./test_files/invalid_permission 
-[0mmini exit code = 127
+Test  43: ❌ echo hi | echo bye >./test_files/invalid_permission 
+mini exit code = 127
 bash exit code = 1
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  44: ❌[38;5;244m echo hi | >./outfiles/outfile01 echo bye >./test_files/invalid_permission 
-[0mOnly in ./bash_outfiles: outfile01
+Test  44: ❌ echo hi | >./outfiles/outfile01 echo bye >./test_files/invalid_permission 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini exit code = 127
 bash exit code = 1
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  45: ❌[38;5;244m echo hi | echo bye >./test_files/invalid_permission >./outfiles/outfile01 
-[0mmini exit code = 127
+Test  45: ❌ echo hi | echo bye >./test_files/invalid_permission >./outfiles/outfile01 
+mini exit code = 127
 bash exit code = 1
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  46: ✅⚠️ [38;5;244m cat <"./test_files/infile" >./test_files/invalid_permission 
-[0mmini error = ( No such file or directory No such file or directory)
+Test  46: ✅⚠️  cat <"./test_files/infile" >./test_files/invalid_permission 
+mini error = ( No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  47: ✅⚠️ [38;5;244m cat >./test_files/invalid_permission <"./test_files/infile" 
-[0mmini error = ( No such file or directory No such file or directory)
+Test  47: ✅⚠️  cat >./test_files/invalid_permission <"./test_files/infile" 
+mini error = ( No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  48: ✅⚠️ [38;5;244m cat <missing >./outfiles/outfile01 
-[0mmini error = ( No such file or directory No such file or directory)
+Test  48: ✅⚠️  cat <missing >./outfiles/outfile01 
+mini error = ( No such file or directory No such file or directory)
 bash error = ( No such file or directory)
-[0;33mTest  49: ❌[38;5;244m cat >./outfiles/outfile01 <missing 
-[0mOnly in ./bash_outfiles: outfile01
+Test  49: ❌ cat >./outfiles/outfile01 <missing 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini error = ( No such file or directory No such file or directory)
 bash error = ( No such file or directory)
-[0;33mTest  50: ✅⚠️ [38;5;244m cat <missing >./test_files/invalid_permission 
-[0mmini error = ( No such file or directory No such file or directory)
+Test  50: ✅⚠️  cat <missing >./test_files/invalid_permission 
+mini error = ( No such file or directory No such file or directory)
 bash error = ( No such file or directory)
-[0;33mTest  51: ✅⚠️ [38;5;244m cat >./test_files/invalid_permission <missing 
-[0mmini error = ( No such file or directory No such file or directory)
+Test  51: ✅⚠️  cat >./test_files/invalid_permission <missing 
+mini error = ( No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  52: ❌[38;5;244m cat >./outfiles/outfile01 <missing >./test_files/invalid_permission 
-[0mOnly in ./bash_outfiles: outfile01
+Test  52: ❌ cat >./outfiles/outfile01 <missing >./test_files/invalid_permission 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini error = ( No such file or directory No such file or directory No such file or directory)
 bash error = ( No such file or directory)
-[0;33mTest  53: ❌[38;5;244m ls >>./outfiles/outfile01 
-[0mOnly in ./bash_outfiles: outfile01
+Test  53: ❌ ls >>./outfiles/outfile01 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -489,7 +478,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -514,9 +502,10 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  54: ❌[38;5;244m ls >>      ./outfiles/outfile01 
-[0mOnly in ./bash_outfiles: outfile01
+Test  54: ❌ ls >>      ./outfiles/outfile01 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -524,7 +513,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -549,9 +537,10 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  55: ❌[38;5;244m ls >>./outfiles/outfile01 >./outfiles/outfile01 
-[0mOnly in ./bash_outfiles: outfile01
+Test  55: ❌ ls >>./outfiles/outfile01 >./outfiles/outfile01 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -559,7 +548,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -584,9 +572,10 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  56: ❌[38;5;244m ls >./outfiles/outfile01 >>./outfiles/outfile01 
-[0mOnly in ./bash_outfiles: outfile01
+Test  56: ❌ ls >./outfiles/outfile01 >>./outfiles/outfile01 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -594,7 +583,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -619,10 +607,11 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  57: ❌[38;5;244m ls >./outfiles/outfile01 >>./outfiles/outfile01 >./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+Test  57: ❌ ls >./outfiles/outfile01 >>./outfiles/outfile01 >./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -630,7 +619,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -655,10 +643,11 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  58: ❌[38;5;244m ls >>./outfiles/outfile01 >>./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+Test  58: ❌ ls >>./outfiles/outfile01 >>./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 "
 "'
@@ -666,7 +655,6 @@ bash outfiles:
 '"
 $HOME"
 $HOME'
-bags_redir
 bash_outfiles
 bash.supp
 bonus
@@ -691,45 +679,48 @@ mini exit code = 2
 bash exit code = 0
 mini error = ( No such file or directory No such file or directory)
 bash error = ()
-[0;33mTest  59: ❌[38;5;244m ls >>./test_files/invalid_permission 
-[0mmini exit code = 2
+Test  59: ❌ ls >>./test_files/invalid_permission 
+mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  60: ❌[38;5;244m ls >>./test_files/invalid_permission >>./outfiles/outfile01 
-[0mmini exit code = 2
+Test  60: ❌ ls >>./test_files/invalid_permission >>./outfiles/outfile01 
+mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  61: ❌[38;5;244m ls >>./outfiles/outfile01 >>./test_files/invalid_permission 
-[0mOnly in ./bash_outfiles: outfile01
+Test  61: ❌ ls >>./outfiles/outfile01 >>./test_files/invalid_permission 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  62: ❌[38;5;244m ls >./outfiles/outfile01 >>./test_files/invalid_permission >>./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+Test  62: ❌ ls >./outfiles/outfile01 >>./test_files/invalid_permission >>./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  63: ❌[38;5;244m ls <missing >>./test_files/invalid_permission >>./outfiles/outfile02 
-[0mmini exit code = 2
+Test  63: ❌ ls <missing >>./test_files/invalid_permission >>./outfiles/outfile02 
+mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory No such file or directory)
 bash error = ( No such file or directory)
-[0;33mTest  64: ❌[38;5;244m ls >>./test_files/invalid_permission >>./outfiles/outfile02 <missing 
-[0mmini exit code = 2
+Test  64: ❌ ls >>./test_files/invalid_permission >>./outfiles/outfile02 <missing 
+mini exit code = 2
 bash exit code = 1
 mini error = ( No such file or directory No such file or directory No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  65: ❌[38;5;244m echo hi >>./outfiles/outfile01 | echo bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  65: ❌ echo hi >>./outfiles/outfile01 | echo bye 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi
 mini output = ()
@@ -738,10 +729,11 @@ mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  66: ❌[38;5;244m echo hi >>./outfiles/outfile01 >>./outfiles/outfile02 | echo bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  66: ❌ echo hi >>./outfiles/outfile01 >>./outfiles/outfile02 | echo bye 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi
 mini output = ()
@@ -750,68 +742,70 @@ mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  67: ❌[38;5;244m echo hi | echo >>./outfiles/outfile01 bye 
-[0mOnly in ./bash_outfiles: outfile01
+Test  67: ❌ echo hi | echo >>./outfiles/outfile01 bye 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 bye
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  68: ❌[38;5;244m echo hi | echo bye >>./outfiles/outfile01 >>./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+Test  68: ❌ echo hi | echo bye >>./outfiles/outfile01 >>./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 bye
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  69: ❌[38;5;244m echo hi >>./outfiles/outfile01 | echo bye >>./outfiles/outfile02 
-[0mOnly in ./bash_outfiles: outfile01
+Test  69: ❌ echo hi >>./outfiles/outfile01 | echo bye >>./outfiles/outfile02 
+Only in ./bash_outfiles: outfile01
 Only in ./bash_outfiles: outfile02
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
 hi
 bye
-mini exit code =
+mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ()
-[0;33mTest  70: ❌[38;5;244m echo hi >>./test_files/invalid_permission | echo bye 
-[0mmini output = ()
+Test  70: ❌ echo hi >>./test_files/invalid_permission | echo bye 
+mini output = ()
 bash output = (bye)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  71: ❌[38;5;244m echo hi >>./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
-[0mmini output = ()
+Test  71: ❌ echo hi >>./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
+mini output = ()
 bash output = (bye)
 mini exit code = 127
 bash exit code = 0
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  72: ❌[38;5;244m echo hi | echo bye >>./test_files/invalid_permission 
-[0mmini exit code = 127
+Test  72: ❌ echo hi | echo bye >>./test_files/invalid_permission 
+mini exit code = 127
 bash exit code = 1
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  73: ❌[38;5;244m echo hi | echo >>./outfiles/outfile01 bye >./test_files/invalid_permission 
-[0mOnly in ./bash_outfiles: outfile01
+Test  73: ❌ echo hi | echo >>./outfiles/outfile01 bye >./test_files/invalid_permission 
+Only in ./bash_outfiles: outfile01
 mini outfiles:
+cat: './mini_outfiles/*': No such file or directory
 bash outfiles:
-mini exit code =
+mini exit code = 127
 bash exit code = 1
 mini error = ( No such file or directory)
 bash error = ( Permission denied)
-[0;33mTest  74: ✅[38;5;244m cat <minishell.h>./outfiles/outfile 
-[0m[0;33mTest  75: ❌[38;5;244m cat <minishell.h|ls 
-[0mmini output = ()
-bash output = (" "' ' '" $HOME" $HOME' bags_redir bash_outfiles bash.supp bonus bonus_bonus builtins extras local.supp loop.out manual_tests mini_outfiles os_specific out outfiles pipes README.md redirects syntax tester test_files wildcards)
+Test  75: ❌ cat <minishell.h|ls 
+mini output = ()
+bash output = (" "' ' '" $HOME" $HOME' bash_outfiles bash.supp bonus bonus_bonus builtins extras local.supp loop.out manual_tests mini_outfiles os_specific out outfiles pipes README.md redirects syntax tester test_files wildcards)
 mini exit code = 127
 bash exit code = 0
-[0;35m[1m8/75
-[0m😭 😭 😭
+
