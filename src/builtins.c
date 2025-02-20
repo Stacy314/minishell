@@ -6,11 +6,29 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/17 17:38:52 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/20 13:28:23 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+
+//Test   1: ❌ echo hello world 
+//mini output = (helloworld )
+//bash output = (hello world)
+
+//Test  15: ❌ echo "exit_code ->$? user ->$USER home -> $HOME" 
+//mini output = (exit_code -> user ->apechkov home -> /home/apechkov0)
+//bash output = (exit_code ->0 user ->apechkov home -> /home/apechkov)
+
+//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
+//mini output = (exit_code -> user ->$USER home -> $HOME0)
+//bash output = (exit_code ->$? user ->$USER home -> $HOME)
+
+//Test  21: ❌ echo $?HELLO 
+//mini output = (HELLO0)
+//bash output = (0HELLO)
+
 
 void builtin_echo(t_cmd *cmd, t_data *data)
 {

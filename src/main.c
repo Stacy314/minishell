@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/17 16:50:36 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/20 13:14:40 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,6 @@ int		main(int argc, char **argv, char **env)
         if (!tokens)
         {
             //fprintf(stderr, "Error: Failed to tokenize input\n");
-
             continue;
         }
 
@@ -165,7 +164,6 @@ int		main(int argc, char **argv, char **env)
             exit(0);
         }
 
-		
 		////////////////////////
 		//print_cmd_list(cmd,4);
 		
