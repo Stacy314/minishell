@@ -16,7 +16,7 @@
 
 //echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
 
-//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
+//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME'  - expantion (розкриття лапок для $?)
 //mini output = (exit_code ->0 user ->$USER home -> $HOME)
 //bash output = (exit_code ->$? user ->$USER home -> $HOME)
 

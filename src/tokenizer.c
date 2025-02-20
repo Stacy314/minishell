@@ -3,43 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/16 15:45:05 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/02/20 16:50:19 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-char *expand_variable(const char *str, int *j, t_data *data)
-{
-    char var_name[256];
-    int k = 0;
-    (*j)++;
-
-    while (str[*j] && (ft_isalnum(str[*j]) || str[*j] == '_'))
-    {
-        if (k < 255)
-            var_name[k++] = str[*j];
-        (*j)++;
-    }
-    var_name[k] = '\0';
-
-    if (k == 0)
-        return ft_strdup("$");
-
-    char **env = data->env;
-    int i = 0;
-    while (env[i])
-    {
-        if (!ft_strncmp(env[i], var_name, k) && env[i][k] == '=')
-            return ft_strdup(env[i] + k + 1);
-        i++;
-    }
-    return ft_strdup("");
-}
-
 
 t_token *create_token(const char *value, t_token_type type, int index)
 {
@@ -83,7 +54,7 @@ t_token **split_to_tokens(const char *str, t_data *data)
 
     while (str[j])
     {
-        while (str[j] && str[j] == ' ')
+        while (str[j] && (str[j] == ' ' || str[j] == '	'))
             j++;
         if (str[j] == '\0')
             break;

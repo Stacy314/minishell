@@ -6,38 +6,19 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/20 13:28:23 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:33:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-
-//Test   1: ❌ echo hello world 
-//mini output = (helloworld )
-//bash output = (hello world)
-
-//Test  15: ❌ echo "exit_code ->$? user ->$USER home -> $HOME" 
-//mini output = (exit_code -> user ->apechkov home -> /home/apechkov0)
-//bash output = (exit_code ->0 user ->apechkov home -> /home/apechkov)
-
-//Test  16: ❌ echo 'exit_code ->$? user ->$USER home -> $HOME' 
-//mini output = (exit_code -> user ->$USER home -> $HOME0)
-//bash output = (exit_code ->$? user ->$USER home -> $HOME)
-
-//Test  21: ❌ echo $?HELLO 
-//mini output = (HELLO0)
-//bash output = (0HELLO)
-
-
 void builtin_echo(t_cmd *cmd, t_data *data)
 {
-
 	int i;
-	int n_flag;
 	int j;
+	int n_flag;
 	char *arg;
-	
+
 	i = 1;
 	n_flag = 0;
 	while (cmd->args[i] != NULL && is_option(cmd->args[i]))
@@ -45,33 +26,33 @@ void builtin_echo(t_cmd *cmd, t_data *data)
     	n_flag = 1;
    		i++;
 	}
-	while (cmd->args[i])
+
+	while (cmd->args[i] != NULL)
     {
-        arg = cmd->args[i];
-        j = 0;
-        while (arg[j])
-        {
-            if (arg[j] == '$' && arg[j + 1] == '?')
-            {
-                printf("%d", data->exit_status);
-                j += 2;
-            }
-            else
-            {
-                ft_putchar_fd(arg[j], 1);
-                j++;
-            }
-        }
-        if (cmd->args[i + 1])
-            printf(" ");
-        i++;
-    }
+		arg = cmd->args[i];
+		j = 0;
+		while (arg[j])
+		{
+			if (arg[j] == '$' && arg[j + 1] == '?') //move to expantion
+			{
+				printf("%d", data->exit_status);
+				j += 2;
+			}
+			else
+			{
+				printf("%c", arg[j]);
+				j++;
+			}
+		}
+		if (cmd->args[i + 1] != NULL)
+			printf(" ");
+		i++;
+	}
+
 	if (!n_flag)
 		printf("\n");
 	data->exit_status = 0;
 }
-
-
 
 void builtin_cd(t_cmd *cmd, t_data *data)
 {
@@ -183,17 +164,14 @@ void builtin_export(t_cmd *cmd, t_data *data)
         arg = cmd->args[i];
 		if (!is_valid_identifier(arg))
         {
-            // Print an error message similar to bash.
             fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
             data->exit_status = 1;
-            // Depending on your shell design, you may continue checking the other arguments.
-            return;
+            return ;
         }
         equal_sign = ft_strchr(arg, '=');
 		if (!equal_sign)
 		{
-            //printf("minishell: export: `%s': not a valid identifier\n", arg); //???
-
+            //printf("minishell: export: `%s': not a valid identifier\n", arg);
 			data->exit_status = 0;
 			return ;
         }
@@ -314,14 +292,14 @@ void	builtin_exit(t_cmd *cmd, t_data *data)
 		}
 		i++;
 	}
-	if (cmd->args[2] != NULL)
+	if (cmd->args[2] &&  cmd->args[2] != NULL)
 	{
 		printf("exit\n");
 		ft_putendl_fd("minishell: exit: too many arguments", 2);
 		data->exit_status = 1;
 		return ;
 	}
-	data->exit_status = ft_atoi(cmd->args[1]);
+	data->exit_status = ft_atol(cmd->args[1]);
 	printf("exit\n");
 	exit(data->exit_status);
 }

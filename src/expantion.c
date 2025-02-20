@@ -6,56 +6,71 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/17 17:33:08 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/20 16:54:27 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char *replace_substring(char *str, char *to_replace, char *replacement)
+//char *expand_variable(const char *str, int *j, t_data *data)
+//{
+//    char var_name[256];
+//    int k = 0;
+//    (*j)++;
+
+//    while (str[*j] && (ft_isalnum(str[*j]) || str[*j] == '_'))
+//    {
+//        if (k < 255)
+//            var_name[k++] = str[*j];
+//        (*j)++;
+//    }
+//    var_name[k] = '\0';
+
+//    if (k == 0)
+//        return ft_strdup("$");
+
+//    char **env = data->env;
+//    int i = 0;
+//    while (env[i])
+//    {
+//        if (!ft_strncmp(env[i], var_name, k) && env[i][k] == '=')
+//            return ft_strdup(env[i] + k + 1);
+//        i++;
+//    }
+//    return ft_strdup("");
+//}
+
+
+char *expand_variable(const char *str, int *j, t_data *data)
 {
-    char *new_str;
-    char *pos;
-    int len;
+    char var_name[256];
+    int k = 0;
 
-    pos = ft_strnstr(str, to_replace, ft_strlen(str));  // Find the variable in the string
-    if (!pos)
-        return (str);
-
-    len = ft_strlen(str) - ft_strlen(to_replace) + ft_strlen(replacement);
-    new_str = ft_calloc(len + 1, sizeof(char));
-    
-    ft_strlcpy(new_str, str, pos - str);  // Copy before `$?`
-    ft_strlcat(new_str, replacement, ft_strlen(new_str));  // Add replacement (exit_status)
-    ft_strlcat(new_str, pos + ft_strlen(to_replace), ft_strlen(new_str));  // Copy after `$?`
-
-    free(str);
-    return (new_str);
-}
-
-
-char *expand_variables(char *str, t_data *data)
-{
-    char *expanded;
-    char *exit_status_str;
-    
-    if (!str)
-        return (NULL);
-    
-    expanded = ft_strdup(str);  // Duplicate input string
-
-    if (ft_strnstr(expanded, "$?", ft_strlen(expanded)))  // Check for `$?`
+    if (str[*j] == '?')  // Обробляємо $? окремо
     {
-        exit_status_str = ft_itoa(data->exit_status);  // Convert exit_status to string
-        expanded = replace_substring(expanded, "$?", exit_status_str);
-        free(exit_status_str);
+        (*j)++; 
+        return ft_itoa(data->exit_status);  // Перетворюємо exit status у рядок
     }
 
-    if (ft_strnstr(expanded, "$USER", ft_strlen(expanded)))
-        expanded = replace_substring(expanded, "$USER", getenv("USER"));
-    
-    if (ft_strnstr(expanded, "$HOME", ft_strlen(expanded)))
-        expanded = replace_substring(expanded, "$HOME", getenv("HOME"));
+    (*j)++;
+    while (str[*j] && (ft_isalnum(str[*j]) || str[*j] == '_'))
+    {
+        if (k < 255)
+            var_name[k++] = str[*j];
+        (*j)++;
+    }
+    var_name[k] = '\0';
 
-    return (expanded);
+    if (k == 0)
+        return ft_strdup("$"); // Якщо лише $, повертаємо його
+
+    char **env = data->env;
+    int i = 0;
+    while (env[i])
+    {
+        if (!ft_strncmp(env[i], var_name, k) && env[i][k] == '=')
+            return ft_strdup(env[i] + k + 1);
+        i++;
+    }
+    return ft_strdup("");  // Якщо змінної нема – повертаємо пустий рядок
 }

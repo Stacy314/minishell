@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/20 13:14:40 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:21:52 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ void print_data(t_data *data)
 // Global flag for prompt control
 //volatile sig_atomic_t g_prompt_flag = 0; 
 
+
+//ctrl+D (print exit)
 
 //print error with bonus
 int		main(int argc, char **argv, char **env)
