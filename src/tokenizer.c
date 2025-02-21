@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/20 16:50:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/21 17:06:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ t_token **split_to_tokens(const char *str, t_data *data)
 {
     t_token **tokens;
     int capacity, i, j, index;
+	//(void)data;
 
     if (!str || ft_strlen(str) == 0)
         return NULL;

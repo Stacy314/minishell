@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/27 18:35:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/21 17:41:28 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,18 @@ int contains_special_char(t_token	**tokens, char delimiter)
 		i++;
 	}
 	return (0);
+}
+
+int ft_str_only_spaces(const char *str)
+{
+	int i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ' && str[i] != '\t')
+			return (0);
+		i++;
+	}
+	return 1;
 }
 
 //void free_cmd(t_cmd *cmd)
@@ -65,6 +77,7 @@ int contains_special_char(t_token	**tokens, char delimiter)
 //	//}
 //    //free(cmd);
 //}
+
 void free_cmd(t_cmd *cmd)
 {
     if (!cmd)
@@ -83,8 +96,6 @@ void free_cmd(t_cmd *cmd)
 
     free(cmd);
 }
-
-
 
 int careful_exit(t_data data, t_cmd *cmd, int exit_status)
 {

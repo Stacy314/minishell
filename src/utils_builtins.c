@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/20 15:50:13 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/21 17:39:23 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,10 @@ long	ft_atol(const char *str)
     long result = 0;
     int sign = 1;
 
-    // Пропустити початкові пропуски
     while (isspace((unsigned char)*str))
 	{
         str++;
     }
-    // Обробити знак
 	if (*str == '+')
 	{
         str++;
@@ -69,29 +67,23 @@ long	ft_atol(const char *str)
         sign = -1;
         str++;
     }
-    // Парсити цифри
     while (isdigit((unsigned char)*str))
 	{
         int digit = *str - '0';
-
-        // Перевіряємо можливе переповнення перед множенням на 10 і додаванням цифри
 		if (sign == 1) {
-            // Якщо поточне result > (LONG_MAX - digit) / 10, наступна операція переповнить `long`
             if (result > (LONG_MAX - digit) / 10)
 			{
                 result = LONG_MAX;
-                break;
+                break ;
             }
             result = result * 10 + digit;
         }
 		else
 		{
-            // Для від'ємних значень перевіряємо (LONG_MIN + digit) / 10
-            // Тут зручно порівнювати -result з використанням LONG_MAX, але уважно з дужками
             if (-result < (LONG_MIN + digit) / 10)
 			{
                 result = LONG_MIN;
-                break;
+                break ;
             }
             result = result * 10 - digit;
         }

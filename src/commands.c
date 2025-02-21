@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/17 17:42:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/21 20:24:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,7 @@ int execute_command(char *cmd, t_data *data, char **args, char **env)
 
         pid = fork();
         if (pid == -1)
-        {
-            perror("fork");
-            return 1;
-        }
+            return (perror("fork"), data->exit_status = 1);
         if (pid == 0)
         {
             execve(cmd, args, env);
@@ -133,14 +130,14 @@ int execute_command(char *cmd, t_data *data, char **args, char **env)
             else
                 data->exit_status = 1;
         }
-        return data->exit_status;
+        return (data->exit_status);
     }
 
     path = get_path_from_env(data->env);
     if (!path)
     {
         fprintf(stderr, "Error: PATH not found in environment\n");
-        return 127; 
+        return (data->exit_status = 127); 
     }
 
     paths = split_path(path);
@@ -152,14 +149,14 @@ int execute_command(char *cmd, t_data *data, char **args, char **env)
         for (i = 0; paths[i]; i++)
             free(paths[i]);
         free(paths);
-        return 127;
+        return (data->exit_status = 127);
     }
 
     pid = fork();
     if (pid == -1)
     {
         perror("fork");
-        return 1;
+        return (data->exit_status = 1);
     }
     if (pid == 0)
     {

@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/20 17:33:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/21 20:40:52 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void builtin_echo(t_cmd *cmd, t_data *data)
+int builtin_echo(t_cmd *cmd, t_data *data)
 {
 	int i;
 	int j;
@@ -41,20 +41,22 @@ void builtin_echo(t_cmd *cmd, t_data *data)
 			else
 			{
 				printf("%c", arg[j]);
+				//ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
 				j++;
 			}
 		}
 		if (cmd->args[i + 1] != NULL)
-			printf(" ");
+			ft_putstr_fd(" ", STDOUT_FILENO);
 		i++;
 	}
 
 	if (!n_flag)
-		printf("\n");
+		printf("\n");  //ft_putstr_fd("\n", STDOUT_FILENO);
 	data->exit_status = 0;
+	return (0);
 }
 
-void builtin_cd(t_cmd *cmd, t_data *data)
+int builtin_cd(t_cmd *cmd, t_data *data)
 {
     char *path;
 
@@ -62,19 +64,19 @@ void builtin_cd(t_cmd *cmd, t_data *data)
 	{
         path = get_env_value(data->env, "HOME");
         if (!path)
-			return (ft_putendl_fd("minishell: cd: HOME not set", 2));
+			return (ft_putendl_fd("minishell: cd: HOME not set", 2), data->exit_status = 1);
     }
 	else if (cmd->args[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", 2);
 		data->exit_status = 1;
-		return ;
+		return (1);
 	}
 	else if (ft_strncmp(cmd->args[1], "~", 1) == 0)
 	{
 		path = get_env_value(data->env, "HOME");
 		if (!path)
-			return (ft_putendl_fd("minishell: cd: HOME not set", 2));
+			return (ft_putendl_fd("minishell: cd: HOME not set", 2), data->exit_status = 1);
 		path = ft_strjoin(path, cmd->args[1] + 1);
 	}
 	else
@@ -88,27 +90,27 @@ void builtin_cd(t_cmd *cmd, t_data *data)
 		data->exit_status = 1;
 		//printf("minishell: cd: %s: No such file or directory\n", cmd->args[1]);
     }
+	return (data->exit_status = 0);
 }
 
-void builtin_pwd(t_cmd *cmd)
+int builtin_pwd(t_cmd *cmd/*, t_data *data*/)//ADD!!!
 {
 	char *buf;
 		//while????
 		if (cmd->args[1] && ft_strchr(cmd->args[1], '-'))
 		{
 			printf("bash: pwd: -%c: invalid option\n", cmd->args[1][1]);
-			return ;
+			return (/*data->exit_status = */1);//ADD!!!
 		}
         buf = getcwd(NULL, 0);
         if (buf == NULL)
 		{
-            ft_putendl_fd("pwd: error retrieving current directory: getcwd: cannot access parent directories\n", 2);
+            ft_putendl_fd("pwd: error retrieving current directory: getcwd: cannot access parent directories\n", /*data->exit_status = */2);//ADD!!!
             //exit(1);
 			//data->exit_status = 1;
         }
-        return (ft_putendl_fd(buf, 1),free(buf));
+        return (ft_putendl_fd(buf, 1),free(buf), /*data->exit_status = */1);//ADD!!!
 }
-
 //export a="s -lsa"
 //		l$a
 //export a='"' (shouldn't crash)
@@ -138,7 +140,7 @@ int is_valid_identifier(const char *arg)
     return 1;
 }
 
-void builtin_export(t_cmd *cmd, t_data *data)
+int builtin_export(t_cmd *cmd, t_data *data)
 {
 	int i;
 	char *arg;
@@ -156,7 +158,7 @@ void builtin_export(t_cmd *cmd, t_data *data)
             printf("declare -x %s\n", data->env[i]);
 			i++;
         }
-        return;
+        return (1);
     }
 	i = 1;
     while(cmd->args[i])
@@ -166,14 +168,14 @@ void builtin_export(t_cmd *cmd, t_data *data)
         {
             fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", arg);
             data->exit_status = 1;
-            return ;
+            return (1);
         }
         equal_sign = ft_strchr(arg, '=');
 		if (!equal_sign)
 		{
             //printf("minishell: export: `%s': not a valid identifier\n", arg);
 			data->exit_status = 0;
-			return ;
+			return (1);
         }
 		else if (!equal_sign++)
 		{
@@ -181,8 +183,7 @@ void builtin_export(t_cmd *cmd, t_data *data)
 			ft_putstr_fd(arg, 2);
 			ft_putstr_fd("':", 2);
 			ft_putendl_fd(" not a valid identifier", 2);
-			data->exit_status = 1;
-			return ;
+			return (data->exit_status = 1);
 		}
         var_index = find_env_var(data->env, arg);
 		if (var_index != -1)
@@ -199,7 +200,7 @@ void builtin_export(t_cmd *cmd, t_data *data)
             if (!new_env)
 			{
                 perror("malloc");
-                return;
+                return (1);
             }
 			j = 0;
             while (j < env_size)
@@ -211,14 +212,13 @@ void builtin_export(t_cmd *cmd, t_data *data)
             new_env[env_size + 1] = NULL;
 			//free(data->env);
 			data->env = new_env;
-			
-
         }
 		i++;
     }
+	return (0);
 }
 
-void builtin_unset(t_cmd *cmd, t_data *data)
+int builtin_unset(t_cmd *cmd, t_data *data)
 {
 	int i;
 	int j;
@@ -227,14 +227,14 @@ void builtin_unset(t_cmd *cmd, t_data *data)
     if (!cmd->args[1])
 	{
         //printf("minishell: unset: not enough arguments\n");
-        return ;
+        return (1);
     }
 	i = 1;
     while (cmd->args[i])
 	{
         var_index = find_env_var(data->env, cmd->args[i]);
         if (var_index == -1)
-            return ;
+            return (1);
         //free(data->env[var_index]);
 		j = var_index;
         while (data->env[j])
@@ -245,9 +245,10 @@ void builtin_unset(t_cmd *cmd, t_data *data)
 		data->env[var_index] = NULL;
 		i++;
     }
+	return (0);
 }
 
-void builtin_env(t_data *data)
+int builtin_env(t_data *data)
 {
 	int i;
 
@@ -258,11 +259,12 @@ void builtin_env(t_data *data)
     	ft_putstr_fd("\n", 1);
 		i++;
 	}
+	return (0);
 }
 
 //exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit)
 
-void	builtin_exit(t_cmd *cmd, t_data *data)
+int	builtin_exit(t_cmd *cmd, t_data *data)
 {
 	int i;
 	
@@ -280,24 +282,25 @@ void	builtin_exit(t_cmd *cmd, t_data *data)
 			break ;
 		}
 		else if(cmd->args[1][i] == '-')
-			exit(156);
+			exit(156); //2
 		else
 		{
-			printf("exit\n");
+			ft_putstr_fd("exit\n",2);
 			ft_putstr_fd("minishell: exit: ",2);
 			ft_putstr_fd(cmd->args[1], 2);
 			ft_putstr_fd(":", 2);
 			ft_putendl_fd(" numeric argument required", 2);
-			exit(2);
+			data->exit_status = 2;
+			return (1);
 		}
 		i++;
 	}
 	if (cmd->args[2] &&  cmd->args[2] != NULL)
 	{
-		printf("exit\n");
+		ft_putstr_fd("exit\n",2);
 		ft_putendl_fd("minishell: exit: too many arguments", 2);
 		data->exit_status = 1;
-		return ;
+		return (1);
 	}
 	data->exit_status = ft_atol(cmd->args[1]);
 	printf("exit\n");

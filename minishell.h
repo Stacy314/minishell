@@ -54,6 +54,7 @@ typedef struct s_data
 	char			**env;
 	int				exit_status;
 	struct s_cmd	*cmd;
+	//pid_t			last_command_pid;
 }	t_data;
 
 typedef struct s_cmd {
@@ -79,7 +80,7 @@ char **split_path(const char *path);
 
 void free_cmd(t_cmd *cmd);
 int contains_special_char(t_token	**tokens, char delimiter);
-
+int ft_str_only_spaces(const char *str);
 //initialization
 t_cmd	*init_structure(t_data *data, char **env);
 
@@ -94,13 +95,13 @@ void	free_tokens(t_token **tokens);
 t_cmd	*parse_tokens(t_token **tokens);
 
 // builtins
-void	builtin_echo(t_cmd *cmd, t_data *data);
-void	builtin_pwd(t_cmd *cmd);
-void	builtin_export(t_cmd *cmd, t_data *data);
-void	builtin_unset(t_cmd *cmd, t_data *data);
-void	builtin_env(t_data *data);
-void	builtin_exit(t_cmd *cmd, t_data *data);
-void	builtin_cd(t_cmd *cmd, t_data *data);
+int	builtin_echo(t_cmd *cmd, t_data *data);
+int	builtin_pwd(t_cmd *cmd);
+int	builtin_export(t_cmd *cmd, t_data *data);
+int	builtin_unset(t_cmd *cmd, t_data *data);
+int	builtin_env(t_data *data);
+int	builtin_exit(t_cmd *cmd, t_data *data);
+int	builtin_cd(t_cmd *cmd, t_data *data);
 char	*get_env_value(char **env, const char *key);
 int		find_env_var(char **env, const char *var);
 int		is_option(const char *arg);
@@ -111,7 +112,7 @@ long	ft_atol(const char *str);
 int		execute_command(char *cmd, t_data *data, char **args, char **env);
 void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
 //void	execute_pipeline(t_cmd **cmd, t_data *data, t_token *token, char **env);
-void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
+int	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 //int		contains_special_char(t_cmd *cmd, char delimiter);
 int		execute_redirection(t_cmd *cmd, char **env);
 

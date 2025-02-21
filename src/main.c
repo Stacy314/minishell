@@ -6,97 +6,70 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/20 17:21:52 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/21 21:02:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//minishell -> minishell
-//need print error for bonus
-
-int ft_str_only_spaces(const char *str)
+void print_cmd_list(t_cmd *cmd_list, size_t count) // need to del
 {
-    int i = 0;
-    while (str[i])
-    {
-        if (str[i] != ' ' && str[i] != '\t')
-            return 0;
-        i++;
-    }
-    return 1;
+	for (size_t i = 0; i < count; i++)
+	{
+		printf("=== Command %zu ===\n", i);
+		printf("args: ");
+		if (cmd_list[i].args)
+		{
+			size_t arg_index = 0;
+			while (cmd_list[i].args[arg_index])
+			{
+				printf("\"%s\" ", cmd_list[i].args[arg_index]);
+				arg_index++;
+			}
+		}
+		else
+		{
+			printf("(none)");
+		}
+		printf("\n");
+		printf("input_redirect:   %s\n",
+			   cmd_list[i].input_redirect ? cmd_list[i].input_redirect : "(none)");
+		printf("output_redirect:  %s\n",
+			   cmd_list[i].output_redirect ? cmd_list[i].output_redirect : "(none)");
+		printf("append_redirect:  %s\n",
+			   cmd_list[i].append_redirect ? cmd_list[i].append_redirect : "(none)");
+		printf("heredoc_delimiter:%s\n",
+			   cmd_list[i].heredoc_delimiter ? cmd_list[i].heredoc_delimiter : "(none)");
+		if (cmd_list[i].data)
+		{
+			printf("data->some_value: %d\n", cmd_list[i].data->some_value);
+		}
+		else
+		{
+			printf("data:            (null)\n");
+		}
+		
+		printf("\n");
+	}
 }
 
-
-void print_cmd_list(t_cmd *cmd_list, size_t count)
+void print_data(t_data *data) //need to del 
 {
-    for (size_t i = 0; i < count; i++)
-    {
-        printf("=== Command %zu ===\n", i);
-        
-        // Print args
-        printf("args: ");
-        if (cmd_list[i].args)
-        {
-            size_t arg_index = 0;
-            while (cmd_list[i].args[arg_index])
-            {
-                printf("\"%s\" ", cmd_list[i].args[arg_index]);
-                arg_index++;
-            }
-        }
-        else
-        {
-            printf("(none)");
-        }
-        printf("\n");
-        
-        // Print redirections
-        printf("input_redirect:   %s\n",
-               cmd_list[i].input_redirect ? cmd_list[i].input_redirect : "(none)");
-        printf("output_redirect:  %s\n",
-               cmd_list[i].output_redirect ? cmd_list[i].output_redirect : "(none)");
-        printf("append_redirect:  %s\n",
-               cmd_list[i].append_redirect ? cmd_list[i].append_redirect : "(none)");
-        printf("heredoc_delimiter:%s\n",
-               cmd_list[i].heredoc_delimiter ? cmd_list[i].heredoc_delimiter : "(none)");
-        
-        // Print pipe fields
-        // printf("pipe_in:          %d\n", cmd_list[i].pipe_in);
-        // printf("pipe_out:         %d\n", cmd_list[i].pipe_out);
+	if (!data)
+	{
+		printf("t_data is NULL\n");
+		return;
+	}
 
-        // Print data if relevant
-        if (cmd_list[i].data)
-        {
-            // Adjust depending on your t_data structure
-            printf("data->some_value: %d\n", cmd_list[i].data->some_value);
-        }
-        else
-        {
-            printf("data:            (null)\n");
-        }
-        
-        printf("\n");
-    }
-}
+	printf("\n=== t_data ===\n");
+	printf("Exit Status: %d\n", data->exit_status);
 
-void print_data(t_data *data)
-{
-    if (!data)
-    {
-        printf("t_data is NULL\n");
-        return;
-    }
+	// Вивід змінних оточення (env)
+	//printf("Environment Variables:\n");
+	//for (int i = 0; data->env && data->env[i]; i++)
+	//    printf("  [%d] %s\n", i, data->env[i]);
 
-    printf("\n=== t_data ===\n");
-    printf("Exit Status: %d\n", data->exit_status);
-
-    // Вивід змінних оточення (env)
-    //printf("Environment Variables:\n");
-    //for (int i = 0; data->env && data->env[i]; i++)
-    //    printf("  [%d] %s\n", i, data->env[i]);
-
-    printf("=================\n");
+	printf("=================\n");
 }
 
 // Global flag for prompt control
@@ -104,11 +77,11 @@ void print_data(t_data *data)
 
 
 //ctrl+D (print exit)
-
 //print error with bonus
+
 int		main(int argc, char **argv, char **env)
 {
-    char	*input;
+	char	*input;
 	t_data	data;
 	t_token	**tokens;
 	t_cmd	*cmd;
@@ -119,52 +92,72 @@ int		main(int argc, char **argv, char **env)
 		return (EXIT_FAILURE);
 	}
 	cmd = init_structure(&data, env);
-	signal_handler(); //(CTRL+C, CTRL+D, CTRL+\)
-    while (1)
+	signal_handler();
+	while (1)
 	{
-		// if (g_prompt_flag) // Якщо після сигналу треба вивести промпт
-        //{
-        //    printf("\nminishell$ ");
-        //    fflush(stdout);
-        //    g_prompt_flag = 0; // Скидаємо прапорець
-        //}
+		// if (g_prompt_flag)
+		//{
+		//    printf("\nminishell$ ");
+		//    fflush(stdout);
+		//    g_prompt_flag = 0;
+		//}
 		//printf("exit status in main start - %d\n", data.exit_status);
-        input = readline("minishell$ ");
-        if (!input)
-		{ 
-            printf("\n");
+		
+		printf("Waiting for input...\n");
+		fflush(stdout);
+		input = readline("minishell$ ");
+		if (!input) {
+			printf("Received EOF (stdin closed)\n");
+			exit(1);
+		}
 
-            exit(EXIT_FAILURE);
-        }
+		
+		/////////////
+		if (isatty(fileno(stdin)))
+			input = readline("minishell$ ");
+		else
+		{
+			char *line;
+			line = get_next_line(fileno(stdin));
+			input = ft_strtrim(line, "\n");
+			free(line);
+		}
+
+		/////////////
+		//input = readline("minishell$ ");
+		
+		if (!input)
+		{ 
+			printf("\n");
+			return(EXIT_FAILURE);
+		}
 		if(*input)
 			add_history(input);
 		if (!input || *input == '\0' || ft_str_only_spaces(input))
-        {
-            free(input);
-            continue;
-        }
-
-        tokens = split_to_tokens(input, &data);
-        free(input);
-
-        if (tokens == (t_token **)(-1))
-        {
-            continue;
-        }
-
-        if (!tokens)
-        {
-            //fprintf(stderr, "Error: Failed to tokenize input\n");
-            continue;
-        }
-
-        cmd = parse_tokens(tokens);
-        if (!cmd)
-
 		{
-            //ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
-            exit(0);
-        }
+			free(input);
+			continue;
+		}
+		tokens = split_to_tokens(input, &data);
+		free(input);
+
+		if (tokens == (t_token **)(-1))
+		{
+			continue;
+		}
+
+		if (!tokens)
+		{
+			//fprintf(stderr, "Error: Failed to tokenize input\n");
+			continue;
+		}
+
+		cmd = parse_tokens(tokens);
+		if (!cmd)
+		{
+			//ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
+			return(0);
+		}
 
 		////////////////////////
 		//print_cmd_list(cmd,4);
@@ -180,14 +173,16 @@ int		main(int argc, char **argv, char **env)
 		}
 		else
 			execute_for_one(tokens, cmd, &data, env);
-	//	free(cmd);
+		//free(cmd);
+		//printf("%d\n", data.exit_status);
 		free_cmd(cmd);
 		free_tokens(tokens);
 		//printf("exit status in main end - %d\n", data.exit_status);
-    }
+	}
 	clear_history();
 	//free_cmd(cmd);
 	//rl_clear_history();
+	//printf("%d", data.exit_status);
 	return(data.exit_status);
 }
 
