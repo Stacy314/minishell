@@ -1,2 +1,0 @@
-42 > /dev/null > tmp_redir_out
-2 >> /dev/null >> tmp_redir_out

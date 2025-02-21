@@ -1,2 +1,0 @@
-    echo $1>tmp_test_sh
-echo $2>tmp_test_sh
