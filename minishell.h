@@ -14,6 +14,9 @@
 # include <sys/stat.h>
 # include <limits.h>
 
+# define SUCCESS 1
+# define ERROR 0
+
 # define PERMISSION_DENIED 126 //need to check all error codes
 # define COMMAND_NOT_FOUND 127
 # define ERROR_CODE_MALLOC 1
@@ -72,7 +75,7 @@ typedef struct s_cmd {
 
 //delete after
 void print_cmd_list(t_cmd *cmd_list, size_t count);
-void print_data(t_data *data);
+//void print_data(t_data *data);
 
 char *find_executable(const char *cmd, char **paths);
 char *get_path_from_env(char **env);
@@ -95,8 +98,8 @@ void	free_tokens(t_token **tokens);
 t_cmd	*parse_tokens(t_token **tokens);
 
 // builtins
-int	builtin_echo(t_cmd *cmd, t_data *data);
-int	builtin_pwd(t_cmd *cmd);
+void	builtin_echo(t_cmd *cmd, t_data *data);
+int	builtin_pwd(t_cmd *cmd, t_data *data);
 int	builtin_export(t_cmd *cmd, t_data *data);
 int	builtin_unset(t_cmd *cmd, t_data *data);
 int	builtin_env(t_data *data);
@@ -109,10 +112,11 @@ char	*skip_spaces(char *str);
 long	ft_atol(const char *str);
 
 //execution
+void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 int		execute_command(char *cmd, t_data *data, char **args, char **env);
 void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
 //void	execute_pipeline(t_cmd **cmd, t_data *data, t_token *token, char **env);
-int	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
+void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 //int		contains_special_char(t_cmd *cmd, char delimiter);
 int		execute_redirection(t_cmd *cmd, char **env);
 
