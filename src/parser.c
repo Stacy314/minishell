@@ -204,4 +204,4 @@ t_cmd	*parse_tokens(t_token **tokens)
 	}
 	//print_cmds(cmd);
 	return (cmd);
-
+}

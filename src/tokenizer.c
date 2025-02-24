@@ -6,35 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:16:33 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/24 13:11:21 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*create_token(const char *value, t_token_type type, int index)
-{
-	t_token	*new;
-
-	new = ft_calloc(sizeof(t_token), 1);
-	if (!new)
-	{
-		perror("calloc");
-		exit(EXIT_FAILURE);
-	}
-	new->value = ft_strdup(value);
-	if (!new->value)
-	{
-		perror("strdup");
-		free(new);
-		exit(EXIT_FAILURE);
-	}
-	new->type = type;
-	new->index = index;
-	return (new);
-}
-
-t_token	**split_to_tokens(const char *str, t_data *data)
+t_token *create_token(const char *value, t_token_type type, int index)
 {
     t_token *new = ft_calloc(sizeof(t_token), 1);
     if (!new)
@@ -76,7 +54,7 @@ t_token **split_to_tokens(const char *str, t_data *data)
 
     while (str[j])
     {
-        while (str[j] && str[j] == ' ')
+        while (str[j] && (str[j] == ' ' || str[j] == '	'))
             j++;
         if (str[j] == '\0')
             break;
@@ -180,8 +158,8 @@ t_token **split_to_tokens(const char *str, t_data *data)
     tokens[i] = NULL;
 
     // Debug print
-    for (int i = 0; tokens[i] != NULL; i++)
-        printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
+    //for (int i = 0; tokens[i] != NULL; i++)
+    //    printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
 
     return tokens;
 }
