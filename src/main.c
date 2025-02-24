@@ -153,6 +153,7 @@ int		main(int argc, char **argv, char **env)
         if (!tokens)
         {
             //fprintf(stderr, "Error: Failed to tokenize input\n");
+
             continue;
         }
 
@@ -164,8 +165,9 @@ int		main(int argc, char **argv, char **env)
             exit(0);
         }
 
+		
 		////////////////////////
-		//print_cmd_list(cmd,4);
+		print_cmd_list(cmd,4);
 		
 		if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect) //try to move to execute.c and pipe.c
 		{

@@ -93,6 +93,44 @@ t_token **split_to_tokens(const char *str, t_data *data)
         int inside_quotes = 0;
         char quote_type = 0;
 
+        if (str[j] == '>')
+        {
+
+            if (str[j + 1] == '>')
+            {
+                tokens[i] = create_token(">>", APPEND, index++);
+                i++;
+                j += 2;
+                continue;
+            }
+            else
+            {
+                tokens[i] = create_token(">", REDIRECT_OUT, index++);
+                i++;
+                j++;
+                continue;
+            }
+        }
+
+        if (str[j] == '<')
+        {
+
+            if (str[j + 1] == '<')
+            {
+                tokens[i] = create_token("<<", HEREDOC, index++);
+                i++;
+                j += 2;
+                continue;
+            }
+            else
+            {
+                tokens[i] = create_token("<", REDIRECT_IN, index++);
+                i++;
+                j++;
+                continue;
+            }
+        }
+
         while (str[j] && (!isspace((unsigned char)str[j]) || inside_quotes))
         {
             if ((str[j] == '\'' || str[j] == '\"') && (!inside_quotes || str[j] == quote_type))
@@ -149,8 +187,8 @@ t_token **split_to_tokens(const char *str, t_data *data)
     tokens[i] = NULL;
 
     // Debug print
-    // for (int i = 0; tokens[i] != NULL; i++)
-    //     printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
+    for (int i = 0; tokens[i] != NULL; i++)
+        printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
 
     return tokens;
 }
