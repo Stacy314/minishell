@@ -18,46 +18,6 @@
 
 //&& and || with parenthesis for priorities (no segfault, maybe print error)
 
-//new (extras)
-
-// Test   3: ✅⚠️  $EMPTY
-// mini error = ( Failed to tokenize input)
-// bash error = ()
-
-// Test   5: ❌ ./test_files/invalid_permission
-// mini exit code = 127
-// bash exit code = 126
-// mini error = ( command not found)
-// bash error = ( Permission denied)
-
-// Test   6: ✅⚠️  ./missing.out
-// mini error = ( command not found)
-// bash error = ( No such file or directory)
-
-// Test  10: ❌ ./test_files
-// mini exit code = 127
-// bash exit code = 126
-// mini error = ( command not found)
-// bash error = ( Is a directory)
-
-// est  11: ✅⚠️  /test_files
-// mini error = ( command not found)
-// bash error = ( No such file or directory)
-
-//(redir)
-//Test   1: ❌ grep hi <./test_files/infile
-//mini output = ()
-//bash output = (hi)
-//mini exit code = 2
-//bash exit code = 0
-//mini error = ( No such file or directory)
-//bash error = ()
-
-//Test   2: ❌ grep hi "<infile" <         ./test_files/infile
-//mini output = (./test_files/infile:hi)
-//bash output = ()
-//mini error = ( No such file or directory No such file or directory)
-//bash error = ( No such file or directory)
 
 //fixed
 //empty line (segfault), should print prompt again
