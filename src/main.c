@@ -87,13 +87,40 @@ int	main(int argc, char **argv, char **env)
 		if (*input) // why?
 			add_history(input);
 		if (!input || *input == '\0' || ft_str_only_spaces(input))
+
+        {
+            free(input);
+            continue;
+        }
+
+        tokens = split_to_tokens(input, &data);
+        free(input);
+
+        if (tokens == (t_token **)(-1))
+        {
+            continue;
+        }
+
+        if (!tokens)
+        {
+            //fprintf(stderr, "Error: Failed to tokenize input\n");
+
+            continue;
+        }
+
+        cmd = parse_tokens(tokens);
+        if (!cmd)
+
 		{
-			free(input);
-			continue ;
-		}
-		tokens = split_to_tokens(input, &data);
-		free(input);
-		if (tokens == (t_token **)(-1)) // why?
+            //ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
+            exit(0);
+        }
+
+		
+		////////////////////////
+		print_cmd_list(cmd,4);
+		
+		if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect || cmd->append_redirect) //try to move to execute.c and pipe.c
 		{
 			continue ;
 		}
