@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_tokenizer.c                                  :+:      :+:    :+:   */
+/*   ft_clean.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:16:42 by apechkov         ###   ########.fr       */
+/*   Created: 2024/07/17 14:21:28 by apechkov          #+#    #+#             */
+/*   Updated: 2024/11/08 17:38:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../libft/libft.h"
 
-void	free_tokens(t_token **tokens)
+void	clean(char **p)
 {
-	int	i;
-
-	i = 0;
-	if (!tokens)
-		return ;
-	while (tokens[i])
+	if (p && *p)
 	{
-		free(tokens[i]->value);
-		free(tokens[i]);
-		i++;
+		free(*p);
+		*p = NULL;
 	}
-	free(tokens);
 }

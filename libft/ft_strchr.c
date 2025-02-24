@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:13:24 by apechkov          #+#    #+#             */
-/*   Updated: 2024/04/05 19:13:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2024/11/02 13:48:54 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,24 @@ char	*ft_strchr(const char *s, int c)
 		i++;
 	}
 	return ((char *)s + i);
+}
+
+char	*ft_strchr1(char *s, char c)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (NULL);
+	if (c == '\0')
+		return (&s[ft_strlen(s)]);
+	while (s[i])
+	{
+		if (s[i] == c)
+			return (&s[i]);
+		i++;
+	}
+	return (NULL);
 }
 
 /*int main(void)

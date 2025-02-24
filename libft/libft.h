@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:29:23 by apechkov          #+#    #+#             */
-/*   Updated: 2024/09/11 15:59:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/21 17:24:45 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdint.h>
 # include <stdarg.h>
 # include <stdio.h>
+# include <fcntl.h>
 
 typedef struct s_list
 {
@@ -37,6 +38,7 @@ size_t	ft_strlen(const char *s);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 char	*ft_strchr(const char *s, int c);
+char	*ft_strchr1(char *s, char c);
 char	*ft_strrchr(const char *s, int c);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
@@ -75,5 +77,10 @@ int		print_str(char *str);
 int		print_digit(long n, int base, char specifier);
 int		print_format(char specifier, va_list ap);
 int		print_address(unsigned long address);
+
+#  define BUFFER_SIZE 10
+
+char	*get_next_line(int fd);
+void	clean(char **p);
 
 #endif

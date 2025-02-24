@@ -6,13 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/31 17:47:10 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/22 18:16:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// ./minishell -> ./minishell (echo $SHLVL)
 
 void	handle_sigint(int sig)
 {
@@ -21,8 +19,8 @@ void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	//g_prompt_flag = 1; // Встановлюємо прапорець, що треба вивести новий промпт
-    //write(STDOUT_FILENO, "\nminishell$ ", 12); // Друкуємо новий рядок і промпт вручну
+	//g_prompt_flag = 1; //
+	//write(STDOUT_FILENO, "\nminishell$ ", 12);
 }
 
 void	handle_sigquit(int sig)
@@ -31,19 +29,18 @@ void	handle_sigquit(int sig)
 	printf("Quit: 3\n");
 }
 
-void signal_handler(void)
+void	signal_handler(void)
 {
-    struct sigaction sa;
+	struct sigaction	sa;
 
-    // Handle SIGINT (CTRL-C)
-    sa.sa_handler = handle_sigint;
-    sa.sa_flags = SA_RESTART;
-    sigemptyset(&sa.sa_mask);
-    sigaction(SIGINT, &sa, NULL);
-
-    // Handle SIGQUIT (CTRL-\)
-    sa.sa_handler = handle_sigquit;
-    sa.sa_flags = SA_RESTART;
-    sigemptyset(&sa.sa_mask);
-    sigaction(SIGQUIT, &sa, NULL);
+	// Handle SIGINT (CTRL-C)
+	sa.sa_handler = handle_sigint;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+	// Handle SIGQUIT (CTRL-\)
+	sa.sa_handler = handle_sigquit;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGQUIT, &sa, NULL);
 }

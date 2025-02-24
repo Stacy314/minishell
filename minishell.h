@@ -8,10 +8,14 @@
 # include <stdbool.h>
 # include <stdlib.h>
 # include <signal.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <limits.h>
+
+# define SUCCESS 1
+# define ERROR 0
 
 # define PERMISSION_DENIED 126 //need to check all error codes
 # define COMMAND_NOT_FOUND 127
@@ -53,6 +57,7 @@ typedef struct s_data
 	char			**env;
 	int				exit_status;
 	struct s_cmd	*cmd;
+	//pid_t			last_command_pid;
 }	t_data;
 
 typedef struct s_cmd {
@@ -70,7 +75,7 @@ typedef struct s_cmd {
 
 //delete after
 void print_cmd_list(t_cmd *cmd_list, size_t count);
-void print_data(t_data *data);
+//void print_data(t_data *data);
 
 char *find_executable(const char *cmd, char **paths);
 char *get_path_from_env(char **env);
@@ -78,7 +83,7 @@ char **split_path(const char *path);
 
 void free_cmd(t_cmd *cmd);
 int contains_special_char(t_token	**tokens, char delimiter);
-
+int ft_str_only_spaces(const char *str);
 //initialization
 t_cmd	*init_structure(t_data *data, char **env);
 
@@ -94,18 +99,20 @@ t_cmd	*parse_tokens(t_token **tokens);
 
 // builtins
 void	builtin_echo(t_cmd *cmd, t_data *data);
-void	builtin_pwd(t_cmd *cmd);
-void	builtin_export(t_cmd *cmd, t_data *data);
-void	builtin_unset(t_cmd *cmd, t_data *data);
-void	builtin_env(t_data *data);
-void	builtin_exit(t_cmd *cmd, t_data *data);
-void	builtin_cd(t_cmd *cmd, t_data *data);
+int	builtin_pwd(t_cmd *cmd, t_data *data);
+int	builtin_export(t_cmd *cmd, t_data *data);
+int	builtin_unset(t_cmd *cmd, t_data *data);
+int	builtin_env(t_data *data);
+int	builtin_exit(t_cmd *cmd, t_data *data);
+int	builtin_cd(t_cmd *cmd, t_data *data);
 char	*get_env_value(char **env, const char *key);
 int		find_env_var(char **env, const char *var);
 int		is_option(const char *arg);
 char	*skip_spaces(char *str);
+long	ft_atol(const char *str);
 
 //execution
+void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 int		execute_command(char *cmd, t_data *data, char **args, char **env);
 void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
 //void	execute_pipeline(t_cmd **cmd, t_data *data, t_token *token, char **env);
@@ -114,5 +121,6 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 int		execute_redirection(t_cmd *cmd, char **env);
 
 //expantion
-char *expand_variables(char *str, t_data *data);
+char *expand_variable(const char *str, int *j, t_data *data);
+
 #endif
