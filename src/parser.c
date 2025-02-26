@@ -18,6 +18,8 @@
 
 //&& and || with parenthesis for priorities (no segfault, maybe print error)
 
+//what will be in cmd if there are few redirects?
+
 
 //fixed
 //empty line (segfault), should print prompt again
@@ -121,6 +123,12 @@ t_cmd	*parse_tokens(t_token **tokens)
 	cmd_count = 0;
 	i = 0;
 	cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+	if (tokens[0]->type == PIPE)
+	{
+		fprintf(stderr, "minishell: syntax error near unexpected token `|'\n");
+		free(cmd);
+		return (NULL);
+	}
 	while (tokens[i])
 	{
 		if (tokens[i]->type == PIPE)
@@ -162,6 +170,6 @@ t_cmd	*parse_tokens(t_token **tokens)
 		}
 		i++;
 	}
-	//print_cmds(cmd);
+	print_cmds(cmd);
 	return (cmd);
 }
