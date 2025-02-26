@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 11:33:31 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/26 17:03:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,8 +226,7 @@ void execute_pipeline(t_cmd **cmd, t_data *data, char **env)
 {
     int n_cmds = count_commands(*cmd);
     if (n_cmds == 0)
-        return;
-
+        return ;
     pid_t pids[n_cmds];
     int old_pipe_fd[2];
     int new_pipe_fd[2];

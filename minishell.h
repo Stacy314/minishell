@@ -115,6 +115,7 @@ long	ft_atol(const char *str);
 void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 int		execute_command(char *cmd, t_data *data, char **args, char **env);
 void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
+//void execute_pipeline(t_cmd *cmd, t_data *data, char **env);
 //void	execute_pipeline(t_cmd **cmd, t_data *data, t_token *token, char **env);
 void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 //int		contains_special_char(t_cmd *cmd, char delimiter);

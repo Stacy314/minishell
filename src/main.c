@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 16:17:38 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:48:58 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int	main(int argc, char **argv, char **env)
 
 		
 		////////////////////////
-		print_cmd_list(cmd,4);
+		//print_cmd_list(cmd,4);
 		
 		if (!tokens)
 		{

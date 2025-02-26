@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:14:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:55:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 		i = 0;
 		while (data->env[i])
 		{
-			printf("declare -x %s\n", data->env[i]);
+			printf("declare -x %s\n", data->env[i]); // sort to alfabet
 			i++;
 		}
 		return (1);
