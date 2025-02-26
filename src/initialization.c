@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:14:31 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/26 11:39:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_cmd	*initialize_cmd(t_data *data)
 	cmd->heredoc_delimiter = NULL;
 	/* cmd->pipe_in = -1;
     cmd->pipe_out = -1; */
-	cmd->data = data;
+	cmd->data = data; //need to del
 	cmd->next = NULL;
 	return (cmd);
 }

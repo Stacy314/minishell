@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:16:21 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:42:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	handle_input_redirect(t_cmd *cmd)
 		{
 			printf("minishell: %s: No such file or directory\n",
 					cmd[i].input_redirect);
-			//close(fd);
 		}
 		else
 		{
@@ -40,6 +39,7 @@ void	handle_output_redirect(t_cmd *cmd)
 {
 	int	fd;
 	int	i;
+	int	arg_index;
 
 	i = 0;
 	while (cmd[i].output_redirect)
@@ -49,79 +49,57 @@ void	handle_output_redirect(t_cmd *cmd)
 		{
 			printf("minishell: %s: No such file or directory\n",
 					cmd[i].output_redirect);
-			//close(fd);
 		}
 		else
 		{
 			dup2(fd, STDOUT_FILENO);
-			write(fd, cmd->args[1], ft_strlen(cmd->args[1]));
+			arg_index = 1;
+			while (cmd->args[arg_index])
+			{
+				write(fd, cmd->args[arg_index], ft_strlen(cmd->args[arg_index]));
+				if (cmd->args[arg_index + 1])
+					write(fd, " ", 1);
+				arg_index++;
+			}
 			write(fd, "\n", 1);
 			close(fd);
 		}
 		i++;
 	}
-	//	printf("redirect: %s\n", cmd->args[1]);
-	//  fd = open(cmd->output_redirect, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	//	if (fd == -1)
-	//	{
-	//		printf("minishell: %s : No such file or directory\n",cmd->output_redirect);
-	//      //exit(1);
-	//  }
-	//	else
-	//	{
-	//		dup2(fd, STDOUT_FILENO);
-	//		write(fd, cmd->args[1], ft_strlen(cmd->args[1]));
-	//		close(fd);
-	//	}
 }
 
 //echo hi >>4 >>5 >>6 this is a test (should create 3 files(4,5,6) and write into three: hi this is a test (do it twice- and the message should be twice inside))
 void	handle_append_redirect(t_cmd *cmd)
 {
-	int		fd;
-	int		i;
-	int		j;
-	char	**append_files;
+	int	fd;
+	int	i;
+	int	arg_index;
 
-	append_files = ft_split(cmd->append_redirect, ' ');
 	i = 0;
-	j = 0;
-	while (cmd[j].append_redirect)
+	while (cmd[i].append_redirect)
 	{
-		//printf("cmd->append_redirect: %s\n", cmd[j].append_redirect);
-		while (append_files[i])
+		fd = open(cmd[i].append_redirect, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd == -1)
 		{
-			//printf("append_files[%d]: %s\n", i, append_files[i]);
-			fd = open(cmd[i].append_redirect, O_WRONLY | O_CREAT | O_APPEND,
-					0644);
-			if (fd == -1)
-			{
-				//close(fd);
-				printf("minishell: %s: No such file or directory\n",
-						cmd[i].append_redirect);
-			}
-			else
-			{
-				dup2(fd, STDOUT_FILENO);
-				write(fd, cmd->args[1], ft_strlen(cmd->args[1]));
-				write(fd, "\n", 1);
-				close(fd);
-			}
-			i++;
+			printf("minishell: %s: No such file or directory\n",
+					cmd[i].append_redirect);
 		}
-		j++;
+		else
+		{
+			dup2(fd, STDOUT_FILENO);
+			arg_index = 1;
+			while (cmd->args[arg_index])
+			{
+				write(fd, cmd->args[arg_index], ft_strlen(cmd->args[arg_index]));
+				if (cmd->args[arg_index + 1])
+					write(fd, " ", 1);
+				arg_index++;
+			}
+			write(fd, "\n", 1);
+			close(fd);
+		}
+		i++;
 	}
-	//		fd = open(cmd->append_redirect, O_WRONLY | O_CREAT | O_APPEND,0644);
-	//		if (fd == -1) {
-	//            //perror("minishell: append redirection");
-	//			printf("minishell: %s : No such file or directory\n",cmd->input_redirect);
-	//            //exit(1);
-	//        }
-	//		else
-	//		{
-	//			dup2(fd, STDOUT_FILENO);
-	//			close(fd);
-	//		}
 }
 
 void	handle_heredoc(t_cmd *cmd)
@@ -185,14 +163,7 @@ int	execute_redirection(t_cmd *cmd, char **env)
 			handle_output_redirect(cmd);
 		if (cmd->append_redirect)
 			handle_append_redirect(cmd);
-		//printf("cmd->args[0]: %s\n", cmd->args[0]);
-		//if (!cmd->args || !cmd->args[0]) // Якщо немає команди після `>`,просто виходимо
-		//    exit(0);
-		//if (cmd->args[0]) { // **Якщо є команда, виконуємо її**
-		//    execve(cmd->args[0], cmd->args, env);
-		//}
 		execve(cmd->args[0], cmd->args, env);
-		//perror("execve");
 		exit(127);
 	}
 	waitpid(pid, NULL, 0);
