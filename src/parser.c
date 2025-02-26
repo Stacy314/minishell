@@ -2,12 +2,6 @@
 
 //need to fix:
 
-//| echo hi (bash: syntax error near unexpected token `|', in our minishell -
-//execve: No such file or directory + Conditional jump)
-
-//echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
-//or directory)
-
 //"echo hi" and 'echo hi' (should pars as one arg, echo hi: command not found)
 
 //echo "|" echo (should print - | echo)
@@ -22,6 +16,13 @@
 
 
 //fixed
+
+//echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
+//or directory)
+
+//| echo hi (bash: syntax error near unexpected token `|', in our minishell -
+//execve: No such file or directory + Conditional jump)
+
 //empty line (segfault), should print prompt again
 //				(segfault) - tab
 //                (segfault) - space
@@ -112,6 +113,7 @@ t_cmd	*parse_tokens(t_token **tokens)
 	t_cmd	*cmd;
 	int		cmd_count;
 	int		i;
+	int		last_index;
 
 	cmd = malloc(sizeof(t_cmd) * MAX_COMMANDS);
 	if (!cmd)
@@ -123,7 +125,10 @@ t_cmd	*parse_tokens(t_token **tokens)
 	cmd_count = 0;
 	i = 0;
 	cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-	if (tokens[0]->type == PIPE)
+	last_index = 0;
+	while (tokens[last_index])
+		last_index++;
+	if (tokens[0]->type == PIPE || tokens[last_index - 1]->type == PIPE)
 	{
 		fprintf(stderr, "minishell: syntax error near unexpected token `|'\n");
 		free(cmd);

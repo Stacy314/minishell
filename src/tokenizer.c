@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 15:23:16 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/02/26 17:55:13 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,14 @@ t_token **split_to_tokens(const char *str, t_data *data)
         int k = 0;
         int inside_quotes = 0;
         char quote_type = 0;
+
+        if (str[j] == '|')
+        {
+            tokens[i] = create_token("|", PIPE, index++);
+            i++;
+            j++;
+            continue;
+        }
 
         if (str[j] == '>')
         {
