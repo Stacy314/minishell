@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 17:55:13 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:42:58 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,11 @@ t_token **split_to_tokens(const char *str, t_data *data)
 
         while (str[j] && (!isspace((unsigned char)str[j]) || inside_quotes))
         {
+            if (inside_quotes && str[j] == '|')
+            {
+                buffer[k++] = str[j++];
+                continue;
+            }
             if ((str[j] == '\'' || str[j] == '\"') && (!inside_quotes || str[j] == quote_type))
             {
                 if (!inside_quotes)
