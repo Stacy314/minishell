@@ -2,12 +2,6 @@
 
 //need to fix:
 
-//"echo hi" and 'echo hi' (should pars as one arg, echo hi: command not found)
-
-//echo "|" echo (should print - | echo)
-
-//echo " | "(should print -  | )
-
 //echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
 
 //&& and || with parenthesis for priorities (no segfault, maybe print error)
@@ -19,10 +13,8 @@
 
 //echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
 //or directory)
-
 //| echo hi (bash: syntax error near unexpected token `|', in our minishell -
 //execve: No such file or directory + Conditional jump)
-
 //empty line (segfault), should print prompt again
 //				(segfault) - tab
 //                (segfault) - space
@@ -39,6 +31,9 @@
 //echo hi "$USER is great, home is $HOME" (hi apechkov is great, home is /home/apechkov)
 //"<" sasdad
 //<: command not found (in bash), in minishell - it is a command
+//"echo hi" and 'echo hi' (should pars as one arg, echo hi: command not found)
+//echo "|" echo (should print - | echo)
+//echo " | "(should print -  | )
 
 void	print_cmds(t_cmd *cmd)
 {

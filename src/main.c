@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 17:26:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:33:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int	main(int argc, char **argv, char **env)
         }
 
 		////////////////////////
-		print_cmd_list(cmd,4);
+		//print_cmd_list(cmd,4);
 		execute(tokens, cmd, &data, env);
 	}
 	clear_history();

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 17:16:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:33:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,8 +171,8 @@ t_token **split_to_tokens(const char *str, t_data *data)
     tokens[i] = NULL;
 
     // Debug print
-    for (int i = 0; tokens[i] != NULL; i++)
-       printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
+    //for (int i = 0; tokens[i] != NULL; i++)
+    //   printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type, tokens[i]->value);
 
     return tokens;
 }
