@@ -62,6 +62,7 @@ typedef struct s_data
 
 typedef struct s_cmd {
     char	**args;
+	struct s_cmd	*next;
     char	*input_redirect;
     char	*output_redirect;
     char	*append_redirect;
@@ -69,7 +70,7 @@ typedef struct s_cmd {
     //int		pipe_in;
     //int		pipe_out;
 	t_data	*data; //delete
-	struct s_cmd	*next;
+	
 	//struct s_cmd	*prev;
 } t_cmd;
 
@@ -82,7 +83,7 @@ char *get_path_from_env(char **env);
 char **split_path(const char *path);
 
 void free_cmd(t_cmd *cmd);
-int contains_special_char(t_token	**tokens, char delimiter);
+bool contains_special_char(t_token **tokens, t_token_type type);
 int ft_str_only_spaces(const char *str);
 //initialization
 t_cmd	*init_structure(t_data *data, char **env);
@@ -114,9 +115,7 @@ long	ft_atol(const char *str);
 //execution
 void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 int		execute_command(char *cmd, t_data *data, char **args, char **env);
-void	execute_pipeline(t_cmd **cmd, t_data *data, char **env);
-//void execute_pipeline(t_cmd *cmd, t_data *data, char **env);
-//void	execute_pipeline(t_cmd **cmd, t_data *data, t_token *token, char **env);
+void execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
 //int		contains_special_char(t_cmd *cmd, char delimiter);
 int		execute_redirection(t_cmd *cmd, char **env);

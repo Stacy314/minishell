@@ -175,6 +175,6 @@ t_cmd	*parse_tokens(t_token **tokens)
 		}
 		i++;
 	}
-	print_cmds(cmd);
+	//print_cmds(cmd);
 	return (cmd);
 }

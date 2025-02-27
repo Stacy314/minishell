@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 13:47:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:24:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,9 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 		if (execute_redirection(cmd, env) == 1)
 			return ;
 	}
-	if (contains_special_char(tokens, '|'))
+	if (contains_special_char(tokens, PIPE))
 	{
-		printf("im here1\n");
-		execute_pipeline(&cmd, data, env);
+		execute_pipeline(tokens, cmd, data, env);
 	}
 	else
 		execute_for_one(tokens, cmd, data, env);

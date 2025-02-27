@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 16:42:33 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:49:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	handle_output_redirect(t_cmd *cmd)
 			arg_index = 1;
 			while (cmd->args[arg_index])
 			{
-				write(fd, cmd->args[arg_index], ft_strlen(cmd->args[arg_index]));
+				write(fd, cmd->args[arg_index], ft_strlen(cmd->args[arg_index])); //if write or read == -1 return errer
 				if (cmd->args[arg_index + 1])
 					write(fd, " ", 1);
 				arg_index++;

@@ -6,28 +6,41 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:16:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:23:58 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	contains_special_char(t_token **tokens, char delimiter)
-{
-	int	i;
+//int	contains_special_char(t_token **tokens, char delimiter)
+//{
+//	int	i;
 
-	//printf("contains_special_char\n");
-	i = 0;
-	while (tokens[i])
-	{
-		if (ft_strchr(tokens[i]->value, delimiter))
-		{
-			return (1);
-		}
-		i++;
-	}
-	return (0);
+//	//printf("contains_special_char\n");
+//	i = 0;
+//	while (tokens[i])
+//	{
+//		if (ft_strchr(tokens[i]->value, delimiter))
+//		{
+//			return (1);
+//		}
+//		i++;
+//	}
+//	return (0);
+//}
+bool contains_special_char(t_token **tokens, t_token_type type)
+{
+    int i = 0;
+
+    while (tokens[i]) // Iterate through token list
+    {
+        if (tokens[i]->type == type) // Found a special character
+            return (true);
+        i++;
+    }
+    return (false);
 }
+
 
 int	ft_str_only_spaces(const char *str)
 {

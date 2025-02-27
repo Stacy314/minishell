@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 16:48:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:26:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ int	main(int argc, char **argv, char **env)
 	t_data	data;
 	t_token	**tokens;
 	t_cmd	*cmd;
-	//char *line;
 
 	if (argv && argc > 1)
 		return (ft_putstr_fd("Minishell cannot accept arguments\n",
@@ -76,15 +75,16 @@ int	main(int argc, char **argv, char **env)
 		//	input = readline("minishell$ ");
 		//else
 		//{
-		//	line = get_next_line(fileno(stdin));
+		//	char *line = get_next_line(fileno(stdin));
 		//	input = ft_strtrim(line, "\n");
 		//	free(line);
 		//}
 		///////////////
+		
 		input = readline("minishell$ ");
 		if (!input)
 			return (printf("exit\n"), 0);
-		if (*input) // why?
+		if (*input)
 			add_history(input);
 		if (!input || *input == '\0' || ft_str_only_spaces(input))
 
@@ -104,7 +104,6 @@ int	main(int argc, char **argv, char **env)
         if (!tokens)
         {
             //fprintf(stderr, "Error: Failed to tokenize input\n");
-
             continue;
         }
 
@@ -112,29 +111,13 @@ int	main(int argc, char **argv, char **env)
         if (!cmd)
 
 		{
+			free_tokens(tokens);
             //ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
            return(0);
         }
 
-		
 		////////////////////////
-		//print_cmd_list(cmd,4);
-		
-		if (!tokens)
-		{
-			//fprintf(stderr, "Error: Failed to tokenize input\n");
-			continue ;
-		}
-		cmd = parse_tokens(tokens);
-		if (!cmd)
-		{
-			free_tokens(tokens);
-			//ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
-			return (0);
-		}
-		////////////////////////
-		//print_cmd_list(cmd,4);
-		
+		print_cmd_list(cmd,4);
 		execute(tokens, cmd, &data, env);
 	}
 	clear_history();
