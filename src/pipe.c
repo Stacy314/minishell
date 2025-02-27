@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 17:03:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 13:46:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,10 @@ char *find_command_path(const char *cmd, char **env)
             free(paths);
             return (NULL);
         }
-        ft_strlcpy(full_path, token, ft_strlen(full_path));
-        strcat(full_path, "/");
+        //ft_strlcpy(full_path, token, ft_strlen(full_path));
+        ft_strlcpy(full_path, token, len_dir + 1);
+
+		strcat(full_path, "/");
         strcat(full_path, cmd);
         if (access(full_path, X_OK) == 0)
         {
@@ -119,25 +121,25 @@ pid_t execute_first_command(t_cmd **cmd, t_data **data, char **env, int pipe_fd[
         close(pipe_fd[0]);
         close(pipe_fd[1]);
 
-		//char *cmd_path = NULL;
-        //if (strchr((*cmd)->args[0], '/'))
-        //    cmd_path = (*cmd)->args[0];
-        //else
-        //    cmd_path = find_command_path((*cmd)->args[0], env);
+		char *cmd_path = NULL;
+        if (strchr((*cmd)->args[0], '/'))
+            cmd_path = (*cmd)->args[0];
+        else
+            cmd_path = find_command_path((*cmd)->args[0], env);
         
-        //if (!cmd_path)
-        //{
-        //    fprintf(stderr, "minishell: %s: command not found\n", (*cmd)->args[0]);
-        //    exit(0);
-        //}
+        if (!cmd_path)
+        {
+            fprintf(stderr, "minishell: %s: command not found\n", (*cmd)->args[0]);
+            exit(0);
+        }
 
-        execve((*cmd)->args[0], (*cmd)->args, env);
+        execve(cmd_path, (*cmd)->args, env);
         //perror("execve"); // Error in case execve fails
         exit(0);
     }
     else
     {
-		close(pipe_fd[0]); ////
+		//close(pipe_fd[0]); ////
         close(pipe_fd[1]);
     }
     return (pid);
@@ -161,10 +163,10 @@ pid_t execute_middle_command(t_cmd **cmd, t_data **data, char **env, int old_pip
     {
         dup2(old_pipe_fd[0], STDIN_FILENO);
         dup2(new_pipe_fd[1], STDOUT_FILENO);
-        close(old_pipe_fd[0]);
-        close(old_pipe_fd[1]);
-        close(new_pipe_fd[0]);
-        close(new_pipe_fd[1]);
+        //close(old_pipe_fd[0]);
+        //close(old_pipe_fd[1]);
+        //close(new_pipe_fd[0]);
+        //close(new_pipe_fd[1]);
         execve((*cmd)->args[0], (*cmd)->args, env);
         //perror("execve");
         exit(0);
@@ -173,7 +175,7 @@ pid_t execute_middle_command(t_cmd **cmd, t_data **data, char **env, int old_pip
     {
         close(old_pipe_fd[0]);
         close(old_pipe_fd[1]);
-		close(new_pipe_fd[0]); ///
+		//close(new_pipe_fd[0]); ///
         close(new_pipe_fd[1]);
     }
     return (pid);
@@ -192,8 +194,8 @@ pid_t execute_last_command(t_cmd **cmd, t_data **data, char **env, int pipe_fd[2
     if (pid == 0)
     {
         dup2(pipe_fd[0], STDIN_FILENO);
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
+        //close(pipe_fd[0]);
+        //close(pipe_fd[1]);
         if ((*cmd)->args[0] && strcmp((*cmd)->args[0], "echo") == 0)
         {
             char buffer[1024];
@@ -230,7 +232,9 @@ void execute_pipeline(t_cmd **cmd, t_data *data, char **env)
     pid_t pids[n_cmds];
     int old_pipe_fd[2];
     int new_pipe_fd[2];
+	
 
+	printf("im here\n");
     t_cmd *current_cmd = cmd[0];
     pids[0] = execute_first_command(cmd, &data, env, old_pipe_fd);
 
@@ -255,3 +259,250 @@ void execute_pipeline(t_cmd **cmd, t_data *data, char **env)
             data->exit_status = WEXITSTATUS(status);
     }
 }
+
+
+//char *find_command_path(const char *cmd, char **env)
+//{
+//    char *path_env = NULL;
+//    char *token = NULL;
+//    char *full_path = NULL;
+//    size_t len_dir, len_cmd;
+    
+//    path_env = get_path_from_env(env);
+//    if (!path_env)
+//        return (NULL);
+//    char *paths = ft_strdup(path_env);
+//    if (!paths)
+//    {
+//        perror("strdup");
+//        return NULL;
+//    }
+//    len_cmd = ft_strlen(cmd);
+//    token = strtok(paths, ":");
+//    while (token)
+//    {
+//        len_dir = strlen(token);
+//        full_path = malloc(len_dir + 1 + len_cmd + 1);
+//        if (!full_path)
+//        {
+//            perror("malloc");
+//            free(paths);
+//            return (NULL);
+//        }
+//        ft_strlcpy(full_path, token, len_dir + 1);
+//        strcat(full_path, "/");
+//        strcat(full_path, cmd);
+//        if (access(full_path, X_OK) == 0)
+//        {
+//            free(paths);
+//            return full_path;
+//        }
+//        free(full_path);
+//        full_path = NULL;
+//        token = strtok(NULL, ":");
+//    }
+//    free(paths);
+//    return NULL;
+//}
+
+//int count_commands(t_cmd *cmd)
+//{
+//    int count = 0;
+//    while (cmd[count].args != NULL)
+//    {
+//        count++;
+//    }
+//    return count;
+//}
+
+//pid_t execute_first_command(t_cmd **cmd, t_data **data, char **env, int pipe_fd[2])
+//{
+//    (void)data;
+//    if (pipe(pipe_fd) == -1)
+//    {
+//        perror("pipe");
+//        return (-1);
+//    }
+//    pid_t pid = fork();
+//    if (pid < 0)
+//    {
+//        perror("fork");
+//        return (-1);
+//    }
+//    if (pid == 0)
+//    {
+//        // У дочірньому процесі перенаправляємо stdout у write-end пайпа
+//        dup2(pipe_fd[1], STDOUT_FILENO);
+//        // Закриваємо обидва кінці, оскільки вони вже дубльовані
+//        close(pipe_fd[0]);
+//        close(pipe_fd[1]);
+
+//        char *cmd_path = NULL;
+//        if (strchr((*cmd)->args[0], '/'))
+//            cmd_path = (*cmd)->args[0];
+//        else
+//            cmd_path = find_command_path((*cmd)->args[0], env);
+        
+//        if (!cmd_path)
+//        {
+//            fprintf(stderr, "minishell: %s: command not found\n", (*cmd)->args[0]);
+//            exit(1);
+//        }
+//        execve(cmd_path, (*cmd)->args, env);
+//        perror("execve");
+//        exit(1);
+//    }
+//    else
+//    {
+//        // У батьківському процесі закриваємо write-end, залишаємо read-end для наступної команди
+//        close(pipe_fd[1]);
+//    }
+//    return (pid);
+//}
+
+//pid_t execute_middle_command(t_cmd **cmd, t_data **data, char **env, int old_pipe_fd[2], int new_pipe_fd[2])
+//{
+//    (void)data;
+//    if (pipe(new_pipe_fd) == -1)
+//    {
+//        perror("pipe");
+//        return (-1);
+//    }
+//    pid_t pid = fork();
+//    if (pid < 0)
+//    {
+//        perror("fork");
+//        return (-1);
+//    }
+//    if (pid == 0)
+//    {
+//        // Дублюємо read-end старого пайпа у stdin та write-end нового пайпа у stdout
+//        dup2(old_pipe_fd[0], STDIN_FILENO);
+//        dup2(new_pipe_fd[1], STDOUT_FILENO);
+//        // Закриваємо всі кінці пайпів у дочірньому процесі
+//        close(old_pipe_fd[0]);
+//        close(old_pipe_fd[1]);
+//        close(new_pipe_fd[0]);
+//        close(new_pipe_fd[1]);
+
+//        // За бажанням, можна додати пошук абсолютного шляху як і в першій команді
+//        char *cmd_path = NULL;
+//        if (strchr((*cmd)->args[0], '/'))
+//            cmd_path = (*cmd)->args[0];
+//        else
+//            cmd_path = find_command_path((*cmd)->args[0], env);
+        
+//        if (!cmd_path)
+//        {
+//            fprintf(stderr, "minishell: %s: command not found\n", (*cmd)->args[0]);
+//            exit(1);
+//        }
+//        execve(cmd_path, (*cmd)->args, env);
+//        perror("execve");
+//        exit(1);
+//    }
+//    else
+//    {
+//        // У батьківському процесі закриваємо кінці, які більше не потрібні:
+//        // Закриваємо старий пайп повністю
+//        close(old_pipe_fd[0]);
+//        close(old_pipe_fd[1]);
+//        // Закриваємо лише write-end нового пайпа; read-end залишаємо для наступної команди
+//        close(new_pipe_fd[1]);
+//    }
+//    return (pid);
+//}
+
+//pid_t execute_last_command(t_cmd **cmd, t_data **data, char **env, int pipe_fd[2])
+//{
+//    (void)data;
+//    pid_t pid = fork();
+//    if (pid < 0)
+//    {
+//        perror("fork");
+//        return (-1);
+//    }
+//    if (pid == 0)
+//    {
+//        // Перенаправляємо read-end пайпа у stdin
+//        dup2(pipe_fd[0], STDIN_FILENO);
+//        // Закриваємо обидва кінці
+//        close(pipe_fd[0]);
+//        close(pipe_fd[1]);
+
+//        // За бажанням, можна обробити echo спеціально, як і раніше
+//        if ((*cmd)->args[0] && strcmp((*cmd)->args[0], "echo") == 0)
+//        {
+//            char buffer[1024];
+//            ssize_t bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer) - 1);
+//            if (bytes_read > 0)
+//            {
+//                buffer[bytes_read] = '\0';
+//                write(STDOUT_FILENO, buffer, bytes_read);
+//            }
+//            else
+//            {
+//                write(STDOUT_FILENO, "\n", 1);
+//            }
+//            exit(0);
+//        }
+//        char *cmd_path = NULL;
+//        if (strchr((*cmd)->args[0], '/'))
+//            cmd_path = (*cmd)->args[0];
+//        else
+//            cmd_path = find_command_path((*cmd)->args[0], env);
+        
+//        if (!cmd_path)
+//        {
+//            fprintf(stderr, "minishell: %s: command not found\n", (*cmd)->args[0]);
+//            exit(1);
+//        }
+//        execve(cmd_path, (*cmd)->args, env);
+//        perror("execve");
+//        exit(1);
+//    }
+//    else
+//    {
+//        // У батьківському процесі закриваємо обидва кінці пайпа
+//        close(pipe_fd[0]);
+//        close(pipe_fd[1]);
+//    }
+//    return (pid);
+//}
+
+//void execute_pipeline(t_cmd **cmd, t_data *data, char **env)
+//{
+//    int n_cmds = count_commands(*cmd);
+//    if (n_cmds == 0)
+//        return;
+//    pid_t pids[n_cmds];
+//    int old_pipe_fd[2];
+//    int new_pipe_fd[2];
+    
+//    // Виконуємо першу команду
+//    t_cmd *current_cmd = cmd[0];
+//    pids[0] = execute_first_command(cmd, &data, env, old_pipe_fd);
+
+//    int i = 1;
+//    // Для проміжних команд
+//    for (; i < n_cmds - 1; i++)
+//    {
+//        current_cmd = cmd[i];
+//        pids[i] = execute_middle_command(&current_cmd, &data, env, old_pipe_fd, new_pipe_fd);
+//        // Передаємо новий пайп як старий для наступної ітерації
+//        old_pipe_fd[0] = new_pipe_fd[0];
+//        old_pipe_fd[1] = new_pipe_fd[1];
+//    }
+
+//    // Виконуємо останню команду
+//    current_cmd = cmd[i];
+//    pids[i] = execute_last_command(&current_cmd, &data, env, old_pipe_fd);
+
+//    int status;
+//    for (i = 0; i < n_cmds; i++)
+//    {
+//        waitpid(pids[i], &status, 0);
+//        if (WIFEXITED(status))
+//            data->exit_status = WEXITSTATUS(status);
+//    }
+//}
