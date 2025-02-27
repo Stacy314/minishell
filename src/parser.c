@@ -123,9 +123,9 @@ t_cmd	*parse_tokens(t_token **tokens)
 	last_index = 0;
 	while (tokens[last_index])
 		last_index++;
-	if (tokens[0]->type == PIPE || tokens[last_index - 1]->type == PIPE)
+	if (tokens[0]->type == PIPE || tokens[last_index - 1]->type == PIPE) //$notexists | ls | $notexists
 	{
-		fprintf(stderr, "minishell: syntax error near unexpected token `|'\n");
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
 		free(cmd);
 		return (NULL);
 	}

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 16:55:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:59:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,37 +35,103 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 	data->exit_status = 0;
 }
-
+//pwd
+//cd /Users
+//pwd (segfault)
 int	builtin_cd(t_cmd *cmd, t_data *data)
 {
-	char	*path;
+	char		*dir = NULL;
+	struct stat	path_stat;
 
 	if (cmd->args[1] == NULL)
 	{
-		path = get_env_value(data->env, "HOME");
-		if (!path)
-			return (ft_putendl_fd("minishell: cd: HOME not set", 2),
-				data->exit_status = 1);
+		dir = getenv("HOME");
+		if (!dir)
+		{
+			ft_putendl_fd("minishell: cd: HOME not set", 2);
+			data->exit_status = 1;
+			return (1);
+		}
 	}
 	else if (cmd->args[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", 2);
-		return (data->exit_status = 1);
-	}
-	else if (ft_strncmp(cmd->args[1], "~", 1) == 0)
-	{
-		path = get_env_value(data->env, "HOME");
-		if (!path)
-			return (ft_putendl_fd("minishell: cd: HOME not set", 2),
-				data->exit_status = 1);
-		path = ft_strjoin(path, cmd->args[1] + 1);
+		data->exit_status = 1;
+		return (1);
 	}
 	else
-		path = cmd->args[1];
-	if (chdir(path) == -1)
-		return (perror("cd"), data->exit_status = 1);
-	return (data->exit_status = 0);
+		dir = cmd->args[1];
+	if (ft_strncmp(cmd->args[1], "~", 1) == 0)
+	{
+		char *home = get_env_value(data->env, "HOME");
+		if (!home)
+		{
+			ft_putendl_fd("minishell: cd: HOME not set", 2);
+			data->exit_status = 1;
+			return (1);
+		}
+		dir = ft_strjoin(home, cmd->args[1] + 1);
+		free(home);
+	}
+
+	if (stat(dir, &path_stat) == -1)
+	{
+		//ft_putstr_fd("minishell: cd: ", 2);
+		//ft_putstr_fd(dir, 2);
+		//ft_putstr_fd("No such file or directory\n", 2); 
+		fprintf(stderr, "minishell: cd: %s: No such file or directory\n", dir);
+		data->exit_status = 1;
+		return (1);
+	}
+	if (!S_ISDIR(path_stat.st_mode))
+	{
+		//ft_putstr_fd("minishell: cd: ", 2);
+		//ft_putstr_fd(dir, 2);
+		//ft_putstr_fd("Not a directory\n", 2); 
+		fprintf(stderr, "minishell: cd: %s: Not a directory\n", dir);
+		data->exit_status = 1;
+		return (1);
+	}
+	if (chdir(dir) == -1)
+	{
+		perror("minishell: cd");
+		data->exit_status = 1;
+		return (1);
+	}
+	data->exit_status = 0;
+	return (0);
 }
+
+//int	builtin_cd(t_cmd *cmd, t_data *data)
+//{
+//	char	*path;
+
+//	if (cmd->args[1] == NULL)
+//	{
+//		path = get_env_value(data->env, "HOME");
+//		if (!path)
+//			return (ft_putendl_fd("minishell: cd: HOME not set", 2),
+//				data->exit_status = 1);
+//	}
+//	else if (cmd->args[2])
+//	{
+//		ft_putendl_fd("minishell: cd: too many arguments", 2);
+//		return (data->exit_status = 1);
+//	}
+//	else if (ft_strncmp(cmd->args[1], "~", 1) == 0)
+//	{
+//		path = get_env_value(data->env, "HOME");
+//		if (!path)
+//			return (ft_putendl_fd("minishell: cd: HOME not set", 2),
+//				data->exit_status = 1);
+//		path = ft_strjoin(path, cmd->args[1] + 1);
+//	}
+//	else
+//		path = cmd->args[1];
+//	if (chdir(path) == -1)
+//		return (perror("cd"), data->exit_status = 1);
+//	return (data->exit_status = 0);
+//}
 
 int	builtin_pwd(t_cmd *cmd, t_data *data)
 {

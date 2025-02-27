@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:14:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:50:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 		if (pid == 0)
 		{
 			execve(cmd, args, env);
-			perror("execve");
+			//perror("execve");
 			exit(127);
 		}
 		else
@@ -153,7 +153,7 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 	if (pid == 0)
 	{
 		execve(executable, args, env);
-		perror("execve");
+		//perror("execve");
 		exit(127);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 16:49:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:47:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,8 +143,9 @@ void	handle_heredoc(t_cmd *cmd)
 	close(pipe_fd[0]);
 }
 
-int	execute_redirection(t_cmd *cmd, char **env)
+int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 {
+	(void)env;
 	pid_t	pid;
 
 	pid = fork();
@@ -163,7 +164,8 @@ int	execute_redirection(t_cmd *cmd, char **env)
 			handle_output_redirect(cmd);
 		if (cmd->append_redirect)
 			handle_append_redirect(cmd);
-		execve(cmd->args[0], cmd->args, env);
+		execute_command(cmd->args[0], data, cmd->args, env);
+		//execve(cmd->args[0], cmd->args, env);
 		exit(127);
 	}
 	waitpid(pid, NULL, 0);

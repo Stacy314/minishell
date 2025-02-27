@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 17:33:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:54:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	main(int argc, char **argv, char **env)
 		
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), 0);
+			return (printf("exit\n"), data.exit_status);
 		if (*input)
 			add_history(input);
 		if (!input || *input == '\0' || ft_str_only_spaces(input))

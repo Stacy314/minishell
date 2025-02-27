@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 17:33:33 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:14:41 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,15 @@ t_token **split_to_tokens(const char *str, t_data *data)
 
             if (str[j] == '$' && quote_type != '\'')
             {
-                char *expanded = expand_variable(str, &j, data);
-                size_t len = ft_strlen(expanded);
+                char *expanded = expand_variable(str, &j, data); //move to parser
+                //if (!expanded || !*expanded)  // If empty after expansion
+				//{
+				//	printf("minishell: %s: ambiguous redirect\n", cmd->output_redirect); //change to stderr
+				//	data->exit_status = 1;
+				//	free(expanded);
+				//	return (NULL);
+				//}
+				size_t len = ft_strlen(expanded);
                 if (k + len < sizeof(buffer))
                 {
                     ft_strlcpy(&buffer[k], expanded, sizeof(buffer) - k);
