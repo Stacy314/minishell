@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 19:50:25 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:15:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ char	**split_path(const char *path)
 	char	*path_copy;
 	char	*token;
 
-	paths = ft_calloc(128 * sizeof(char *), 1); //why 128?
+	paths = ft_calloc(128 * sizeof(char *), 1); // why 128?
 	path_copy = ft_strdup(path);
-	token = strtok(path_copy, ":"); //need to cange
+	token = strtok(path_copy, ":"); // need to cange
 	i = 0;
 	while (token)
 	{
 		paths[i++] = ft_strdup(token);
-		token = strtok(NULL, ":"); //need to cange
+		token = strtok(NULL, ":"); // need to cange
 	}
 	paths[i] = NULL;
 	free(path_copy);
@@ -54,14 +54,14 @@ char	*find_executable(const char *cmd, char **paths)
 	char	*full_path;
 	int		i;
 
-	full_path = malloc(1024); //why 1024?
+	full_path = malloc(1024); // why 1024?
 	i = 0;
 	while (paths[i] != NULL)
 	{
-		snprintf(full_path, 1024, "%s/%s", paths[i], cmd); //need to change
+		snprintf(full_path, 1024, "%s/%s", paths[i], cmd); // need to change
 		if (access(full_path, X_OK) == 0)
 		{
-			//printf("full_path = %s\n", full_path);
+			// printf("full_path = %s\n", full_path);
 			return (full_path);
 		}
 		i++;
@@ -92,7 +92,7 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-//ls | wc -l
+// ls | wc -l
 
 int	execute_command(char *cmd, t_data *data, char **args, char **env)
 {
@@ -115,7 +115,7 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 		if (pid == 0)
 		{
 			execve(cmd, args, env);
-			//perror("execve");
+			// perror("execve");
 			exit(127);
 		}
 		else
@@ -153,7 +153,7 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 	if (pid == 0)
 	{
 		execve(executable, args, env);
-		//perror("execve");
+		// perror("execve");
 		exit(127);
 	}
 	else
@@ -172,7 +172,7 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 }
 
 //// Тестування
-//int main(int argc, char **argv, char **env) {
+// int main(int argc, char **argv, char **env) {
 //    if (argc < 2) {
 //        fprintf(stderr, "Usage: %s <command> [args...]\n", argv[0]);
 //        return (1);

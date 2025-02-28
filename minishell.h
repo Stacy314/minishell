@@ -62,7 +62,7 @@ typedef struct s_data
 
 typedef struct s_cmd {
     char	**args;
-	struct s_cmd	*next;
+	struct s_cmd	*next; //del
     char	*input_redirect;
     char	*output_redirect;
     char	*append_redirect;

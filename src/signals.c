@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/22 18:16:25 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:19:13 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	//g_prompt_flag = 1; //
-	//write(STDOUT_FILENO, "\nminishell$ ", 12);
+	// g_prompt_flag = 1; //
+	// write(STDOUT_FILENO, "\nminishell$ ", 12);
 }
 
 void	handle_sigquit(int sig)

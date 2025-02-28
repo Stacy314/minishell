@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 18:24:45 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:15:28 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ char	*expand_variable(const char *str, int *j, t_data *data)
 	int		k;
 	char	**env;
 	int		i;
-	
+
 	if (!str || !*str) //
-        return (NULL);
+		return (NULL);
 	k = 0;
 	(*j)++;
 	if (str[*j] == '?')

@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 17:23:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:19:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//int	contains_special_char(t_token **tokens, char delimiter)
+// int	contains_special_char(t_token **tokens, char delimiter)
 //{
 //	int	i;
 
@@ -28,19 +28,19 @@
 //	}
 //	return (0);
 //}
-bool contains_special_char(t_token **tokens, t_token_type type)
+bool	contains_special_char(t_token **tokens, t_token_type type)
 {
-    int i = 0;
+	int	i;
 
-    while (tokens[i]) // Iterate through token list
-    {
-        if (tokens[i]->type == type) // Found a special character
-            return (true);
-        i++;
-    }
-    return (false);
+	i = 0;
+	while (tokens[i]) // Iterate through token list
+	{
+		if (tokens[i]->type == type) // Found a special character
+			return (true);
+		i++;
+	}
+	return (false);
 }
-
 
 int	ft_str_only_spaces(const char *str)
 {
@@ -56,7 +56,7 @@ int	ft_str_only_spaces(const char *str)
 	return (1);
 }
 
-//void free_cmd(t_cmd *cmd)
+// void free_cmd(t_cmd *cmd)
 //{
 //	//int i = 0;
 //    if (!cmd)
@@ -115,11 +115,11 @@ int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 	(void)exit_status;
 	free_cmd(cmd);
 	free(data.env);
-	//free(data.);
+	// free(data.);
 	exit(data.exit_status);
 }
 
-//void print_data(t_data *data) //need to del
+// void print_data(t_data *data) //need to del
 //{
 //	if (!data)
 //	{

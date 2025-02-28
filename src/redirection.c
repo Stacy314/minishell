@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 19:47:10 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:19:00 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	handle_input_redirect(t_cmd *cmd)
 		if (fd == -1)
 		{
 			printf("minishell: %s: No such file or directory\n",
-					cmd[i].input_redirect);
+				cmd[i].input_redirect);
 		}
 		else
 		{
@@ -48,7 +48,7 @@ void	handle_output_redirect(t_cmd *cmd)
 		if (fd == -1)
 		{
 			printf("minishell: %s: No such file or directory\n",
-					cmd[i].output_redirect);
+				cmd[i].output_redirect);
 		}
 		else
 		{
@@ -56,7 +56,9 @@ void	handle_output_redirect(t_cmd *cmd)
 			arg_index = 1;
 			while (cmd->args[arg_index])
 			{
-				write(fd, cmd->args[arg_index], ft_strlen(cmd->args[arg_index])); //if write or read == -1 return errer
+				write(fd, cmd->args[arg_index],
+						ft_strlen(cmd->args[arg_index])); // if write or read ==
+					//-1 return errer
 				if (cmd->args[arg_index + 1])
 					write(fd, " ", 1);
 				arg_index++;
@@ -68,7 +70,7 @@ void	handle_output_redirect(t_cmd *cmd)
 	}
 }
 
-//echo hi >>4 >>5 >>6 this is a test (should create 3 files(4,5,6) and write into three: hi this is a test (do it twice- and the message should be twice inside))
+// echo hi >>4 >>5 >>6 this is a test (should create 3 files(4,5,6) and write into three: hi this is a test (do it twice- and the message should be twice inside))
 void	handle_append_redirect(t_cmd *cmd)
 {
 	int	fd;
@@ -82,7 +84,7 @@ void	handle_append_redirect(t_cmd *cmd)
 		if (fd == -1)
 		{
 			printf("minishell: %s: No such file or directory\n",
-					cmd[i].append_redirect);
+				cmd[i].append_redirect);
 		}
 		else
 		{
@@ -90,7 +92,8 @@ void	handle_append_redirect(t_cmd *cmd)
 			arg_index = 1;
 			while (cmd->args[arg_index])
 			{
-				write(fd, cmd->args[arg_index], ft_strlen(cmd->args[arg_index]));
+				write(fd, cmd->args[arg_index],
+					ft_strlen(cmd->args[arg_index]));
 				if (cmd->args[arg_index + 1])
 					write(fd, " ", 1);
 				arg_index++;
@@ -145,9 +148,9 @@ void	handle_heredoc(t_cmd *cmd)
 
 int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 {
-	(void)env;
 	pid_t	pid;
 
+	(void)env;
 	pid = fork();
 	if (pid == -1)
 	{
@@ -165,7 +168,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 		if (cmd->append_redirect)
 			handle_append_redirect(cmd);
 		execute_command(cmd->args[0], data, cmd->args, env);
-		//execve(cmd->args[0], cmd->args, env);
+		// execve(cmd->args[0], cmd->args, env);
 		exit(127);
 	}
 	waitpid(pid, NULL, 0);

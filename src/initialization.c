@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/26 11:39:10 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:15:31 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ t_cmd	*initialize_cmd(t_data *data)
 	cmd->append_redirect = NULL;
 	cmd->heredoc_delimiter = NULL;
 	/* cmd->pipe_in = -1;
-    cmd->pipe_out = -1; */
-	cmd->data = data; //need to del
+	cmd->pipe_out = -1; */
+	cmd->data = data; // need to del
 	cmd->next = NULL;
 	return (cmd);
 }
@@ -64,7 +64,7 @@ t_cmd	*create_cmd(void)
 	new_cmd->append_redirect = NULL;
 	new_cmd->heredoc_delimiter = NULL;
 	/* new_cmd->pipe_in = 0;
-    new_cmd->pipe_out = 0; */
+	new_cmd->pipe_out = 0; */
 	new_cmd->data = NULL;
 	new_cmd->next = NULL;
 	return (new_cmd);
@@ -87,7 +87,7 @@ void	increment_shlvl(t_data *data)
 			shlvl_str = ft_itoa(shlvl_value);
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
 			free(shlvl_str);
-			//free(data->env[i]);
+			// free(data->env[i]);
 			data->env[i] = new_shlvl;
 			return ;
 		}

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/27 19:59:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:15:00 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,16 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 	data->exit_status = 0;
 }
-//pwd
-//cd /Users
-//pwd (segfault)
+// pwd
+// cd /Users
+// pwd (segfault)
 int	builtin_cd(t_cmd *cmd, t_data *data)
 {
-	char		*dir = NULL;
+	char		*dir;
 	struct stat	path_stat;
+	char		*home;
 
+	dir = NULL;
 	if (cmd->args[1] == NULL)
 	{
 		dir = getenv("HOME");
@@ -63,7 +65,7 @@ int	builtin_cd(t_cmd *cmd, t_data *data)
 		dir = cmd->args[1];
 	if (ft_strncmp(cmd->args[1], "~", 1) == 0)
 	{
-		char *home = get_env_value(data->env, "HOME");
+		home = get_env_value(data->env, "HOME");
 		if (!home)
 		{
 			ft_putendl_fd("minishell: cd: HOME not set", 2);
@@ -73,21 +75,20 @@ int	builtin_cd(t_cmd *cmd, t_data *data)
 		dir = ft_strjoin(home, cmd->args[1] + 1);
 		free(home);
 	}
-
 	if (stat(dir, &path_stat) == -1)
 	{
-		//ft_putstr_fd("minishell: cd: ", 2);
-		//ft_putstr_fd(dir, 2);
-		//ft_putstr_fd("No such file or directory\n", 2); 
+		// ft_putstr_fd("minishell: cd: ", 2);
+		// ft_putstr_fd(dir, 2);
+		// ft_putstr_fd("No such file or directory\n", 2);
 		fprintf(stderr, "minishell: cd: %s: No such file or directory\n", dir);
 		data->exit_status = 1;
 		return (1);
 	}
 	if (!S_ISDIR(path_stat.st_mode))
 	{
-		//ft_putstr_fd("minishell: cd: ", 2);
-		//ft_putstr_fd(dir, 2);
-		//ft_putstr_fd("Not a directory\n", 2); 
+		// ft_putstr_fd("minishell: cd: ", 2);
+		// ft_putstr_fd(dir, 2);
+		// ft_putstr_fd("Not a directory\n", 2);
 		fprintf(stderr, "minishell: cd: %s: Not a directory\n", dir);
 		data->exit_status = 1;
 		return (1);
@@ -102,7 +103,7 @@ int	builtin_cd(t_cmd *cmd, t_data *data)
 	return (0);
 }
 
-//int	builtin_cd(t_cmd *cmd, t_data *data)
+// int	builtin_cd(t_cmd *cmd, t_data *data)
 //{
 //	char	*path;
 
@@ -145,14 +146,14 @@ int	builtin_pwd(t_cmd *cmd, t_data *data)
 	buf = getcwd(NULL, 0);
 	if (buf == NULL)
 		ft_putendl_fd("pwd: error retrieving current directory: getcwd: cannot access parent directories\n",
-				data->exit_status = 2);
+			data->exit_status = 2);
 	return (ft_putendl_fd(buf, 1), free(buf), data->exit_status = 0);
 }
-//export a="s -lsa"
+// export a="s -lsa"
 //		l$a
-//export a='"' (shouldn't crash)
+// export a='"' (shouldn't crash)
 //		$a
-//export a='"'
+// export a='"'
 //		echo $a
 
 int	is_valid_identifier(const char *arg)
@@ -185,7 +186,7 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 	int		env_size;
 	char	**new_env;
 
-	int j; //too much declarations
+	int j; // too much declarations
 	if (!cmd->args[1])
 	{
 		i = 0;
@@ -203,14 +204,14 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 		if (!is_valid_identifier(arg))
 		{
 			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n",
-					arg);
+				arg);
 			data->exit_status = 1;
 			return (1);
 		}
 		equal_sign = ft_strchr(arg, '=');
 		if (!equal_sign)
 		{
-			//printf("minishell: export: `%s': not a valid identifier\n", arg);
+			// printf("minishell: export: `%s': not a valid identifier\n", arg);
 			data->exit_status = 0;
 			return (1);
 		}
@@ -247,7 +248,7 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 			}
 			new_env[env_size] = ft_strdup(arg);
 			new_env[env_size + 1] = NULL;
-			//free(data->env);
+			// free(data->env);
 			data->env = new_env;
 		}
 		i++;
@@ -263,7 +264,7 @@ int	builtin_unset(t_cmd *cmd, t_data *data)
 
 	if (!cmd->args[1])
 	{
-		//printf("minishell: unset: not enough arguments\n");
+		// printf("minishell: unset: not enough arguments\n");
 		return (1);
 	}
 	i = 1;
@@ -272,7 +273,7 @@ int	builtin_unset(t_cmd *cmd, t_data *data)
 		var_index = find_env_var(data->env, cmd->args[i]);
 		if (var_index == -1)
 			return (1);
-		//free(data->env[var_index]);
+		// free(data->env[var_index]);
 		j = var_index;
 		while (data->env[j])
 		{
@@ -299,7 +300,8 @@ int	builtin_env(t_data *data)
 	return (0);
 }
 
-//exit 1111111111111111111111111111111111 (protect from overflow, return value 1 and exit)
+// exit 1111111111111111111111111111111111 (protect from overflow,
+	//return value 1 and exit)
 
 int	builtin_exit(t_cmd *cmd, t_data *data)
 {
