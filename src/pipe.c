@@ -6,14 +6,15 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:19:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/02/28 17:40:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-////exit | exit | exit (shouldn't exit and shouldn't print anything) (exit status 0)
-////export GHOST=123 | env | grep GHOST (exit status 1)
+//exit | exit | exit (shouldn't exit and shouldn't print anything)
+//cat minishell.h | grep ");"$ (exit code - 1)
+//export GHOST=123 | env | grep GHOST (exit code - 1)
 
 char	*find_command_path(const char *cmd, char **env)
 {
@@ -78,7 +79,7 @@ int	count_commands(t_cmd *cmd)
 pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		char **env, int pipe_fd[2])
 {
-	char	*cmd_path;
+	//char	*cmd_path;
 	pid_t	pid;
 
 	(void)data;
@@ -88,15 +89,15 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		perror("pipe");
 		return (-1);
 	}
-	if (strchr(cmd->args[0], '/'))
-		cmd_path = cmd->args[0];
-	else
-		cmd_path = find_command_path(cmd->args[0], env);
-	if (!cmd_path)
-	{
-		fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
-		exit(127);
-	}
+	//if (strchr(cmd->args[0], '/'))
+	//	cmd_path = cmd->args[0];
+	//else
+	//	cmd_path = find_command_path(cmd->args[0], env);
+	//if (!cmd_path)
+	//{
+	//	fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
+	//	exit(127);
+	//}
 	pid = fork();
 	if (pid < 0)
 	{
@@ -123,7 +124,7 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		char **env, int in_fd, int new_pipe_fd[2])
 {
 	pid_t	pid;
-	char	*cmd_path;
+	//char	*cmd_path;
 
 	(void)data;
 	// printf("execute_middle_command\n");
@@ -153,15 +154,15 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		close(in_fd);
 		close(new_pipe_fd[0]);
 		close(new_pipe_fd[1]);
-		if (strchr(cmd->args[0], '/'))
-			cmd_path = cmd->args[0];
-		else
-			cmd_path = find_command_path(cmd->args[0], env);
-		if (!cmd_path)
-		{
-			fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
-			exit(127);
-		}
+		//if (strchr(cmd->args[0], '/'))
+		//	cmd_path = cmd->args[0];
+		//else
+		//	cmd_path = find_command_path(cmd->args[0], env);
+		//if (!cmd_path)
+		//{
+		//	fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
+		//	exit(127);
+		//}
 		// execve(cmd_path, cmd->args, env);
 		// perror("execve");
 		execute_for_one(tokens, cmd, data, env);
@@ -175,20 +176,20 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		char **env, int in_fd)
 {
-	char	*cmd_path;
+	//char	*cmd_path;
 	pid_t	pid;
 
 	(void)data;
 	// printf("execute_last_command\n");
-	if (strchr(cmd->args[0], '/'))
-		cmd_path = cmd->args[0];
-	else
-		cmd_path = find_command_path(cmd->args[0], env);
-	if (!cmd_path)
-	{
-		fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
-		exit(127);
-	}
+	//if (strchr(cmd->args[0], '/'))
+	//	cmd_path = cmd->args[0];
+	//else
+	//	cmd_path = find_command_path(cmd->args[0], env);
+	//if (!cmd_path)
+	//{
+	//	fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
+	//	exit(127);
+	//}
 	pid = fork();
 	if (pid < 0)
 	{
@@ -250,7 +251,7 @@ void	print_cmd_list1(t_cmd *cmd)
 void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
 	int		n_cmds;
-	pid_t	pids[n_cmds];
+	
 	int		pipe_fd[2], new_pipe_fd[2];
 	int		process_count;
 	t_cmd	*current;
@@ -261,6 +262,7 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
 		return ;
+	pid_t	pids[n_cmds];
 	process_count = 0;
 	current = cmd;
 	pids[process_count++] = execute_first_command(tokens, current, data, env,

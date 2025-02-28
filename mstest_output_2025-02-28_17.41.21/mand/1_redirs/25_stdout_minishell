@@ -1,0 +1,2 @@
+echo
+minishell: ./outfiles/outfile12345: No such file or directory
