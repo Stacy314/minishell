@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:40:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/01 16:32:32 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		}
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
+		close(1);
 		execute_for_one(tokens, cmd, data, env);
 		exit(EXIT_SUCCESS);
 	}
@@ -154,6 +155,8 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		close(in_fd);
 		close(new_pipe_fd[0]);
 		close(new_pipe_fd[1]);
+		close(0);
+		close(1);
 		//if (strchr(cmd->args[0], '/'))
 		//	cmd_path = cmd->args[0];
 		//else
@@ -206,6 +209,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 				exit(1);
 			}
 			close(in_fd);
+			close(0);
 		}
 		execute_for_one(tokens, cmd, data, env);
 		exit(EXIT_SUCCESS);

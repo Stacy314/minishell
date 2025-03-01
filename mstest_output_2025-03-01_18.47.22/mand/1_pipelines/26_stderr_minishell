@@ -1,0 +1,12 @@
+cat: -ls: cat: standard outputwrite error: Bad file descriptor
+: Bad file descriptor: Bad file descriptor
+
+cat: closing standard input: Bad file descriptor
+ls: write error: Bad file descriptor
+12: command not found
+32232: command not found
+23: command not found
+stop: command not found
+awdaw: command not found
+daswd: command not found
+stop1: command not found

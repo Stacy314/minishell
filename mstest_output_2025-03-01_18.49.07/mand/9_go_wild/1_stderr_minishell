@@ -1,0 +1,5 @@
+wc: 'standard input': Bad file descriptor
+wc: -: Bad file descriptor
+wc: write error: Bad file descriptor
+ls: write error: Bad file descriptor
+xargs: error closing file: Bad file descriptor

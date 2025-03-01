@@ -1,0 +1,3 @@
+tail: cannot fstat 'standard input': Bad file descriptor
+tail: -: Bad file descriptor
+awk: warning: error writing standard output: Bad file descriptor

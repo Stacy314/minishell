@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:45:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:48:59 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,77 +35,28 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 	data->exit_status = 0;
 }
-// pwd
-// cd /Users
-// pwd (segfault)
-int	builtin_cd(t_cmd *cmd, t_data *data)
-{
-	char		*dir;
-	struct stat	path_stat;
-	char		*home;
+//cd '/////' >/dev/null (STD_ERR)
+//cd "doesntexist" >/dev/null (bash: cd: doesntexist: No such file or directory, EC - 1)
 
-	dir = NULL;
-	if (cmd->args[1] == NULL)
-	{
-		dir = getenv("HOME");
-		if (!dir)
-		{
-			ft_putendl_fd("minishell: cd: HOME not set", 2);
-			data->exit_status = 1;
-			return (1);
-		}
-	}
-	else if (cmd->args[2])
-	{
-		ft_putendl_fd("minishell: cd: too many arguments", 2);
-		data->exit_status = 1;
-		return (1);
-	}
-	else
-		dir = cmd->args[1];
-	if (ft_strncmp(cmd->args[1], "~", 1) == 0)
-	{
-		home = get_env_value(data->env, "HOME");
-		if (!home)
-		{
-			ft_putendl_fd("minishell: cd: HOME not set", 2);
-			data->exit_status = 1;
-			return (1);
-		}
-		dir = ft_strjoin(home, cmd->args[1] + 1);
-		free(home);
-	}
-	if (stat(dir, &path_stat) == -1)
-	{
-		// ft_putstr_fd("minishell: cd: ", 2);
-		// ft_putstr_fd(dir, 2);
-		// ft_putstr_fd("No such file or directory\n", 2);
-		fprintf(stderr, "minishell: cd: %s: No such file or directory\n", dir);
-		data->exit_status = 1;
-		return (1);
-	}
-	if (!S_ISDIR(path_stat.st_mode))
-	{
-		// ft_putstr_fd("minishell: cd: ", 2);
-		// ft_putstr_fd(dir, 2);
-		// ft_putstr_fd("Not a directory\n", 2);
-		fprintf(stderr, "minishell: cd: %s: Not a directory\n", dir);
-		data->exit_status = 1;
-		return (1);
-	}
-	if (chdir(dir) == -1)
-	{
-		perror("minishell: cd");
-		data->exit_status = 1;
-		return (1);
-	}
-	data->exit_status = 0;
-	return (0);
-}
+//pwd
+//cd $HOME
+//cd - ananas dot jpeg
+//pwd
 
-// int	builtin_cd(t_cmd *cmd, t_data *data)
+//cd ../../
+//cd -
+//cd -
+
+//pwd
+//cd $HOME
+//cd -
+//pwd
+
+//int	builtin_cd(t_cmd *cmd, t_data *data)
 //{
 //	char	*path;
+//	//char		*dir;
+//	struct stat	path_stat;
 
 //	if (cmd->args[1] == NULL)
 //	{
@@ -129,10 +80,89 @@ int	builtin_cd(t_cmd *cmd, t_data *data)
 //	}
 //	else
 //		path = cmd->args[1];
+//	if (stat(path, &path_stat) == -1)
+//	{
+//		// ft_putstr_fd("minishell: cd: ", 2);
+//		// ft_putstr_fd(dir, 2);
+//		// ft_putstr_fd("No such file or directory\n", 2);
+//		fprintf(stderr, "minishell: cd: %s: No such file or directory\n", path);
+//		data->exit_status = 1;
+//		return (1);
+//	}
+//	if (!S_ISDIR(path_stat.st_mode))
+//	{
+//		// ft_putstr_fd("minishell: cd: ", 2);
+//		// ft_putstr_fd(dir, 2);
+//		// ft_putstr_fd("Not a directory\n", 2);
+//		fprintf(stderr, "minishell: cd: %s: Not a directory\n", path);
+//		data->exit_status = 1;
+//		return (1);
+//	}
 //	if (chdir(path) == -1)
 //		return (perror("cd"), data->exit_status = 1);
 //	return (data->exit_status = 0);
 //}
+
+int	builtin_cd(t_cmd *cmd, t_data *data)
+{
+	char	*path;
+	//char	*old_pwd;
+	//char	cwd[PATH_MAX]; // Буфер для поточного шляху
+	struct stat	path_stat;
+
+	if (cmd->args[1] == NULL)
+	{
+		path = get_env_value(data->env, "HOME");
+		if (!path)
+			return (ft_putendl_fd("minishell: cd: HOME not set", 2),
+				data->exit_status = 1);
+	}
+	else if (strcmp(cmd->args[1], "-") == 0)
+	{
+		path = get_env_value(data->env, "OLDPWD");
+		if (!path)
+			return (ft_putendl_fd("minishell: cd: OLDPWD not set", 2),
+				data->exit_status = 1);
+		printf("%s\n", path);
+	}
+	else if (cmd->args[2])
+	{
+		ft_putendl_fd("minishell: cd: too many arguments", 2);
+		return (data->exit_status = 1);
+	}
+	else if (ft_strncmp(cmd->args[1], "~", 1) == 0)
+	{
+		path = get_env_value(data->env, "HOME");
+		if (!path)
+			return (ft_putendl_fd("minishell: cd: HOME not set", 2),
+				data->exit_status = 1);
+		path = ft_strjoin(path, cmd->args[1] + 1);
+	}
+	else
+		path = cmd->args[1];
+	if (stat(path, &path_stat) == -1)
+	{
+		fprintf(stderr, "minishell: cd: %s: No such file or directory\n", path);
+		data->exit_status = 1;
+		return (1);
+	}
+	if (!S_ISDIR(path_stat.st_mode))
+	{
+		fprintf(stderr, "minishell: cd: %s: Not a directory\n", path);
+		data->exit_status = 1;
+		return (1);
+	}
+	if (chdir(path) == -1)
+		return (perror("cd"), data->exit_status = 1);
+	//old_pwd = getcwd(NULL, 0);
+	//if (old_pwd)
+	//	set_env_value(data->env, "OLDPWD", old_pwd);
+	//if (getcwd(cwd, sizeof(cwd)))
+	//	set_env_value(data->env, "PWD", cwd);
+	//free(old_pwd);
+	return (data->exit_status = 0);
+}
+
 
 int	builtin_pwd(t_cmd *cmd, t_data *data)
 {
@@ -161,13 +191,10 @@ int	is_valid_identifier(const char *arg)
 	int	i;
 
 	i = 0;
-	// An empty string is not valid.
 	if (!arg || !arg[0])
 		return (0);
-	// If the first character is not a letter or underscore, it's invalid.
 	if (!isalpha(arg[0]) && arg[0] != '_')
 		return (0);
-	// Continue until end of string or '=' is reached.
 	while (arg[i] && arg[i] != '=')
 	{
 		if (!isalnum(arg[i]) && arg[i] != '_')
@@ -293,55 +320,156 @@ int	builtin_env(t_data *data)
 	i = 0;
 	while (data->env[i])
 	{
-		ft_putstr_fd(data->env[i], 1);
-		ft_putstr_fd("\n", 1);
+		ft_putstr_fd(data->env[i], 2);
+		ft_putstr_fd("\n", 2);
 		i++;
 	}
 	return (0);
 }
 
-// exit 1111111111111111111111111111111111 (protect from overflow,
-	//return value 1 and exit)
+//int	builtin_exit(t_cmd *cmd, t_data *data)
+//{
+//	int	i;
+
+//	i = 0;
+//	if (cmd->args[1] == NULL)
+//	{
+//		printf("exit\n");
+//		exit(data->exit_status);
+//	}
+//	while (cmd->args[1][i])
+//	{
+//		if (ft_isdigit(cmd->args[1][i]) || cmd->args[1][i] == '+') //exit +dfs
+//		{
+//			data->exit_status = ft_atol(cmd->args[1]); /*ft_atol(cmd->args[1]);*/
+//			break ;
+//		}
+//		else if (cmd->args[1][i] == '-')
+//			exit(156);
+//		else
+//		{
+//			ft_putstr_fd("exit\n", 1);
+//			ft_putstr_fd("minishell: ", 2);
+//			ft_putstr_fd(cmd->args[1], 2);
+//			ft_putstr_fd(":", 2);
+//			ft_putendl_fd(" numeric argument required", 2);
+//			return (data->exit_status = 2);
+//		}
+//		i++;
+//	}
+//	if (cmd->args[2] && cmd->args[2] != NULL)
+//	{
+//		ft_putstr_fd("exit\n", 2);
+//		ft_putendl_fd("minishell: exit: too many arguments", 2);
+//		data->exit_status = 1;
+//		return (1);
+//	}
+//	//data->exit_status = ft_atol(cmd->args[1]);
+//	//data->exit_status = (256 + data->exit_status) % 256;
+//	printf("exit\n");
+//	exit(data->exit_status);
+//}
+
+
+bool	is_numeric(const char *str)
+{
+	int	i = 0;
+
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	if (!str[i])
+		return (false);
+	while (str[i])
+	{
+		if (!isdigit(str[i]))
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+long	ft_atol_exit(const char *str, int *error)
+{
+	unsigned long	result = 0;
+	int				sign = 1;
+	int				i = 0;
+
+	*error = 0;
+	while (isspace((unsigned char)str[i]))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	if (!str[i])
+	{
+		*error = 1;
+		return (0);
+	}
+	while (str[i] && isdigit((unsigned char)str[i]))
+	{
+		if (sign == 1)
+		{
+			if (result > (unsigned long)LONG_MAX / 10
+				|| (result == (unsigned long)LONG_MAX / 10
+					&& (str[i] - '0') > (int)((unsigned long)LONG_MAX % 10)))
+			{
+				*error = 1;
+				return (LONG_MAX);
+			}
+		}
+		else
+		{
+			if (result > ((unsigned long)LONG_MAX + 1) / 10
+				|| (result == ((unsigned long)LONG_MAX + 1) / 10
+					&& (str[i] - '0') > (int)(((unsigned long)LONG_MAX + 1) % 10)))
+			{
+				*error = 1;
+				return (LONG_MIN);
+			}
+		}
+		result = result * 10 + (str[i] - '0');
+		i++;
+	}
+	while (isspace((unsigned char)str[i]))
+		i++;
+	if (str[i] != '\0')
+	{
+		*error = 1;
+		return (0);
+	}
+	if (sign == -1 && result == (unsigned long)LONG_MAX + 1)
+		return (LONG_MIN);
+	return ((long)(result * sign));
+}
+
+
+//exit "" (bash: exit: : numeric argument required, EC - 2)
 
 int	builtin_exit(t_cmd *cmd, t_data *data)
 {
-	int	i;
+	long	exit_code;
+	int		error = 0;
 
-	i = 0;
-	if (cmd->args[1] == NULL)
-	{
-		printf("exit\n");
+	printf("exit\n");
+	if (!cmd->args[1])
 		exit(data->exit_status);
-	}
-	while (cmd->args[1][i])
+
+	exit_code = ft_atol_exit(cmd->args[1], &error);
+	if (error)
 	{
-		if (ft_isdigit(cmd->args[1][i]) || cmd->args[1][i] == '+')
-		{
-			data->exit_status = ft_atoi(cmd->args[1]);
-			break ;
-		}
-		else if (cmd->args[1][i] == '-')
-			exit(156);
-		else
-		{
-			ft_putstr_fd("exit\n", 1);
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd->args[1], 2);
-			ft_putstr_fd(":", 2);
-			ft_putendl_fd(" numeric argument required", 2);
-			data->exit_status = 2;
-			return (1);
-		}
-		i++;
+		fprintf(stderr, "minishell: exit: %s: numeric argument required\n", cmd->args[1]);
+		exit(2);
 	}
-	if (cmd->args[2] && cmd->args[2] != NULL)
+
+	if (cmd->args[2])
 	{
-		ft_putstr_fd("exit\n", 2);
-		ft_putendl_fd("minishell: exit: too many arguments", 2);
+		fprintf(stderr, "minishell: exit: too many arguments\n");
 		data->exit_status = 1;
 		return (1);
 	}
-	data->exit_status = ft_atol(cmd->args[1]);
-	printf("exit\n");
-	exit(data->exit_status);
+
+	exit(exit_code % 256);
 }

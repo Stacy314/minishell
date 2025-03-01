@@ -2,14 +2,16 @@
 
 // need to fix:
 
+//" " (should be empty arg)
+
 // echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
 
 //&& and || with parenthesis for priorities (no segfault, maybe print error)
 
 // what will be in cmd if there are few redirects?
 
-// fixed
 
+// fixed:
 // echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
 // or directory)
 //| echo hi (bash: syntax error near unexpected token `|', in our minishell -
@@ -18,7 +20,6 @@
 //				(segfault) - tab
 //                (segfault) - space
 //"" (should be empty arg)
-//" " (should be empty arg)
 // echo "" (should print a new line)
 // echo $SHLVL (parse of env, also with "" and '')
 // echo "" "        h           a           " (should print         h           a           )
@@ -196,7 +197,6 @@ t_cmd	*parse_tokens(t_token **tokens)
 				2);
 			return (NULL);
 		}
-		// Створюємо новий елемент списку
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
 			return (perror("malloc"), NULL);
@@ -206,14 +206,12 @@ t_cmd	*parse_tokens(t_token **tokens)
 		new_cmd->append_redirect = NULL;
 		new_cmd->heredoc_delimiter = NULL;
 		new_cmd->next = NULL;
-		// Якщо це перша команда, зберігаємо її як `head`
 		if (!head)
 			head = new_cmd;
 		else
-			prev->next = new_cmd; // Зв'язуємо попередню команду з новою
+			prev->next = new_cmd;
 		current = new_cmd;
 		prev = new_cmd;
-		// Заповнюємо аргументи та редиректи
 		while (tokens[i] && tokens[i]->type != PIPE)
 		{
 			if (tokens[i]->type == REDIRECT_IN
@@ -243,7 +241,6 @@ t_cmd	*parse_tokens(t_token **tokens)
 			}
 			i++;
 		}
-		// Якщо зустріли `|`, переходимо до нової команди
 		if (tokens[i] && tokens[i]->type == PIPE)
 			i++;
 	}

@@ -1,0 +1,3 @@
+wc: 'standard input': Bad file descriptor
+wc: -: Bad file descriptor
+env: write error: Bad file descriptor

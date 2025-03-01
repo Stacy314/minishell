@@ -110,7 +110,7 @@ char	*get_env_value(char **env, const char *key);
 int		find_env_var(char **env, const char *var);
 int		is_option(const char *arg);
 char	*skip_spaces(char *str);
-long	ft_atol(const char *str);
+long	ft_atol(char *str);
 
 //execution
 void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env);

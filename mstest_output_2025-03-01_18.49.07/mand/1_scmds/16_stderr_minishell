@@ -1,0 +1,2 @@
+awk: fatal: error reading input file `-': Bad file descriptor
+awk: cmd. line:1: fatal: print to "standard output" failed: Bad file descriptor

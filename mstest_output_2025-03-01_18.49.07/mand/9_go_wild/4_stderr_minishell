@@ -1,0 +1,3 @@
+grep: (standard input): Bad file descriptor
+ls: write error: Bad file descriptor
+awk: fatal: error reading input file `-': Bad file descriptor

@@ -1,0 +1,19 @@
+cat: standard output: Bad file descriptor
+cat: standard outputls: write error: Bad file descriptorcat: 
+-: Bad file descriptor
+cat: standard output: Bad file descriptor
+: Bad file descriptor
+cat: closing standard input: Bad file descriptor
+ls: write error: Bad file descriptor
+ls: write error: Bad file descriptor
+ls: write error: Bad file descriptor
+apechkov: command not found
+ad: command not found
+stop: command not found
+dsa: command not found
+stop1: command not found
+sad: command not found
+stop2: command not found
+Assembler messages:
+Error: can't read from /home/apechkov: Is a directory
+stop3: command not found

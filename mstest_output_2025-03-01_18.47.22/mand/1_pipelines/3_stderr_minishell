@@ -1,0 +1,3 @@
+sort: stat failed: -: Bad file descriptor
+grep: (standard input)grep: (standard input): Bad file descriptor
+: Bad file descriptor

@@ -1,0 +1,3 @@
+yes: standard output: Bad file descriptor
+head: error reading 'standard input': Bad file descriptor
+head: -: Bad file descriptor
