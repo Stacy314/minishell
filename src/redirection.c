@@ -12,28 +12,49 @@
 
 #include "../minishell.h"
 
+// void	handle_input_redirect(t_cmd *cmd)
+// {
+// 	int	fd;
+// 	int	i;
+
+// 	i = 0;
+// 	while (cmd[i].input_redirect)
+// 	{
+// 		fd = open(cmd[i].input_redirect, O_RDONLY);
+// 		if (fd == -1)
+// 		{
+// 			printf("minishell: %s: No such file or directory\n",
+// 				cmd[i].input_redirect);
+// 		}
+// 		else
+// 		{
+// 			dup2(fd, STDIN_FILENO);
+// 			close(fd);
+// 		}
+// 		i++;
+// 	}
+// }
+
 void	handle_input_redirect(t_cmd *cmd)
 {
 	int	fd;
-	int	i;
 
-	i = 0;
-	while (cmd[i].input_redirect)
+	if (!cmd->input_redirect)
+		return;  // Если нет редиректа, ничего не делаем
+
+	fd = open(cmd->input_redirect, O_RDONLY);
+	if (fd == -1)
 	{
-		fd = open(cmd[i].input_redirect, O_RDONLY);
-		if (fd == -1)
-		{
-			printf("minishell: %s: No such file or directory\n",
-				cmd[i].input_redirect);
-		}
-		else
-		{
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-		}
-		i++;
+		printf("minishell: %s: No such file or directory\n",
+			cmd->input_redirect);
+	}
+	else
+	{
+		dup2(fd, STDIN_FILENO);
+		close(fd);
 	}
 }
+
 
 void	handle_output_redirect(t_cmd *cmd)
 {

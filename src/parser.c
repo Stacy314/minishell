@@ -244,5 +244,6 @@ t_cmd	*parse_tokens(t_token **tokens)
 		if (tokens[i] && tokens[i]->type == PIPE)
 			i++;
 	}
+	print_cmds(new_cmd);
 	return (head);
 }
