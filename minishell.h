@@ -40,8 +40,8 @@ typedef enum e_token_type {
     REDIRECT_IN,
     REDIRECT_OUT,
     APPEND,
-    HEREDOC,    
-    END       
+    HEREDOC,
+    END
 } t_token_type;
 
 typedef struct s_token
@@ -70,7 +70,7 @@ typedef struct s_cmd {
     //int		pipe_in;
     //int		pipe_out;
 	t_data	*data; //delete
-	
+
 	//struct s_cmd	*prev;
 } t_cmd;
 
@@ -94,6 +94,7 @@ void	signal_handler(void);
 //tokenization
 t_token **split_to_tokens(const char *str, t_data *data);
 void	free_tokens(t_token **tokens);
+int handle_redirection(const char *str, int j, t_token **tokens, int *i, int *index);
 
 //parsing
 t_cmd	*parse_tokens(t_token **tokens);
