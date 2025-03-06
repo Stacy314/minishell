@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:28:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:51:57 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ int	builtin_exit(t_cmd *cmd, t_data *data)
 	exit_code = ft_atol(cmd->args[1]/*, &error*/);
 	if (exit_code == -1)
 	{
-		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
+		write_error("minishell: exit: %s: numeric argument required\n",
 			cmd->args[1]);
 		exit(2);
 	}
 	if (cmd->args[2])
 	{
-		fprintf(stderr, "minishell: exit: too many arguments\n");
+		write_error("minishell: exit: too many arguments\n");
 		data->exit_status = 1;
 		return (1);
 	}

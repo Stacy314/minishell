@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/05 16:19:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:23:32 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,17 +76,17 @@ int	check_permissions(char *cmd)
 
 	if (stat(cmd, &buf) == -1)
 	{
-		fprintf(stderr, "minishell: %s: No such file or directory\n", cmd);
+		write_error("minishell: %s: No such file or directory\n", cmd);
 		return (127);
 	}
 	if (S_ISDIR(buf.st_mode))
 	{
-		fprintf(stderr, "minishell: %s: Is a directory\n", cmd);
+		write_error("minishell: %s: Is a directory\n", cmd);
 		return (126);
 	}
 	if (access(cmd, X_OK) == -1)
 	{
-		fprintf(stderr, "minishell: %s: Permission denied\n", cmd);
+		write_error("minishell: %s: Permission denied\n", cmd);
 		return (126);
 	}
 	return (0);
@@ -132,16 +132,20 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 	path = get_path_from_env(data->env);
 	if (!path)
 	{
-		fprintf(stderr, "Error: PATH not found in environment\n");
+		write_error("Error: PATH not found in environment\n");
 		return (data->exit_status = 127);
 	}
 	paths = split_path(path);
 	executable = find_executable(cmd, paths);
 	if (!executable)
 	{
-		fprintf(stderr, "%s: command not found\n", cmd);
-		for (i = 0; paths[i]; i++)
+		write_error("%s: command not found\n", cmd);
+		i = 0;
+		while (paths[i])
+		{
 			free(paths[i]);
+			i++;
+		}
 		free(paths);
 		return (data->exit_status = 127);
 	}

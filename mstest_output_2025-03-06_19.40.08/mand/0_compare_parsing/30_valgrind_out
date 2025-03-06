@@ -1,0 +1,51 @@
+==1829166== Memcheck, a memory error detector
+==1829166== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1829166== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1829166== Command: /home/apechkov/projects/minishell/minishell
+==1829166== Parent PID: 1829165
+==1829166== 
+==1829166== 
+==1829166== FILE DESCRIPTORS: 4 open (3 std) at exit.
+==1829166== Open file descriptor 3: /tmp/tmp.5sO3y9vKYy/tmp_valgrind_out
+==1829166==    <inherited from parent>
+==1829166== 
+==1829166== Open file descriptor 2: /dev/null
+==1829166==    <inherited from parent>
+==1829166== 
+==1829166== Open file descriptor 1: /dev/null
+==1829166==    <inherited from parent>
+==1829166== 
+==1829166== Open file descriptor 0:
+==1829166==    <inherited from parent>
+==1829166== 
+==1829166== 
+==1829166== HEAP SUMMARY:
+==1829166==     in use at exit: 4,158 bytes in 6 blocks
+==1829166==   total heap usage: 21 allocs, 15 frees, 13,136 bytes allocated
+==1829166== 
+==1829166== 8 bytes in 1 blocks are still reachable in loss record 1 of 6
+==1829166==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1829166==    by 0x4062BC: ft_strjoin (ft_strjoin.c:23)
+==1829166==    by 0x4030AA: increment_shlvl (initialization.c:88)
+==1829166==    by 0x40314F: init_structure (initialization.c:106)
+==1829166==    by 0x40138B: main (main.c:28)
+==1829166== 
+==1829166== 56 bytes in 1 blocks are definitely lost in loss record 5 of 6
+==1829166==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1829166==    by 0x406024: ft_calloc (ft_calloc.c:23)
+==1829166==    by 0x402E6A: initialize_cmd (initialization.c:19)
+==1829166==    by 0x403158: init_structure (initialization.c:107)
+==1829166==    by 0x40138B: main (main.c:28)
+==1829166== 
+==1829166== LEAK SUMMARY:
+==1829166==    definitely lost: 56 bytes in 1 blocks
+==1829166==    indirectly lost: 0 bytes in 0 blocks
+==1829166==      possibly lost: 0 bytes in 0 blocks
+==1829166==    still reachable: 8 bytes in 1 blocks
+==1829166==         suppressed: 4,094 bytes in 4 blocks
+==1829166== 
+==1829166== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 4 from 4)
+--1829166-- 
+--1829166-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,094 bytes in 4 blocks
+==1829166== 
+==1829166== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 4 from 4)

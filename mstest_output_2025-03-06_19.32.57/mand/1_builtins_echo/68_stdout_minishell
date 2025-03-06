@@ -1,0 +1,14 @@
+-n-nToken[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: -n
+Token[2]: Type: 0, Value: -nnnnnnn
+Token[3]: Type: 0, Value: -n
+Token[4]: Type: 0, Value: -nnn
+Token[5]: Type: 0, Value: -nnnnn
+Token[6]: Type: 0, Value: -n-n
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "-n" "-nnnnnnn" "-n" "-nnn" "-nnnnn" "-n-n" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

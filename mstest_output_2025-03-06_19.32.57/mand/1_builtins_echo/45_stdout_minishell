@@ -1,0 +1,10 @@
+echo hallo
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: echo hallo
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "echo hallo" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

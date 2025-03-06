@@ -1,0 +1,14 @@
+test1Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: -n
+Token[2]: Type: 0, Value: -n
+Token[3]: Type: 0, Value: -n
+Token[4]: Type: 0, Value: -n
+Token[5]: Type: 0, Value: -n
+Token[6]: Type: 0, Value: test1
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "-n" "-n" "-n" "-n" "-n" "test1" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

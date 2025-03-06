@@ -1,0 +1,20 @@
+cat: standard output/bin/echo: write error: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: : Bad file descriptor
+standard output: Bad file descriptorcat: standard output
+: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard outputcat: standard output: Bad file descriptor
+: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard outputcat: standard output: Bad file descriptor
+: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor

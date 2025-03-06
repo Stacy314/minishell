@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:56:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:50:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "../minishell.h"
 
 // need to fix:
+
+//grep hi "<infile" <         ./test_files/infile ("<infile"  - one arg)
 
 //"" " "(need to check)
 
@@ -317,7 +319,7 @@ t_cmd	*parse_tokens(t_token **tokens)
 		if (tokens[i]->type == PIPE && (!tokens[i + 1] || i == 0))
 		{
 			ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-			return (NULL);
+			exit(2);
 		}
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
@@ -341,8 +343,8 @@ t_cmd	*parse_tokens(t_token **tokens)
 			{
 				if (!tokens[i + 1] || tokens[i + 1]->type != WORD)
 				{
-					ft_putendl_fd("minishell: syntax error near unexpected token", 2);
-					return (NULL);
+					ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
+					exit(2);
 				}
 				parse_redirects(current, tokens[i + 1], tokens[i]->type);
 				i++;
@@ -356,5 +358,6 @@ t_cmd	*parse_tokens(t_token **tokens)
 		if (tokens[i] && tokens[i]->type == PIPE)
 			i++;
 	}
+	//debug_print_cmd(head);
 	return (head);
 }
