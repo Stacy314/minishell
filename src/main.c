@@ -5,49 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/05 21:30:46 by apechkov         ###   ########.fr       */
+/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/06 18:38:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-//apechkov@c3r7p6:~/projects/minishell$ cat << lim (ctrl + D)
-//> 
-//bash: warning: here-document at line 1 delimited by end-of-file (wanted `lim')
-
-void	print_cmd_list(t_cmd *cmd_list, size_t count) 
-{
-	if (!cmd_list)
-	{
-		printf("print_cmd_list: cmd_list is NULL\n");
-		return;
-	}
-	for (size_t i = 0; i < count; i++)
-	{
-		printf("=== Command %zu ===\n", i);
-		if (!cmd_list[i].args)
-		{
-			printf("args: (none)\n");
-			continue;
-		}
-		printf("args: ");
-		for (size_t arg_index = 0; cmd_list[i].args[arg_index]; arg_index++)
-			printf("\"%s\" ", cmd_list[i].args[arg_index]);
-		printf("\n");
-
-		printf("input_redirect:   %s\n",
-			cmd_list[i].input_redirect ? cmd_list[i].input_redirect : "(none)");
-		printf("output_redirect:  %s\n",
-			cmd_list[i].output_redirect ? cmd_list[i].output_redirect : "(none)");
-		printf("append_redirect:  %s\n",
-			cmd_list[i].append_redirect ? cmd_list[i].append_redirect : "(none)");
-		printf("heredoc_delimiter:%s\n",
-			cmd_list[i].heredoc_delimiter ? cmd_list[i].heredoc_delimiter : "(none)");
-		printf("\n");
-	}
-}
-
 
 // Global flag for prompt control
 // volatile sig_atomic_t g_prompt_flag = 0;

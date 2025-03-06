@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/05 21:23:55 by apechkov         ###   ########.fr       */
+/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/06 18:46:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,41 @@ t_token	*create_token(const char *value, t_token_type type, int index)
 	return (new);
 }
 
+int handle_redirection(const char *str, int j, t_token **tokens, int *i, int *index)
+{
+    if (str[j] == '>' || str[j] == '<')
+    {
+        if (str[j] == '>' && str[j + 1] == '>')
+        {
+            tokens[*i] = create_token(">>", APPEND, (*index)++);
+            j += 2;
+        }
+        else if (str[j] == '<' && str[j + 1] == '<')
+        {
+            tokens[*i] = create_token("<<", HEREDOC, (*index)++);
+            j += 2;
+        }
+        else if (str[j] == '>')
+        {
+            tokens[*i] = create_token(">", REDIRECT_OUT, (*index)++);
+            j++;
+        }
+        else if (str[j] == '<')
+        {
+            tokens[*i] = create_token("<", REDIRECT_IN, (*index)++);
+            j++;
+        }
+
+        (*i)++;
+    }
+    return j;
+}
+
+
 t_token	**split_to_tokens(const char *str, t_data *data)
 {
 	t_token	**tokens;
-	char	buffer[1024]; // realloc wrapper function to continuously increase size for every additional export
+	char buffer[1024]; // realloc wrapper function to continuously increase size for every additional export
 	int		k;
 	int		inside_quotes;
 	char	quote_type;
@@ -73,40 +104,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 			j++;
 			continue ;
 		}
-		if (str[j] == '>')
-		{
-			if (str[j + 1] == '>')
-			{
-				tokens[i] = create_token(">>", APPEND, index++);
-				i++;
-				j += 2;
-				continue ;
-			}
-			else
-			{
-				tokens[i] = create_token(">", REDIRECT_OUT, index++);
-				i++;
-				j++;
-				continue ;
-			}
-		}
-		if (str[j] == '<')
-		{
-			if (str[j + 1] == '<')
-			{
-				tokens[i] = create_token("<<", HEREDOC, index++);
-				i++;
-				j += 2;
-				continue ;
-			}
-			else
-			{
-				tokens[i] = create_token("<", REDIRECT_IN, index++);
-				i++;
-				j++;
-				continue ;
-			}
-		}
+		j = handle_redirection(str, j, tokens, &i, &index);
 		while (str[j] && (!isspace((unsigned char)str[j]) || inside_quotes))
 		{
 			if (inside_quotes && str[j] == '|')
@@ -129,6 +127,17 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 				}
 				j++;
 				continue ;
+			}
+			if (str[j] == '>' || str[j] == '<')
+			{
+				if (k > 0)
+				{
+					buffer[k] = '\0';
+					tokens[i++] = create_token(buffer, WORD, index++);
+					k = 0;
+				}
+				j = handle_redirection(str, j, tokens, &i, &index);
+				continue;
 			}
 			if (str[j] == '$' && quote_type != '\'')
 			{
@@ -173,6 +182,6 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	// Debug print
 	// for (int i = 0; tokens[i] != NULL; i++)
 	//   printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type,
-	// tokens[i]->value);
+		//tokens[i]->value);
 	return (tokens);
 }

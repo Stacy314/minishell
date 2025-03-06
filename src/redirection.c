@@ -5,49 +5,59 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/05 16:44:00 by apechkov         ###   ########.fr       */
+/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/06 18:46:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//echo hi | cat <"./test_files/infile"
+// void	handle_input_redirect(t_cmd *cmd)
+// {
+// 	int	fd;
+// 	int	i;
 
-//cat <"./test_files/infile" | echo hi (print hi)
+// 	i = 0;
+// 	while (cmd[i].input_redirect)
+// 	{
+// 		fd = open(cmd[i].input_redirect, O_RDONLY);
+// 		if (fd == -1)
+// 		{
+// 			printf("minishell: %s: No such file or directory\n",
+// 				cmd[i].input_redirect);
+// 		}
+// 		else
+// 		{
+// 			dup2(fd, STDIN_FILENO);
+// 			close(fd);
+// 		}
+// 		i++;
+// 	}
+// }
 
-//cat <"./test_files/infile_big" | echo hi (print hi)
-
-//cat <missing | cat
-
-//cat <missing | echo oi (print oi and error)
-
-
-
-
-void	handle_input_redirect(t_cmd *cmd) // <
+void	handle_input_redirect(t_cmd *cmd)
 {
 	int	fd;
+	int	i;
 
-	if (!cmd->input_redirect)
-		return;
+	if (!cmd->input_redirects)
+		return;  // Если нет редиректов, ничего не делаем
 
-	fd = open(cmd->input_redirect, O_RDONLY);
-	if (fd == -1)
+	i = 0;
+	while (cmd->input_redirects[i])
 	{
-		//perror("minishell");
-		ft_putstr_fd("minishell: ", 2);  
-		ft_putstr_fd(cmd->input_redirect, 2);
-		ft_putendl_fd(": No such file or directory", 2); 
-		//data->exit_status = 1;
-		exit(1); // exit(0); - for |
-	}
-	if (dup2(fd, STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		//data->exit_status = 1;
-		close(fd);
-		exit(1);
+		fd = open(cmd->input_redirects[i], O_RDONLY);
+		if (fd == -1)
+		{
+			printf("minishell: %s: No such file or directory\n",
+				cmd->input_redirects[i]);
+		}
+		else
+		{
+			dup2(fd, STDIN_FILENO);
+			close(fd);
+		}
+		i++;
 	}
 	close(fd);
 }
@@ -56,68 +66,48 @@ void	handle_output_redirect(t_cmd *cmd) // >
 {
 	int	fd;
 	int	i;
-	int	arg_index;
+
+	if (!cmd->output_redirects)
+		return;
 
 	i = 0;
-	while (cmd[i].output_redirect)
+	while (cmd->output_redirects[i])
 	{
-		fd = open(cmd[i].output_redirect, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		fd = open(cmd->output_redirects[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
 		{
 			printf("minishell: %s: No such file or directory\n",
-				cmd[i].output_redirect);
-			//return (data->exit_status = 1);
+				cmd->output_redirects[i]);
 		}
 		else
 		{
 			dup2(fd, STDOUT_FILENO);
-			arg_index = 1;
-			while (cmd->args[arg_index])
-			{
-				write(fd, cmd->args[arg_index],
-						ft_strlen(cmd->args[arg_index])); // if write or read ==
-														//-1 return errer
-				if (cmd->args[arg_index + 1])
-					write(fd, " ", 1);
-				arg_index++;
-			}
-			write(fd, "\n", 1);
 			close(fd);
 		}
 		i++;
 	}
 }
 
-// echo hi >>4 >>5 >>6 this is a test (should create 3 files(4,5,6) and write into three: hi this is a test (do it twice- and the message should be twice inside))
-void	handle_append_redirect(t_cmd *cmd) // >>
+void	handle_append_redirect(t_cmd *cmd)
 {
 	int	fd;
 	int	i;
-	int	arg_index;
+
+	if (!cmd->append_redirects)
+		return;
 
 	i = 0;
-	while (cmd[i].append_redirect)
+	while (cmd->append_redirects[i])
 	{
-		fd = open(cmd[i].append_redirect, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		fd = open(cmd->append_redirects[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (fd == -1)
 		{
 			printf("minishell: %s: No such file or directory\n",
-				cmd[i].append_redirect);
-			//return (data->exit_status = 1);
+				cmd->append_redirects[i]);
 		}
 		else
 		{
 			dup2(fd, STDOUT_FILENO);
-			arg_index = 1;
-			while (cmd->args[arg_index])
-			{
-				write(fd, cmd->args[arg_index],
-					ft_strlen(cmd->args[arg_index]));
-				if (cmd->args[arg_index + 1])
-					write(fd, " ", 1);
-				arg_index++;
-			}
-			write(fd, "\n", 1);
 			close(fd);
 		}
 		i++;
@@ -150,7 +140,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 			if (!line || strcmp(line, cmd->heredoc_delimiter) == 0)
 			{
 				free(line);
-				break ;
+				break;
 			}
 			write(pipe_fd[1], line, ft_strlen(line));
 			write(pipe_fd[1], "\n", 1);
@@ -181,15 +171,14 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 	{
 		if (cmd->heredoc_delimiter)
 			handle_heredoc(cmd);
-		if (cmd->input_redirect)
+		if (cmd->input_redirects)
 			handle_input_redirect(cmd);
-		if (cmd->output_redirect)
+		if (cmd->output_redirects)
 			handle_output_redirect(cmd);
-		if (cmd->append_redirect)
+		if (cmd->append_redirects)
 			handle_append_redirect(cmd);
 		execute_command(cmd->args[0], data, cmd->args, env);
-		// execve(cmd->args[0], cmd->args, env);
-		exit(0);
+		exit(127);
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/05 16:19:14 by apechkov         ###   ########.fr       */
+/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/06 18:37:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ t_cmd	*initialize_cmd(t_data *data)
 		exit(EXIT_FAILURE);
 	}
 	cmd->args = NULL;
-	cmd->input_redirect = NULL;
-	cmd->output_redirect = NULL;
-	cmd->append_redirect = NULL;
+	cmd->input_redirects = NULL;
+	cmd->output_redirects = NULL;
+	cmd->append_redirects = NULL;
 	cmd->heredoc_delimiter = NULL;
 	/* cmd->pipe_in = -1;
 	cmd->pipe_out = -1; */
@@ -59,9 +59,9 @@ t_cmd	*create_cmd(void)
 	if (!new_cmd)
 		return (NULL);
 	new_cmd->args = NULL;
-	new_cmd->input_redirect = NULL;
-	new_cmd->output_redirect = NULL;
-	new_cmd->append_redirect = NULL;
+	new_cmd->input_redirects = NULL;
+	new_cmd->output_redirects = NULL;
+	new_cmd->append_redirects = NULL;
 	new_cmd->heredoc_delimiter = NULL;
 	/* new_cmd->pipe_in = 0;
 	new_cmd->pipe_out = 0; */

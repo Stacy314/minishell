@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:24:50 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 18:35:54 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ typedef enum e_token_type {
     REDIRECT_IN,
     REDIRECT_OUT,
     APPEND,
-    HEREDOC,    
-    END       
+    HEREDOC,
+    END
 } t_token_type;
 
 typedef struct s_token
@@ -76,14 +76,14 @@ typedef struct s_data
 typedef struct s_cmd {
     char	**args;
 	struct s_cmd	*next; //del
-    char	*input_redirect;
-    char	*output_redirect;
-    char	*append_redirect;
+    char	**input_redirects;
+    char	**output_redirects;
+    char	**append_redirects;
     char	*heredoc_delimiter;
     //int		pipe_in;
     //int		pipe_out;
 	t_data	*data; //delete
-	
+
 	//struct s_cmd	*prev;
 } t_cmd;
 
@@ -110,9 +110,11 @@ void	signal_handler(void);
 //tokenization
 t_token **split_to_tokens(const char *str, t_data *data);
 void	free_tokens(t_token **tokens);
+int handle_redirection(const char *str, int j, t_token **tokens, int *i, int *index);
 
 //parsing
 t_cmd	*parse_tokens(t_token **tokens);
+void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type);
 
 // builtins
 void	builtin_echo(t_cmd *cmd, t_data *data);
