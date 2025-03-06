@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/01 16:32:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 17:02:55 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,43 +219,43 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 	return (pid);
 }
 
-void	print_cmd_list1(t_cmd *cmd)
-{
-	int	i;
+// void	print_cmd_list1(t_cmd *cmd)
+// {
+// 	int	i;
 
-	i = 0;
-	while (cmd)
-	{
-		printf("=== Command %d ===\n", i);
-		if (cmd->args)
-		{
-			printf("Args: ");
-			for (int j = 0; cmd->args[j]; j++)
-				printf("\"%s\" ", cmd->args[j]);
-			printf("\n");
-		}
-		else
-			printf("Args: (none)\n");
-		printf("Input redirect: %s\n",
-			cmd->input_redirect ? cmd->input_redirect : "(none)");
-		printf("Output redirect: %s\n",
-			cmd->output_redirect ? cmd->output_redirect : "(none)");
-		printf("Append redirect: %s\n",
-			cmd->append_redirect ? cmd->append_redirect : "(none)");
-		printf("Heredoc delimiter: %s\n",
-			cmd->heredoc_delimiter ? cmd->heredoc_delimiter : "(none)");
-		// printf("Pipe in: %d | Pipe out: %d\n", cmd->pipe_in, cmd->pipe_out);
-		printf("Next: %s\n", cmd->next ? "Exists" : "NULL");
-		printf("--------------------------\n");
-		cmd = cmd->next;
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (cmd)
+// 	{
+// 		printf("=== Command %d ===\n", i);
+// 		if (cmd->args)
+// 		{
+// 			printf("Args: ");
+// 			for (int j = 0; cmd->args[j]; j++)
+// 				printf("\"%s\" ", cmd->args[j]);
+// 			printf("\n");
+// 		}
+// 		else
+// 			printf("Args: (none)\n");
+// 		printf("Input redirect: %s\n",
+// 			cmd->input_redirect ? cmd->input_redirect : "(none)");
+// 		printf("Output redirect: %s\n",
+// 			cmd->output_redirect ? cmd->output_redirect : "(none)");
+// 		printf("Append redirect: %s\n",
+// 			cmd->append_redirect ? cmd->append_redirect : "(none)");
+// 		printf("Heredoc delimiter: %s\n",
+// 			cmd->heredoc_delimiter ? cmd->heredoc_delimiter : "(none)");
+// 		// printf("Pipe in: %d | Pipe out: %d\n", cmd->pipe_in, cmd->pipe_out);
+// 		printf("Next: %s\n", cmd->next ? "Exists" : "NULL");
+// 		printf("--------------------------\n");
+// 		cmd = cmd->next;
+// 		i++;
+// 	}
+// }
 
 void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
 	int		n_cmds;
-	
+
 	int		pipe_fd[2], new_pipe_fd[2];
 	int		process_count;
 	t_cmd	*current;

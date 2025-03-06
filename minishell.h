@@ -63,9 +63,9 @@ typedef struct s_data
 typedef struct s_cmd {
     char	**args;
 	struct s_cmd	*next; //del
-    char	*input_redirect;
-    char	*output_redirect;
-    char	*append_redirect;
+    char	**input_redirects;
+    char	**output_redirects;
+    char	**append_redirects;
     char	*heredoc_delimiter;
     //int		pipe_in;
     //int		pipe_out;
@@ -98,6 +98,7 @@ int handle_redirection(const char *str, int j, t_token **tokens, int *i, int *in
 
 //parsing
 t_cmd	*parse_tokens(t_token **tokens);
+void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type);
 
 // builtins
 void	builtin_echo(t_cmd *cmd, t_data *data);
