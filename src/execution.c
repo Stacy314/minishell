@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:33:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 16:58:46 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,18 +76,22 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 
 void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
-	if (cmd->heredoc_delimiter || cmd->input_redirect || cmd->output_redirect
-		|| cmd->append_redirect)
+	if (cmd->heredoc_delimiter ||
+		(cmd->input_redirects && cmd->input_redirects[0]) ||
+		(cmd->output_redirects && cmd->output_redirects[0]) ||
+		(cmd->append_redirects && cmd->append_redirects[0]))  // Лучшая проверка
 	{
 		if (execute_redirection(cmd, data, env) == 1)
-			return ;
+			return;
 	}
+
 	if (contains_special_char(tokens, PIPE))
 	{
 		execute_pipeline(tokens, cmd, data, env);
 	}
 	else
 		execute_for_one(tokens, cmd, data, env);
+
 	if (cmd)
 		free_cmd(cmd);
 	if (tokens)

@@ -3,53 +3,84 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/01 16:05:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 16:16:09 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	print_cmd_list(t_cmd *cmd_list, size_t count) // need to del
+void print_cmd_list(t_cmd *cmd_list, size_t count)
 {
-	for (size_t i = 0; i < count; i++)
-	{
-		printf("=== Command %zu ===\n", i);
-		printf("args: ");
-		if (cmd_list[i].args)
-		{
-			size_t arg_index = 0;
-			while (cmd_list[i].args[arg_index])
-			{
-				printf("\"%s\" ", cmd_list[i].args[arg_index]);
-				arg_index++;
-			}
-		}
-		else
-		{
-			printf("(none)");
-		}
-		printf("\n");
-		printf("input_redirect:   %s\n",
-			cmd_list[i].input_redirect ? cmd_list[i].input_redirect : "(none)");
-		printf("output_redirect:  %s\n",
-			cmd_list[i].output_redirect ? cmd_list[i].output_redirect : "(none)");
-		printf("append_redirect:  %s\n",
-			cmd_list[i].append_redirect ? cmd_list[i].append_redirect : "(none)");
-		printf("heredoc_delimiter:%s\n",
-			cmd_list[i].heredoc_delimiter ? cmd_list[i].heredoc_delimiter : "(none)");
-		if (cmd_list[i].data)
-		{
-			printf("data->some_value: %d\n", cmd_list[i].data->some_value);
-		}
-		else
-		{
-			printf("data:            (null)\n");
-		}
-		printf("\n");
-	}
+    for (size_t i = 0; i < count; i++)
+    {
+        printf("=== Command %zu ===\n", i);
+        printf("args: ");
+        if (cmd_list[i].args)
+        {
+            size_t arg_index = 0;
+            while (cmd_list[i].args[arg_index])
+            {
+                printf("\"%s\" ", cmd_list[i].args[arg_index]);
+                arg_index++;
+            }
+        }
+        else
+        {
+            printf("(none)");
+        }
+        printf("\n");
+
+        printf("input_redirects: ");
+        if (cmd_list[i].input_redirects)
+        {
+            int j = 0;
+            while (cmd_list[i].input_redirects[j])
+            {
+                printf("\"%s\" ", cmd_list[i].input_redirects[j]);
+                j++;
+            }
+        }
+        else
+        {
+            printf("(none)");
+        }
+        printf("\n");
+
+        printf("output_redirects: ");
+        if (cmd_list[i].output_redirects)
+        {
+            int j = 0;
+            while (cmd_list[i].output_redirects[j])
+            {
+                printf("\"%s\" ", cmd_list[i].output_redirects[j]);
+                j++;
+            }
+        }
+        else
+        {
+            printf("(none)");
+        }
+        printf("\n");
+
+        printf("append_redirects: ");
+        if (cmd_list[i].append_redirects)
+        {
+            int j = 0;
+            while (cmd_list[i].append_redirects[j])
+            {
+                printf("\"%s\" ", cmd_list[i].append_redirects[j]);
+                j++;
+            }
+        }
+        else
+        {
+            printf("(none)");
+        }
+        printf("\n\n");
+    }
 }
 
 // Global flag for prompt control

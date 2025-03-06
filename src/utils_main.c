@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:19:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 16:01:29 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,22 +93,49 @@ int	ft_str_only_spaces(const char *str)
 //    //free(cmd);
 //}
 
-void	free_cmd(t_cmd *cmd)
+void free_cmd(t_cmd *cmd)
 {
-	if (!cmd)
-		return ;
-	if (cmd->args)
-		free(cmd->args);
-	if (cmd->input_redirect)
-		free(cmd->input_redirect);
-	if (cmd->output_redirect)
-		free(cmd->output_redirect);
-	if (cmd->append_redirect)
-		free(cmd->append_redirect);
-	if (cmd->heredoc_delimiter)
-		free(cmd->heredoc_delimiter);
-	free(cmd);
+    if (!cmd)
+        return;
+
+    if (cmd->args)
+    {
+        int i = 0;
+        while (cmd->args[i])
+            free(cmd->args[i++]);
+        free(cmd->args);
+    }
+
+    if (cmd->input_redirects)
+    {
+        int i = 0;
+        while (cmd->input_redirects[i])
+            free(cmd->input_redirects[i++]);
+        free(cmd->input_redirects);
+    }
+
+    if (cmd->output_redirects)
+    {
+        int i = 0;
+        while (cmd->output_redirects[i])
+            free(cmd->output_redirects[i++]);
+        free(cmd->output_redirects);
+    }
+
+    if (cmd->append_redirects)
+    {
+        int i = 0;
+        while (cmd->append_redirects[i])
+            free(cmd->append_redirects[i++]);
+        free(cmd->append_redirects);
+    }
+
+    if (cmd->heredoc_delimiter)
+        free(cmd->heredoc_delimiter);
+
+    free(cmd);
 }
+
 
 int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 {
