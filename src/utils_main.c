@@ -5,12 +5,30 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:19:37 by apechkov         ###   ########.fr       */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/06 17:01:58 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//bool	is_numeric(const char *str)
+//{
+//	int	i;
+
+//	i = 0;
+//	if (str[i] == '+' || str[i] == '-')
+//		i++;
+//	if (!str[i])
+//		return (false);
+//	while (str[i])
+//	{
+//		if (!isdigit(str[i]))
+//			return (false);
+//		i++;
+//	}
+//	return (true);
+//}
 
 // int	contains_special_char(t_token **tokens, char delimiter)
 //{

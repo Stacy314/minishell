@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/06 18:24:50 by apechkov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
@@ -13,6 +25,7 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <limits.h>
+#include <stdarg.h>
 
 # define SUCCESS 1
 # define ERROR 0
@@ -74,6 +87,9 @@ typedef struct s_cmd {
 	//struct s_cmd	*prev;
 } t_cmd;
 
+
+void write_error(const char *format, ...);
+
 //delete after
 void print_cmd_list(t_cmd *cmd_list, size_t count);
 //void print_data(t_data *data);
@@ -110,7 +126,11 @@ char	*get_env_value(char **env, const char *key);
 int		find_env_var(char **env, const char *var);
 int		is_option(const char *arg);
 char	*skip_spaces(char *str);
-long	ft_atol(char *str);
+int	is_valid_identifier(const char *arg);
+bool	is_numeric(const char *str);
+long	ft_atol(const char *str/*, int *error*/);
+char **set_env_value(char **envp, const char *key, const char *value);
+int count_args(char **args);
 
 //execution
 void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env);
@@ -123,5 +143,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env);
 
 //expantion
 char *expand_variable(const char *str, int *j, t_data *data);
+
+void	handle_input_redirect(t_cmd *cmd);
 
 #endif

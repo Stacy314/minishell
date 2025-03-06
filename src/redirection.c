@@ -5,37 +5,54 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:19:00 by apechkov         ###   ########.fr       */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/05 16:44:00 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	handle_input_redirect(t_cmd *cmd)
+//echo hi | cat <"./test_files/infile"
+
+//cat <"./test_files/infile" | echo hi (print hi)
+
+//cat <"./test_files/infile_big" | echo hi (print hi)
+
+//cat <missing | cat
+
+//cat <missing | echo oi (print oi and error)
+
+
+
+
+void	handle_input_redirect(t_cmd *cmd) // <
 {
 	int	fd;
-	int	i;
 
-	i = 0;
-	while (cmd[i].input_redirect)
+	if (!cmd->input_redirect)
+		return;
+
+	fd = open(cmd->input_redirect, O_RDONLY);
+	if (fd == -1)
 	{
-		fd = open(cmd[i].input_redirect, O_RDONLY);
-		if (fd == -1)
-		{
-			printf("minishell: %s: No such file or directory\n",
-				cmd[i].input_redirect);
-		}
-		else
-		{
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-		}
-		i++;
+		//perror("minishell");
+		ft_putstr_fd("minishell: ", 2);  
+		ft_putstr_fd(cmd->input_redirect, 2);
+		ft_putendl_fd(": No such file or directory", 2); 
+		//data->exit_status = 1;
+		exit(1); // exit(0); - for |
 	}
+	if (dup2(fd, STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		//data->exit_status = 1;
+		close(fd);
+		exit(1);
+	}
+	close(fd);
 }
 
-void	handle_output_redirect(t_cmd *cmd)
+void	handle_output_redirect(t_cmd *cmd) // >
 {
 	int	fd;
 	int	i;
@@ -49,6 +66,7 @@ void	handle_output_redirect(t_cmd *cmd)
 		{
 			printf("minishell: %s: No such file or directory\n",
 				cmd[i].output_redirect);
+			//return (data->exit_status = 1);
 		}
 		else
 		{
@@ -58,7 +76,7 @@ void	handle_output_redirect(t_cmd *cmd)
 			{
 				write(fd, cmd->args[arg_index],
 						ft_strlen(cmd->args[arg_index])); // if write or read ==
-					//-1 return errer
+														//-1 return errer
 				if (cmd->args[arg_index + 1])
 					write(fd, " ", 1);
 				arg_index++;
@@ -71,7 +89,7 @@ void	handle_output_redirect(t_cmd *cmd)
 }
 
 // echo hi >>4 >>5 >>6 this is a test (should create 3 files(4,5,6) and write into three: hi this is a test (do it twice- and the message should be twice inside))
-void	handle_append_redirect(t_cmd *cmd)
+void	handle_append_redirect(t_cmd *cmd) // >>
 {
 	int	fd;
 	int	i;
@@ -85,6 +103,7 @@ void	handle_append_redirect(t_cmd *cmd)
 		{
 			printf("minishell: %s: No such file or directory\n",
 				cmd[i].append_redirect);
+			//return (data->exit_status = 1);
 		}
 		else
 		{
@@ -105,13 +124,13 @@ void	handle_append_redirect(t_cmd *cmd)
 	}
 }
 
-void	handle_heredoc(t_cmd *cmd)
+void	handle_heredoc(t_cmd *cmd) // <<
 {
 	int		pipe_fd[2];
 	char	*line;
 	pid_t	pid;
 
-	if (pipe(pipe_fd) == -1)
+	if (pipe(pipe_fd) == -1) // ???
 	{
 		perror("pipe");
 		exit(1);
@@ -149,6 +168,7 @@ void	handle_heredoc(t_cmd *cmd)
 int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 {
 	pid_t	pid;
+	int		status;
 
 	(void)env;
 	pid = fork();
@@ -169,8 +189,10 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 			handle_append_redirect(cmd);
 		execute_command(cmd->args[0], data, cmd->args, env);
 		// execve(cmd->args[0], cmd->args, env);
-		exit(127);
+		exit(0);
 	}
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		data->exit_status = WEXITSTATUS(status);
 	return (1);
 }

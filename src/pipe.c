@@ -5,16 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/01 16:32:32 by apechkov         ###   ########.fr       */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/05 16:19:28 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//exit | exit | exit (shouldn't exit and shouldn't print anything)
-//cat minishell.h | grep ");"$ (exit code - 1)
-//export GHOST=123 | env | grep GHOST (exit code - 1)
+// exit | exit | exit (shouldn't exit and shouldn't print anything)
+// cat minishell.h | grep ");"$ (exit code - 1)
+// export GHOST=123 | env | grep GHOST (exit code - 1)
 
 char	*find_command_path(const char *cmd, char **env)
 {
@@ -79,9 +79,9 @@ int	count_commands(t_cmd *cmd)
 pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		char **env, int pipe_fd[2])
 {
-	//char	*cmd_path;
 	pid_t	pid;
 
+	// char	*cmd_path;
 	(void)data;
 	// printf("execute_first_command\n");
 	if (pipe(pipe_fd) == -1)
@@ -89,11 +89,11 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		perror("pipe");
 		return (-1);
 	}
-	//if (strchr(cmd->args[0], '/'))
+	// if (strchr(cmd->args[0], '/'))
 	//	cmd_path = cmd->args[0];
-	//else
+	// else
 	//	cmd_path = find_command_path(cmd->args[0], env);
-	//if (!cmd_path)
+	// if (!cmd_path)
 	//{
 	//	fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
 	//	exit(127);
@@ -125,8 +125,8 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		char **env, int in_fd, int new_pipe_fd[2])
 {
 	pid_t	pid;
-	//char	*cmd_path;
 
+	// char	*cmd_path;
 	(void)data;
 	// printf("execute_middle_command\n");
 	if (pipe(new_pipe_fd) == -1)
@@ -157,11 +157,11 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		close(new_pipe_fd[1]);
 		close(0);
 		close(1);
-		//if (strchr(cmd->args[0], '/'))
+		// if (strchr(cmd->args[0], '/'))
 		//	cmd_path = cmd->args[0];
-		//else
+		// else
 		//	cmd_path = find_command_path(cmd->args[0], env);
-		//if (!cmd_path)
+		// if (!cmd_path)
 		//{
 		//	fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
 		//	exit(127);
@@ -179,16 +179,16 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		char **env, int in_fd)
 {
-	//char	*cmd_path;
 	pid_t	pid;
 
+	// char	*cmd_path;
 	(void)data;
 	// printf("execute_last_command\n");
-	//if (strchr(cmd->args[0], '/'))
+	// if (strchr(cmd->args[0], '/'))
 	//	cmd_path = cmd->args[0];
-	//else
+	// else
 	//	cmd_path = find_command_path(cmd->args[0], env);
-	//if (!cmd_path)
+	// if (!cmd_path)
 	//{
 	//	fprintf(stderr, "minishell: %s: command not found\n", cmd->args[0]);
 	//	exit(127);
@@ -209,7 +209,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 				exit(1);
 			}
 			close(in_fd);
-			close(0);
+			//close(0);
 		}
 		execute_for_one(tokens, cmd, data, env);
 		exit(EXIT_SUCCESS);
@@ -255,18 +255,18 @@ void	print_cmd_list1(t_cmd *cmd)
 void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
 	int		n_cmds;
-	
 	int		pipe_fd[2], new_pipe_fd[2];
 	int		process_count;
 	t_cmd	*current;
 	int		status;
 	int		in_fd;
+	
 
 	// print_cmd_list1(cmd);
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
 		return ;
-	pid_t	pids[n_cmds];
+	pid_t	pids[n_cmds]; //need to fix
 	process_count = 0;
 	current = cmd;
 	pids[process_count++] = execute_first_command(tokens, current, data, env,

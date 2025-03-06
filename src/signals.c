@@ -5,12 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:19:13 by apechkov         ###   ########.fr       */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/05 21:35:39 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+// handle herdoc and child (ctrl + c)
+
+//^\Quit (core dumped) (cat  ctrl + /)
 
 void	handle_sigint(int sig)
 {

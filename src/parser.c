@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/05 16:40:42 by apechkov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include "../minishell.h"
 
 // need to fix:
 
-//" " (should be empty arg)
+//"" " "(need to check)
 
 // echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
 
@@ -10,6 +23,8 @@
 
 // what will be in cmd if there are few redirects?
 
+//echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
+//echo '' ""
 
 // fixed:
 // echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
@@ -29,7 +44,7 @@
 //'echo' hi (should print hi)
 // echo hi '$USER is great, home is $HOME' (hi $USER is great, home is $HOME)
 // echo hi "$USER is great, home is $HOME" (hi apechkov is great, home is
-	///home/apechkov)
+/// home/apechkov)
 //"<" sasdad
 //<: command not found (in bash), in minishell - it is a command
 //"echo hi" and 'echo hi' (should pars as one arg, echo hi: command not found)
@@ -125,7 +140,7 @@ char	**append_to_args(char **args, char *new_arg)
 //	while (tokens[last_index])
 //		last_index++;
 //	if (tokens[0]->type == PIPE || tokens[last_index - 1]->type == PIPE)
-		//$notexists | ls | $notexists
+//$notexists | ls | $notexists
 //	{
 //		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
 //		free(cmd);
@@ -161,7 +176,7 @@ char	**append_to_args(char **args, char *new_arg)
 //			else
 //			{
 //				// fprintf(stderr, "Syntax error near unexpected token `%s`\n",
-					//tokens[i]->value);
+// tokens[i]->value);
 //				free(cmd);
 //				return (NULL);
 //			}
@@ -244,5 +259,6 @@ t_cmd	*parse_tokens(t_token **tokens)
 		if (tokens[i] && tokens[i]->type == PIPE)
 			i++;
 	}
+	//print_cmds(head);
 	return (head);
 }

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/02/28 17:19:29 by apechkov         ###   ########.fr       */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/05 21:23:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,12 @@ t_token	*create_token(const char *value, t_token_type type, int index)
 t_token	**split_to_tokens(const char *str, t_data *data)
 {
 	t_token	**tokens;
-		char buffer[1024];
+	char	buffer[1024]; // realloc wrapper function to continuously increase size for every additional export
 	int		k;
 	int		inside_quotes;
 	char	quote_type;
 	size_t	len;
+	char	*expanded;
 
 	int capacity, i, j, index;
 	if (!str || ft_strlen(str) == 0)
@@ -131,12 +132,12 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 			}
 			if (str[j] == '$' && quote_type != '\'')
 			{
-				char *expanded = expand_variable(str, &j, data);
-					// move to parser
+				expanded = expand_variable(str, &j, data);
+				// move to parser
 				// if (!expanded || !*expanded)  // If empty after expansion
 				//{
 				//	printf("minishell: %s: ambiguous redirect\n",
-						//cmd->output_redirect); //change to stderr
+				// cmd->output_redirect); //change to stderr
 				//	data->exit_status = 1;
 				//	free(expanded);
 				//	return (NULL);
@@ -172,6 +173,6 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	// Debug print
 	// for (int i = 0; tokens[i] != NULL; i++)
 	//   printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type,
-		//tokens[i]->value);
+	// tokens[i]->value);
 	return (tokens);
 }

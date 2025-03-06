@@ -5,33 +5,37 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/01 16:05:11 by apechkov         ###   ########.fr       */
+/*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
+/*   Updated: 2025/03/05 21:30:46 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	print_cmd_list(t_cmd *cmd_list, size_t count) // need to del
+//apechkov@c3r7p6:~/projects/minishell$ cat << lim (ctrl + D)
+//> 
+//bash: warning: here-document at line 1 delimited by end-of-file (wanted `lim')
+
+void	print_cmd_list(t_cmd *cmd_list, size_t count) 
 {
+	if (!cmd_list)
+	{
+		printf("print_cmd_list: cmd_list is NULL\n");
+		return;
+	}
 	for (size_t i = 0; i < count; i++)
 	{
 		printf("=== Command %zu ===\n", i);
+		if (!cmd_list[i].args)
+		{
+			printf("args: (none)\n");
+			continue;
+		}
 		printf("args: ");
-		if (cmd_list[i].args)
-		{
-			size_t arg_index = 0;
-			while (cmd_list[i].args[arg_index])
-			{
-				printf("\"%s\" ", cmd_list[i].args[arg_index]);
-				arg_index++;
-			}
-		}
-		else
-		{
-			printf("(none)");
-		}
+		for (size_t arg_index = 0; cmd_list[i].args[arg_index]; arg_index++)
+			printf("\"%s\" ", cmd_list[i].args[arg_index]);
 		printf("\n");
+
 		printf("input_redirect:   %s\n",
 			cmd_list[i].input_redirect ? cmd_list[i].input_redirect : "(none)");
 		printf("output_redirect:  %s\n",
@@ -40,17 +44,10 @@ void	print_cmd_list(t_cmd *cmd_list, size_t count) // need to del
 			cmd_list[i].append_redirect ? cmd_list[i].append_redirect : "(none)");
 		printf("heredoc_delimiter:%s\n",
 			cmd_list[i].heredoc_delimiter ? cmd_list[i].heredoc_delimiter : "(none)");
-		if (cmd_list[i].data)
-		{
-			printf("data->some_value: %d\n", cmd_list[i].data->some_value);
-		}
-		else
-		{
-			printf("data:            (null)\n");
-		}
 		printf("\n");
 	}
 }
+
 
 // Global flag for prompt control
 // volatile sig_atomic_t g_prompt_flag = 0;
@@ -91,11 +88,11 @@ int	main(int argc, char **argv, char **env)
 		}
 		tokens = split_to_tokens(input, &data);
 		free(input);
-		if (tokens == (t_token **)(-1))
+		if (tokens == (t_token **)(-1)) //do we need it?
 		{
 			continue ;
 		}
-		if (!tokens)
+		if (!tokens) //do we need it?
 		{
 			// fprintf(stderr, "Error: Failed to tokenize input\n");
 			continue ;
@@ -108,7 +105,7 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		}
 		////////////////////////
-		//print_cmd_list(cmd,4);
+		// print_cmd_list(cmd,4);
 		execute(tokens, cmd, &data, env);
 	}
 	clear_history();

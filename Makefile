@@ -4,29 +4,25 @@ CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
-SRC_FILES = main.c utils_main.c tokenizer.c utils_tokenizer.c builtins.c utils_builtins.c \
-			execution.c parser.c signals.c initialization.c commands.c pipe.c redirection.c \
-			expantion.c
-OBJ_FILES = $(SRC_FILES:.c=.o)
-OBJS =  $(OBJ_DIR)/main.o $(OBJ_DIR)/tokenizer.o  $(OBJ_DIR)/utils_tokenizer.o \
-		$(OBJ_DIR)/builtins.o $(OBJ_DIR)/utils_builtins.o $(OBJ_DIR)/execution.o \
-		$(OBJ_DIR)/parser.o $(OBJ_DIR)/signals.o $(OBJ_DIR)/initialization.o \
-		$(OBJ_DIR)/utils_main.o $(OBJ_DIR)/commands.o $(OBJ_DIR)/pipe.o \
-		$(OBJ_DIR)/redirection.o $(OBJ_DIR)/expantion.o
+SRC_FILES = main.c utils_main.c tokenizer.c utils_tokenizer.c execution.c parser.c signals.c \
+			initialization.c commands.c pipe.c redirection.c expantion.c \
+			builtins/echo.c builtins/cd.c builtins/env.c builtins/exit.c \
+			builtins/export.c builtins/pwd.c builtins/unset.c
+OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
+
 MAKEFLAGS += --no-print-directory
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
 all: $(LIBFT) $(NAME)
 
-$(NAME): $(OBJS)
-	 @$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(LDFLAGS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	 @$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -c $< -o $@
 
-$(OBJ_DIR): 
-	 @mkdir -p $(OBJ_DIR)
+$(NAME): $(OBJ_FILES)
+	 @$(CC) $(CFLAGS) -o $(NAME) $(OBJ_FILES) $(LIBFT) $(LDFLAGS)
 
 $(LIBFT):
 	 @$(MAKE) -C $(LIBFT_DIR)
