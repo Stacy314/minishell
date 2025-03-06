@@ -1,0 +1,11 @@
+-nasdToken[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: -n
+Token[2]: Type: 0, Value: -n
+Token[3]: Type: 0, Value: -nasd
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "-n" "-n" "-nasd" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

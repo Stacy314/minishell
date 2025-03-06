@@ -1,0 +1,33 @@
+hi
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 2, Value: <
+Token[2]: Type: 0, Value: 123
+Token[3]: Type: 2, Value: <
+Token[4]: Type: 0, Value: 456
+Token[5]: Type: 0, Value: hi
+Token[6]: Type: 1, Value: |
+Token[7]: Type: 0, Value: echo
+Token[8]: Type: 0, Value: 42
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "hi" 
+Input Redirects: "123" "456" 
+Output Redirects: (null)
+Append Redirects: (null)
+============================
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 2, Value: <
+Token[2]: Type: 0, Value: 123
+Token[3]: Type: 2, Value: <
+Token[4]: Type: 0, Value: 456
+Token[5]: Type: 0, Value: hi
+Token[6]: Type: 1, Value: |
+Token[7]: Type: 0, Value: echo
+Token[8]: Type: 0, Value: 42
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "hi" 
+Input Redirects: "123" "456" 
+Output Redirects: (null)
+Append Redirects: (null)
+============================

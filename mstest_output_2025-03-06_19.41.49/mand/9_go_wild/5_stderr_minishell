@@ -1,0 +1,10 @@
+cat: standard outputcat: : Bad file descriptor
+standard outputcat: standard output: Bad file descriptor
+: Bad file descriptor
+cat: standard outputcat: standard output: Bad file descriptor
+: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard output: Bad file descriptor
+cat: standard outputcat: standard output: Bad file descriptor
+: Bad file descriptor
+cat: standard output: Bad file descriptor

@@ -1,0 +1,10 @@
+apechkov
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: apechkov
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "apechkov" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

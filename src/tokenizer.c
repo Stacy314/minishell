@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:46:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:33:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		}
 		if (inside_quotes)
 		{
-			fprintf(stderr, "minishell: syntax error: unclosed quotes\n");
+			write_error("minishell: syntax error: unclosed quotes\n");
 			free_tokens(tokens);
 			return (t_token **)(-1);
 		}
@@ -182,6 +182,6 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	// Debug print
 	// for (int i = 0; tokens[i] != NULL; i++)
 	//   printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type,
-		//tokens[i]->value);
+	//	tokens[i]->value);
 	return (tokens);
 }

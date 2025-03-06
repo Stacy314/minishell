@@ -1,0 +1,10 @@
+042
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: 042
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "042" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

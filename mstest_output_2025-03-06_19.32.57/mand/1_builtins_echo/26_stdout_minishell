@@ -1,0 +1,12 @@
+apechkov =intergalaktikus miaf*szomez
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: apechkov
+Token[2]: Type: 0, Value: =intergalaktikus
+Token[3]: Type: 0, Value: miaf*szomez
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "apechkov" "=intergalaktikus" "miaf*szomez" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

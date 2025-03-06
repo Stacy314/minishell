@@ -1,0 +1,11 @@
+|
+0 user -
+apechkov home -
+asd
+echo
+| echo wtf
+file
+ lol.c
+\nint main(){write(1, \"1\\n\", 2);}
+\nint main(){write(1, \"2\\n\", 2);}
+out|cd

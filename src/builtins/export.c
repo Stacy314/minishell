@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 17:39:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:25:04 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 		arg = cmd->args[i];
 		if (!is_valid_identifier(arg))
 		{
-			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n",
+			write_error("minishell: export: `%s': not a valid identifier\n",
 				arg);
 			data->exit_status = 1;
 			return (1);

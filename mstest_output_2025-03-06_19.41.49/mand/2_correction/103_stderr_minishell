@@ -1,0 +1,10 @@
+minishell: unistd.h: No such file or directory
+tmp_path_test1/test1.c:1:10: error: #include expects "FILENAME" or <FILENAME>
+    1 | #include
+      |          ^
+minishell: unistd.h: No such file or directory
+tmp_path_test2/test2.c:1:10: error: #include expects "FILENAME" or <FILENAME>
+    1 | #include
+      |          ^
+a.out: command not found
+a.out: command not found

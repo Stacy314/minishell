@@ -1,0 +1,17 @@
+apechkov$USERtext oui oui oui oui apechkov oui apechkov
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: apechkov$USERtext
+Token[2]: Type: 0, Value: oui
+Token[3]: Type: 0, Value: oui
+Token[4]: Type: 0, Value: oui
+Token[5]: Type: 0, Value: oui
+Token[6]: Type: 0, Value: apechkov
+Token[7]: Type: 0, Value: oui
+Token[8]: Type: 0, Value: apechkov
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "apechkov$USERtext" "oui" "oui" "oui" "oui" "apechkov" "oui" "apechkov" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

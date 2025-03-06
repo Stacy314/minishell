@@ -1,0 +1,11 @@
+cd /home/apechkov
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: cd
+Token[2]: Type: 0, Value: /home/apechkov
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "cd" "/home/apechkov" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

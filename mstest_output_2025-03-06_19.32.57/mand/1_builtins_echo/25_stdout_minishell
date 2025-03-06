@@ -1,0 +1,12 @@
+$USER apechkov text  ' text
+Token[0]: Type: 0, Value: echo
+Token[1]: Type: 0, Value: $USER
+Token[2]: Type: 0, Value: apechkov
+Token[3]: Type: 0, Value: text  ' text
+
+==== DEBUG CMD STRUCTURE ====
+Args: "echo" "$USER" "apechkov" "text  ' text" 
+Input Redirects: (null)
+Output Redirects: (null)
+Append Redirects: (null)
+============================

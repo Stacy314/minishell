@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:17:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:35:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 void	handle_input_redirect(t_cmd *cmd) // <
 {
-	int	fd;
-	int	i;
+	int fd;
+	int i;
 
 	if (!cmd->input_redirects)
-		return;
+		return ;
 
 	i = 0;
 	while (cmd->input_redirects[i])
@@ -41,11 +41,11 @@ void	handle_input_redirect(t_cmd *cmd) // <
 
 void	handle_output_redirect(t_cmd *cmd) // >
 {
-	int	fd;
-	int	i;
+	int fd;
+	int i;
 
 	if (!cmd->output_redirects)
-		return;
+		return ;
 
 	i = 0;
 	while (cmd->output_redirects[i])
@@ -67,16 +67,17 @@ void	handle_output_redirect(t_cmd *cmd) // >
 
 void	handle_append_redirect(t_cmd *cmd) // >>
 {
-	int	fd;
-	int	i;
+	int fd;
+	int i;
 
 	if (!cmd->append_redirects)
-		return;
+		return ;
 
 	i = 0;
 	while (cmd->append_redirects[i])
 	{
-		fd = open(cmd->append_redirects[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+		fd = open(cmd->append_redirects[i], O_WRONLY | O_CREAT | O_APPEND,
+				0644);
 		if (fd == -1)
 		{
 			write_error("minishell: %s: No such file or directory\n",
@@ -93,9 +94,9 @@ void	handle_append_redirect(t_cmd *cmd) // >>
 
 void	handle_heredoc(t_cmd *cmd) // <<
 {
-	int		pipe_fd[2];
-	char	*line;
-	pid_t	pid;
+	int pipe_fd[2];
+	char *line;
+	pid_t pid;
 
 	if (pipe(pipe_fd) == -1)
 	{
@@ -117,7 +118,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 			if (!line || strcmp(line, cmd->heredoc_delimiter) == 0)
 			{
 				free(line);
-				break;
+				break ;
 			}
 			write(pipe_fd[1], line, ft_strlen(line));
 			write(pipe_fd[1], "\n", 1);
