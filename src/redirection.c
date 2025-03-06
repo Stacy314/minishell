@@ -6,42 +6,19 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:46:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:17:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// void	handle_input_redirect(t_cmd *cmd)
-// {
-// 	int	fd;
-// 	int	i;
-
-// 	i = 0;
-// 	while (cmd[i].input_redirect)
-// 	{
-// 		fd = open(cmd[i].input_redirect, O_RDONLY);
-// 		if (fd == -1)
-// 		{
-// 			printf("minishell: %s: No such file or directory\n",
-// 				cmd[i].input_redirect);
-// 		}
-// 		else
-// 		{
-// 			dup2(fd, STDIN_FILENO);
-// 			close(fd);
-// 		}
-// 		i++;
-// 	}
-// }
-
-void	handle_input_redirect(t_cmd *cmd)
+void	handle_input_redirect(t_cmd *cmd) // <
 {
 	int	fd;
 	int	i;
 
 	if (!cmd->input_redirects)
-		return;  // Если нет редиректов, ничего не делаем
+		return;
 
 	i = 0;
 	while (cmd->input_redirects[i])
@@ -49,7 +26,7 @@ void	handle_input_redirect(t_cmd *cmd)
 		fd = open(cmd->input_redirects[i], O_RDONLY);
 		if (fd == -1)
 		{
-			printf("minishell: %s: No such file or directory\n",
+			write_error("minishell: %s: No such file or directory\n",
 				cmd->input_redirects[i]);
 		}
 		else
@@ -76,7 +53,7 @@ void	handle_output_redirect(t_cmd *cmd) // >
 		fd = open(cmd->output_redirects[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
 		{
-			printf("minishell: %s: No such file or directory\n",
+			write_error("minishell: %s: No such file or directory\n",
 				cmd->output_redirects[i]);
 		}
 		else
@@ -88,7 +65,7 @@ void	handle_output_redirect(t_cmd *cmd) // >
 	}
 }
 
-void	handle_append_redirect(t_cmd *cmd)
+void	handle_append_redirect(t_cmd *cmd) // >>
 {
 	int	fd;
 	int	i;
@@ -102,7 +79,7 @@ void	handle_append_redirect(t_cmd *cmd)
 		fd = open(cmd->append_redirects[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (fd == -1)
 		{
-			printf("minishell: %s: No such file or directory\n",
+			write_error("minishell: %s: No such file or directory\n",
 				cmd->append_redirects[i]);
 		}
 		else
@@ -120,7 +97,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 	char	*line;
 	pid_t	pid;
 
-	if (pipe(pipe_fd) == -1) // ???
+	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");
 		exit(1);
@@ -178,7 +155,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 		if (cmd->append_redirects)
 			handle_append_redirect(cmd);
 		execute_command(cmd->args[0], data, cmd->args, env);
-		exit(127);
+		exit(1); //
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

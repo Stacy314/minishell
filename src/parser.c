@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:39:00 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 18:56:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
     char ***redirects;
     int count = 0;
 
-    printf("⏳ parse_redirects: token->value = %s, token->type = %d\n", token->value, type);
+    //printf("⏳ parse_redirects: token->value = %s, token->type = %d\n", token->value, type);
 
     if (type == REDIRECT_IN)
         redirects = &cmd->input_redirects;
@@ -128,14 +128,14 @@ void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
         redirects = &cmd->append_redirects;
     else
     {
-        printf("❌ Unknown token type!\n");
+       // printf("❌ Unknown token type!\n");
         return;
     }
 
     // Проверяем, есть ли уже массив редиректов
     if (!*redirects)
     {
-        printf("🔍 First redirect detected, allocating memory\n");
+       // printf("🔍 First redirect detected, allocating memory\n");
         *redirects = ft_calloc(2, sizeof(char *));
         if (!*redirects)
         {
@@ -144,7 +144,7 @@ void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
         }
         (*redirects)[0] = ft_strdup(token->value);
         (*redirects)[1] = NULL;
-        printf("✅ Added redirect: %s\n", (*redirects)[0]);
+        //printf("✅ Added redirect: %s\n", (*redirects)[0]);
         return;
     }
 
@@ -152,7 +152,7 @@ void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
     while ((*redirects)[count])
         count++;
 
-    printf("🔄 Expanding redirect array (current size: %d)\n", count);
+   // printf("🔄 Expanding redirect array (current size: %d)\n", count);
 
     // Расширяем массив
     char **new_redirects = realloc(*redirects, (count + 2) * sizeof(char *));
@@ -165,7 +165,7 @@ void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
     *redirects = new_redirects;
     (*redirects)[count] = ft_strdup(token->value);
     (*redirects)[count + 1] = NULL;
-    printf("✅ Added redirect: %s (new size: %d)\n", (*redirects)[count], count + 1);
+    //printf("✅ Added redirect: %s (new size: %d)\n", (*redirects)[count], count + 1);
 }
 
 
