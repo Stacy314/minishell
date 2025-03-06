@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:37:15 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 21:47:09 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_cmd	*create_cmd(void)
 {
 	t_cmd	*new_cmd;
 
-	new_cmd = malloc(sizeof(t_cmd));
+	new_cmd = ft_calloc(sizeof(t_cmd), 1);
 	if (!new_cmd)
 		return (NULL);
 	new_cmd->args = NULL;

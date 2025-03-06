@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:23:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 21:46:59 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*find_executable(const char *cmd, char **paths)
 	char	*full_path;
 	int		i;
 
-	full_path = malloc(1024); // why 1024?
+	full_path = ft_calloc(1024, 1); // why 1024?
 	i = 0;
 	while (paths[i] != NULL)
 	{

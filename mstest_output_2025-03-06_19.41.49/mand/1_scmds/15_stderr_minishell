@@ -1,4 +1,0 @@
-minishell: =10;i++){for(j=1;j: No such file or directory
-minishell: =10;j++){printf("%4d ",i*j)} printf("\n")}}: No such file or directory
-awk: cmd. line:2: BEGIN{for(i=1;i
-awk: cmd. line:2:                ^ unexpected newline or end of string

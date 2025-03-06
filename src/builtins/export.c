@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:25:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 21:48:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,59 @@ int	is_valid_identifier(const char *arg)
 	return (1);
 }
 
+static int	env_size(char **env)
+{
+	int count = 0;
+	while (env && env[count])
+		count++;
+	return (count);
+}
+
+static void	sort_env(char **array)
+{
+	int		i, j;
+	char	*tmp;
+
+	// Проста реалізація "пузирком" або за подібним принципом
+	for (i = 0; array[i]; i++)
+	{
+		for (j = i + 1; array[j]; j++)
+		{
+			if (ft_strncmp(array[i], array[j], ft_strlen(array[i])) > 0)
+			{
+				tmp = array[i];
+				array[i] = array[j];
+				array[j] = tmp;
+			}
+		}
+	}
+}
+
+static void	print_sorted_env(char **env)
+{
+	int size = env_size(env);
+
+	if (size == 0)
+		return;
+	// Створюємо копію масиву покажчиків
+	char **copy = ft_calloc(sizeof(char *) * (size + 1), 1);
+	if (!copy)
+		return; // Обробіть помилку, якщо потрібно
+
+	for (int i = 0; i < size; i++)
+		copy[i] = env[i];
+	copy[size] = NULL;
+
+	// Сортуємо копію
+	sort_env(copy);
+
+	// Виводимо
+	for (int i = 0; i < size; i++)
+		printf("declare -x %s\n", copy[i]);
+
+	free(copy); // Звільняємо лише масив покажчиків
+}
+
 // export a="s -lsa"
 //		l$a
 // export a='"' (shouldn't crash)
@@ -90,15 +143,12 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 	char	**new_env;
 
 	int j; // too much declarations
+	
 	if (!cmd->args[1])
 	{
-		i = 0;
-		while (data->env[i])
-		{
-			printf("declare -x %s\n", data->env[i]); // sort to alfabet
-			i++;
-		}
-		return (1);
+		print_sorted_env(data->env);
+		data->exit_status = 0;
+		return (0);
 	}
 	i = 1;
 	while (cmd->args[i])
@@ -132,10 +182,10 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 			env_size = 0;
 			while (data->env[env_size])
 				env_size++;
-			new_env = malloc((env_size + 2) * sizeof(char *));
+			new_env = ft_calloc((env_size + 2) * sizeof(char *), 1);
 			if (!new_env)
 			{
-				perror("malloc");
+				perror("calloc");
 				return (1);
 			}
 			j = 0;

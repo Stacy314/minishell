@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:51:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 22:28:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	builtin_exit(t_cmd *cmd, t_data *data)
 	printf("exit\n");
 	if (!cmd->args[1])
 		exit(data->exit_status);
-	exit_code = ft_atol(cmd->args[1]/*, &error*/);
+	exit_code = ft_atol(cmd->args[1]);
 	if (exit_code == -1)
 	{
 		write_error("minishell: exit: %s: numeric argument required\n",
