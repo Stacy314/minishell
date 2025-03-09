@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:25:30 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 16:07:21 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ int	builtin_pwd(t_cmd *cmd, t_data *data)
 	}
 	buf = getcwd(NULL, 0);
 	if (buf == NULL)
-		ft_putendl_fd("pwd: error retrieving current directory: getcwd: cannot access parent directories\n",
-			data->exit_status = 2);
+	{
+		ft_putendl_fd("pwd: error retrieving current directory: getcwd: ", 2);
+		ft_putendl_fd("cannot access parent directories\n", 2);
+		data->exit_status = 2;
+	}
 	return (ft_putendl_fd(buf, 1), free(buf), data->exit_status = 0);
 }

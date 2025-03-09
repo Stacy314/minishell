@@ -7,7 +7,7 @@ OBJ_DIR = obj
 SRC_FILES = main.c utils_main.c tokenizer.c utils_tokenizer.c execution.c parser.c signals.c \
 			initialization.c commands.c pipe.c redirection.c expantion.c \
 			builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
-			builtins/export.c builtins/pwd.c builtins/unset.c
+			builtins/export.c builtins/export_utils.c builtins/pwd.c builtins/unset.c
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 
 MAKEFLAGS += --no-print-directory

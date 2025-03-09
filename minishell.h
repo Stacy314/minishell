@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 22:10:30 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 15:05:38 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,10 +135,11 @@ int					is_option(const char *arg);
 char				*skip_spaces(char *str);
 int					is_valid_identifier(const char *arg);
 bool				is_numeric(const char *str);
-long				ft_atol(const char *str /*, int *error*/);
+long				ft_atol(const char *str, int *error);
+int					ft_isspace(int c);
 // char **set_env_value(char **envp, const char *key, const char *value);
 int					count_args(char **args);
-
+void			print_sorted_env(char **env);
 // execution
 void				execute(t_token **tokens, t_cmd *cmd, t_data *data,
 						char **env);

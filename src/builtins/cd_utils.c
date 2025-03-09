@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 22:25:20 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/07 18:07:02 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,21 +96,14 @@ char	*get_env_value(char **env, const char *key)
 int	check_cd_path(const char *dest_path, t_data *data)
 {
 	struct stat	path_stat;
-	int			fd;
 
-	fd = open(dest_path, O_RDONLY);
-	if (fd == -1)
-		return (write_error("minishell: cd: %s: No such file or directory\n",
-				dest_path), data->exit_status = 1, 1);
-	if (fstat(fd, &path_stat) == -1)
+	if (stat(dest_path, &path_stat) == -1)
 	{
-		close(fd);
 		write_error("minishell: cd: %s: No such file or directory\n",
-			path_stat);
+			dest_path);
 		data->exit_status = 1;
 		return (1);
 	}
-	close(fd);
 	if (!S_ISDIR(path_stat.st_mode))
 	{
 		write_error("minishell: cd: %s: Not a directory\n", dest_path);

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:33:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 14:18:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 			continue ;
 		}
 		j = handle_redirection(str, j, tokens, &i, &index);
-		while (str[j] && (!isspace((unsigned char)str[j]) || inside_quotes))
+		while (str[j] && (!ft_isspace((unsigned char)str[j]) || inside_quotes))
 		{
 			if (inside_quotes && str[j] == '|')
 			{

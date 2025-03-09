@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 17:24:15 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/07 18:17:59 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-//env | grep DOESNT_EXIST
+//env | grep DOESNT_EXIST (shouldn't print anything, I write in stderr)
 
 //env | grep HOME
 

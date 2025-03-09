@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:47:52 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 15:57:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,3 +179,34 @@ int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 //	//    printf("  [%d] %s\n", i, data->env[i]);
 //	printf("=================\n");
 //}
+
+
+void	write_error(const char *format, ...)
+{
+	va_list	ap;
+	char	*s;
+
+	va_start(ap, format);
+	while (*format)
+	{
+		if (*format == '%' && *(format + 1) != '\0')
+		{
+			format++;
+			if (*format == 's')
+			{
+				s = va_arg(ap, char *);
+				if (s)
+					ft_putstr_fd(s, 2);
+			}
+			else
+			{
+				ft_putchar_fd('%', 2);
+				ft_putchar_fd(*format, 2);
+			}
+		}
+		else
+			ft_putchar_fd(*format, 2);
+		format++;
+	}
+	va_end(ap);
+}

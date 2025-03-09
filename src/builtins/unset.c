@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 16:58:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 16:04:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,13 @@ int	builtin_unset(t_cmd *cmd, t_data *data)
 	int	var_index;
 
 	if (!cmd->args[1])
-	{
-		// printf("minishell: unset: not enough arguments\n");
 		return (1);
-	}
 	i = 1;
 	while (cmd->args[i])
 	{
 		var_index = find_env_var(data->env, cmd->args[i]);
 		if (var_index == -1)
 			return (1);
-		// free(data->env[var_index]);
 		j = var_index;
 		while (data->env[j])
 		{
