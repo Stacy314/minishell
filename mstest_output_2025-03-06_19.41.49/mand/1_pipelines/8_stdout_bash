@@ -1,9 +1,0 @@
-docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
-        ether 02:42:77:31:fc:4a  txqueuelen 0  (Ethernet)
-eno2: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet6 fe80::32d0:42ff:fee7:1773  prefixlen 64  scopeid 0x20<link>
-        ether 30:d0:42:e7:17:73  txqueuelen 1000  (Ethernet)
-lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-        inet6 ::1  prefixlen 128  scopeid 0x10<host>
-virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
-        ether 52:54:00:cf:c9:03  txqueuelen 1000  (Ethernet)

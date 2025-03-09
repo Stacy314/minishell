@@ -6,11 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:35:15 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/06 20:11:41 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//echo <"./test_files/infile_big" | cat <"./test_files/infile"
 
 void	handle_input_redirect(t_cmd *cmd) // <
 {
@@ -28,6 +30,8 @@ void	handle_input_redirect(t_cmd *cmd) // <
 		{
 			write_error("minishell: %s: No such file or directory\n",
 				cmd->input_redirects[i]);
+			exit(1);
+			
 		}
 		else
 		{
@@ -55,6 +59,7 @@ void	handle_output_redirect(t_cmd *cmd) // >
 		{
 			write_error("minishell: %s: No such file or directory\n",
 				cmd->output_redirects[i]);
+			exit(1);
 		}
 		else
 		{
@@ -82,6 +87,7 @@ void	handle_append_redirect(t_cmd *cmd) // >>
 		{
 			write_error("minishell: %s: No such file or directory\n",
 				cmd->append_redirects[i]);
+			exit(1);
 		}
 		else
 		{

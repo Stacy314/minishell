@@ -6,24 +6,80 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 19:51:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 14:49:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
+// exit 0 0, exit 1 2, exit 1 2 3, exit 42 42 42 42 42 (dont write exit in out?)
 // exit "" (bash: exit: : numeric argument required, EC - 2)
 
-long	ft_atol(const char *str/*, int *error*/)
+int	ft_isspace(int c)
+{
+	if (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
+		|| c == '\r')
+		return (1);
+	return (0);
+}
+
+static unsigned long	overflow_check(const char *str, int *idx, int sign,
+		int *error)
 {
 	unsigned long	result;
-	int				sign;
-	int				i;
 
 	result = 0;
-	sign = 1;
+	while (str[*idx] && ft_isdigit((unsigned char)str[*idx]))
+	{
+		if (sign == 1)
+		{
+			if (result > (unsigned long)LONG_MAX / 10
+				|| (result == (unsigned long)LONG_MAX / 10 && (str[*idx]
+						- '0') > (int)(LONG_MAX % 10)))
+				return (*error = 1, 0);
+		}
+		else
+		{
+			if (result > ((unsigned long)LONG_MAX + 1) / 10
+				|| (result == ((unsigned long)LONG_MAX + 1) / 10 && (str[*idx]
+						- '0') > (int)(((unsigned long)LONG_MAX + 1) % 10)))
+				return (*error = 1, 0);
+		}
+		result = result * 10 + (str[*idx] - '0');
+		(*idx)++;
+	}
+	return (result);
+}
+
+static long	converting(const char *str, int *idx, int sign, int *error)
+{
+	unsigned long	result;
+
+	result = overflow_check(str, idx, sign, error);
+	if (*error == 1)
+		return (0);
+	while (ft_isspace((unsigned char)str[*idx]))
+		(*idx)++;
+	if (str[*idx] != '\0')
+	{
+		*error = 1;
+		return (0);
+	}
+	if (sign == -1 && result == (unsigned long)LONG_MAX + 1)
+		return (LONG_MIN);
+	return ((long)result * sign);
+}
+
+long	ft_atol(const char *str, int *error)
+{
+	int		i;
+	int		sign;
+	long	res;
+
+	*error = 0;
 	i = 0;
-	while (isspace((unsigned char)str[i]))
+	sign = 1;
+	while (ft_isspace((unsigned char)str[i]))
 		i++;
 	if (str[i] == '-' || str[i] == '+')
 	{
@@ -31,48 +87,25 @@ long	ft_atol(const char *str/*, int *error*/)
 			sign = -1;
 		i++;
 	}
-	if (!str[i])
-		return (-1);
-	while (str[i] && isdigit((unsigned char)str[i]))
-	{
-		if (sign == 1)
-		{
-			if (result > (unsigned long)LONG_MAX / 10
-				|| (result == (unsigned long)LONG_MAX / 10 && (str[i]
-						- '0') > (int)((unsigned long)LONG_MAX % 10)))
-				return (-1);
-		}
-		else
-		{
-			if (result > ((unsigned long)LONG_MAX + 1) / 10
-				|| (result == ((unsigned long)LONG_MAX + 1) / 10 && (str[i]
-						- '0') > (int)(((unsigned long)LONG_MAX + 1) % 10)))
-				return (-1);
-		}
-		result = result * 10 + (str[i] - '0');
-		i++;
-	}
-	while (isspace((unsigned char)str[i]))
-		i++;
-	if (str[i] != '\0')
-		return (-1);
-	if (sign == -1 && result == (unsigned long)LONG_MAX + 1)
-		return (LONG_MIN);
-	return ((long)(result * sign));
+	if (!str[i] || !ft_isdigit((unsigned char)str[i]))
+		return (*error = 1, 0);
+	if (*error == 1)
+		return (0);
+	res = converting(str, &i, sign, error);
+	return (res);
 }
-
 
 int	builtin_exit(t_cmd *cmd, t_data *data)
 {
 	long	exit_code;
-	//int		error;
+	int		error;
 
-	//error = 0;
+	error = 0;
 	printf("exit\n");
 	if (!cmd->args[1])
 		exit(data->exit_status);
-	exit_code = ft_atol(cmd->args[1]/*, &error*/);
-	if (exit_code == -1)
+	exit_code = ft_atol(cmd->args[1], &error);
+	if (error)
 	{
 		write_error("minishell: exit: %s: numeric argument required\n",
 			cmd->args[1]);
