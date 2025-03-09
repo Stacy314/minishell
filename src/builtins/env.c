@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/07 18:17:59 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 16:41:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,5 @@ int	builtin_env(t_data *data)
 		ft_putstr_fd("\n", 2);
 		i++;
 	}
-	return (0);
+	return (data->exit_status = 0);
 }

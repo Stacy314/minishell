@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 15:57:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 17:51:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//bool	is_numeric(const char *str)
+// bool	is_numeric(const char *str)
 //{
 //	int	i;
 
@@ -111,49 +111,44 @@ int	ft_str_only_spaces(const char *str)
 //    //free(cmd);
 //}
 
-void free_cmd(t_cmd *cmd)
+void	free_cmd(t_cmd *cmd)
 {
-    if (!cmd)
-        return;
+	int	i;
 
-    if (cmd->args)
-    {
-        int i = 0;
-        while (cmd->args[i])
-            free(cmd->args[i++]);
-        free(cmd->args);
-    }
-
-    if (cmd->input_redirects)
-    {
-        int i = 0;
-        while (cmd->input_redirects[i])
-            free(cmd->input_redirects[i++]);
-        free(cmd->input_redirects);
-    }
-
-    if (cmd->output_redirects)
-    {
-        int i = 0;
-        while (cmd->output_redirects[i])
-            free(cmd->output_redirects[i++]);
-        free(cmd->output_redirects);
-    }
-
-    if (cmd->append_redirects)
-    {
-        int i = 0;
-        while (cmd->append_redirects[i])
-            free(cmd->append_redirects[i++]);
-        free(cmd->append_redirects);
-    }
-
-    if (cmd->heredoc_delimiter)
-        free(cmd->heredoc_delimiter);
-
-    free(cmd);
+	if (!cmd)
+		return ;
+	if (cmd->args)
+	{
+		i = 0;
+		while (cmd->args[i])
+			free(cmd->args[i++]);
+		free(cmd->args);
+	}
+	if (cmd->input_redirects)
+	{
+		i = 0;
+		while (cmd->input_redirects[i])
+			free(cmd->input_redirects[i++]);
+		free(cmd->input_redirects);
+	}
+	if (cmd->output_redirects)
+	{
+		i = 0;
+		while (cmd->output_redirects[i])
+			free(cmd->output_redirects[i++]);
+		free(cmd->output_redirects);
+	}
+	if (cmd->append_redirects)
+	{
+		i = 0;
+		while (cmd->append_redirects[i])
+			free(cmd->append_redirects[i++]);
+		free(cmd->append_redirects);
+	}
+	if (cmd->heredoc_delimiter)
+		free(cmd->heredoc_delimiter);
+	free(cmd);
 }
-
 
 int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 {
@@ -179,7 +174,6 @@ int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 //	//    printf("  [%d] %s\n", i, data->env[i]);
 //	printf("=================\n");
 //}
-
 
 void	write_error(const char *format, ...)
 {
@@ -209,4 +203,19 @@ void	write_error(const char *format, ...)
 		format++;
 	}
 	va_end(ap);
+}
+
+void free_array(char **arr)
+{
+	int i;
+
+	if (!arr)
+		return;
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
 }

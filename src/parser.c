@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 14:28:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 17:25:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,18 @@
 //echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
 //echo '' ""
 //exit "" (bash: exit: : numeric argument required, EC - 2)
+//"" (: command not found)
+
+//awk 'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j++){printf("%4d ",i*j)} printf("\n")}}' /dev/null | tail -n 10
+//Expected tkens:
+//1) "awk"
+//2) "'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j'){printf("%4d ",i*j)} printf("\n")}}'"
+//3) "/dev/null"
+//4) "|"
+//5) "tail"
+//6) "-n"
+//7) "10"
+
 
 //"" " "(need to check)
 
@@ -324,12 +336,12 @@ t_cmd	*parse_tokens(t_token **tokens)
 		if (tokens[i]->type == PIPE && (!tokens[i + 1] || i == 0))
 		{
 			ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-			exit(2);
+			//data->exit_status = 2;
 		}
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
 			return (perror("calloc"), NULL);
-		new_cmd->args = NULL;
+		new_cmd->args = NULL; // move to init
 		new_cmd->input_redirects = NULL;
 		new_cmd->output_redirects = NULL;
 		new_cmd->append_redirects = NULL;
@@ -348,8 +360,10 @@ t_cmd	*parse_tokens(t_token **tokens)
 			{
 				if (!tokens[i + 1] || tokens[i + 1]->type != WORD)
 				{
-					ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
-					exit(2);
+
+					write_error("minishell: %s: ambiguous redirect", tokens[i + 1]->value); //> $lol (segfault)
+					//ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
+					//data->exit_status = 2;
 				}
 				parse_redirects(current, tokens[i + 1], tokens[i]->type);
 				i++;

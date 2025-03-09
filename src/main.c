@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 18:38:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 16:09:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ int	main(int argc, char **argv, char **env)
 			// ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
 			continue ;
 		}
-		////////////////////////
-		// print_cmd_list(cmd,4);
 		execute(tokens, cmd, &data, env);
 	}
 	clear_history();

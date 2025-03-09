@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 16:04:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 16:42:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,5 @@ int	builtin_unset(t_cmd *cmd, t_data *data)
 		data->env[var_index] = NULL;
 		i++;
 	}
-	return (0);
+	return (data->exit_status = 0);
 }

@@ -6,69 +6,23 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 21:46:59 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 17:52:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*get_path_from_env(char **env)
-{
-	int	i;
+// ls | wc -l
+// unset path
 
-	i = 0;
-	while (env[i] != NULL)
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-		{
-			return (env[i] + 5); // skip PATH
-		}
-		i++;
-	}
-	return (NULL);
-}
+//"" (: command not found, EC - 127) (11)
+// touch "" (touch: cannot touch '': No such file or directory) (13)
 
-char	**split_path(const char *path)
-{
-	char	**paths;
-	int		i;
-	char	*path_copy;
-	char	*token;
+// awk 'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j++){printf("%4d ",i*j)} printf("\n")}}'
+/// dev/null | tail -n 10 (36)
+// awk 'BEGIN{srand(42); for(i=1;i<=1000000;i++)print int(rand()*1000)}' | awk '{sum+=$1} END {print sum/NR}' (38)
 
-	paths = ft_calloc(128 * sizeof(char *), 1); // why 128?
-	path_copy = ft_strdup(path);
-	token = strtok(path_copy, ":"); // need to cange
-	i = 0;
-	while (token)
-	{
-		paths[i++] = ft_strdup(token);
-		token = strtok(NULL, ":"); // need to cange
-	}
-	paths[i] = NULL;
-	free(path_copy);
-	return (paths);
-}
-
-char	*find_executable(const char *cmd, char **paths)
-{
-	char	*full_path;
-	int		i;
-
-	full_path = ft_calloc(1024, 1); // why 1024?
-	i = 0;
-	while (paths[i] != NULL)
-	{
-		snprintf(full_path, 1024, "%s/%s", paths[i], cmd); // need to change
-		if (access(full_path, X_OK) == 0)
-		{
-			// printf("full_path = %s\n", full_path);
-			return (full_path);
-		}
-		i++;
-	}
-	free(full_path);
-	return (NULL);
-}
+//"."
 
 int	check_permissions(char *cmd)
 {
@@ -92,63 +46,12 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-// ls | wc -l
-// unset path
-
-int	execute_command(char *cmd, t_data *data, char **args, char **env)
+static int	fork_and_exec(const char *executable, char **args, char **env,
+		t_data *data)
 {
 	pid_t	pid;
 	int		status;
-	char	*path;
-	char	*executable;
-	char	**paths;
-	int		i;
-	int		error_code;
 
-	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
-	{
-		error_code = check_permissions(cmd);
-		if (error_code)
-			return (error_code);
-		pid = fork();
-		if (pid == -1)
-			return (perror("fork"), data->exit_status = 1);
-		if (pid == 0)
-		{
-			execve(cmd, args, env);
-			// perror("execve");
-			exit(127);
-		}
-		else
-		{
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				data->exit_status = WEXITSTATUS(status);
-			else
-				data->exit_status = 1;
-		}
-		return (data->exit_status);
-	}
-	path = get_path_from_env(data->env);
-	if (!path)
-	{
-		write_error("Error: PATH not found in environment\n");
-		return (data->exit_status = 127);
-	}
-	paths = split_path(path);
-	executable = find_executable(cmd, paths);
-	if (!executable)
-	{
-		write_error("%s: command not found\n", cmd);
-		i = 0;
-		while (paths[i])
-		{
-			free(paths[i]);
-			i++;
-		}
-		free(paths);
-		return (data->exit_status = 127);
-	}
 	pid = fork();
 	if (pid == -1)
 	{
@@ -169,20 +72,59 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 		else
 			data->exit_status = 1;
 	}
-	for (i = 0; paths[i]; i++)
-		free(paths[i]);
-	free(paths);
-	free(executable);
 	return (data->exit_status);
 }
 
-//// Тестування
-// int main(int argc, char **argv, char **env) {
-//    if (argc < 2) {
-//        fprintf(stderr, "Usage: %s <command> [args...]\n", argv[0]);
-//        return (1);
-//    }
+static int	try_execute_direct_path(char *cmd, t_data *data, char **args,
+		char **env)
+{
+	int	error_code;
 
-//    execute_command(argv[1], &argv[1], env);
-//    return (0);
-//}
+	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
+	{
+		error_code = check_permissions(cmd);
+		if (error_code)
+			return (error_code);
+		return (fork_and_exec(cmd, args, env, data));
+	}
+	return (-1);
+}
+
+static int	try_execute_via_path(char *cmd, t_data *data, char **args,
+		char **env)
+{
+	char	*path;
+	char	**paths;
+	char	*executable;
+	int		i;
+
+	path = get_path_from_env(data->env);
+	if (!path)
+		return (write_error("%s: command not found\n", cmd),
+			data->exit_status = 127);
+	paths = split_path(path);
+	if (!paths)
+		return (data->exit_status = 1);
+	executable = find_executable(cmd, paths);
+	if (!executable)
+	{
+		write_error("%s: command not found\n", cmd);
+		return (free_array(paths), data->exit_status = 127);
+	}
+	fork_and_exec(executable, args, env, data);
+	free(executable);
+	i = 0;
+	while (paths[i])
+		free(paths[i++]);
+	return (free(paths), data->exit_status);
+}
+
+int	execute_command(char *cmd, t_data *data, char **args, char **env)
+{
+	int	result;
+
+	result = try_execute_direct_path(cmd, data, args, env);
+	if (result >= 0)
+		return (result);
+	return (try_execute_via_path(cmd, data, args, env));
+}

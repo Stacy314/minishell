@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 15:05:38 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/09 17:51:57 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ typedef struct s_cmd
 }					t_cmd;
 
 void				write_error(const char *format, ...);
+void free_array(char **arr);
 
 // delete after
 void				print_cmd_list(t_cmd *cmd_list, size_t count);
