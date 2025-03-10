@@ -12,6 +12,16 @@
 
 #include "../minishell.h"
 
+//"" (: command not found)  &   //echo '' ""
+// this should be fixed in execution part:
+// if (!cmd->args || !cmd->args[0] || cmd->args[0][0] == '\0')
+// {
+//     ft_putstr_fd("minishell: '", STDERR_FILENO);
+//     ft_putstr_fd(cmd->args[0], STDERR_FILENO); // даже если пусто
+//     ft_putendl_fd("': command not found", STDERR_FILENO);
+//     return (127);
+// }
+
 void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
 	(void)tokens;

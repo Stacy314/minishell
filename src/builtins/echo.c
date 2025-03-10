@@ -39,6 +39,7 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 	int	i;
 	int	n_flag;
 
+
 	i = 1;
 	n_flag = 0;
 	while (cmd->args[i] != NULL && is_option(cmd->args[i]))

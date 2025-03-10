@@ -54,6 +54,8 @@ typedef enum e_token_type
 	REDIRECT_OUT,
 	APPEND,
 	HEREDOC,
+	LOGICAL_AND,
+	LOGICAL_OR,
 	END
 }					t_token_type;
 
@@ -115,7 +117,7 @@ int					handle_redirection(const char *str, int j, t_token **tokens,
 						int *i, int *index);
 
 // parsing
-t_cmd				*parse_tokens(t_token **tokens);
+t_cmd				*parse_tokens(t_token **tokens, t_data *data);
 void				parse_redirects(t_cmd *cmd, t_token *token,
 						t_token_type type);
 
