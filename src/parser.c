@@ -229,13 +229,14 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
         if (tokens[i]->type == LOGICAL_AND || tokens[i]->type == LOGICAL_OR)
         {
             write_error("minishell: syntax error near unexpected token `%s'\n", tokens[i]->value);
-            return (NULL);
             data->exit_status = 2;
+            return (NULL);
         }
 		if (tokens[i]->type == PIPE && (!tokens[i + 1] || i == 0))
 		{
 			ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
 			data->exit_status = 2;
+            return (NULL);
 		}
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
@@ -259,10 +260,12 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 			{
 				if (!tokens[i + 1] || tokens[i + 1]->type != WORD)
 				{
-
-					write_error("minishell: %s: ambiguous redirect", tokens[i + 1]->value); //> $lol (segfault)
+                    write_error("minishell: syntax error near unexpected token `%s'\n",
+                        tokens[i + 1] ? tokens[i + 1]->value : "newline");
+					// write_error("minishell: %s: ambiguous redirect", tokens[i + 1]->value); //> $lol (segfault)
 					//ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
 					data->exit_status = 2;
+                    return (NULL);
 				}
 				parse_redirects(current, tokens[i + 1], tokens[i]->type);
 				i++;
