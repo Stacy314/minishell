@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 16:41:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/10 19:10:02 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,11 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 		data->exit_status = 0;
 		return (0);
 	}
-	if (cmd->args[2])
-	{
-		write_error("minishell: export: too many arguments\n");
-		data->exit_status = 1;
-		return (1);
-	}
+	// if (cmd->args[2])  
+	// {
+	// 	write_error("minishell: export: too many arguments\n");
+	// 	data->exit_status = 1;
+	// 	return (1);
+	// }
 	return (export_one_arg(cmd->args[1], data));
 }

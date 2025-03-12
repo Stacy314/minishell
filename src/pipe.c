@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 21:32:12 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/10 20:30:16 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,10 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 
 	(void)data;
 	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
+		return (perror("pipe"), -1);
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork");
-		return (-1);
-	}
+		return (perror("fork"), -1);
 	if (pid == 0)
 	{
 		// dup2(pipe_fd[1], STDOUT_FILENO);
@@ -59,6 +53,10 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		}
 		close(pipe_fd[0]);
 		close(pipe_fd[1]);
+
+		apply_redirections(cmd);
+		// execute_redirection(cmd, data, env);
+		
 		execute_for_one(tokens, cmd, data, env);
 		exit(data->exit_status);
 	}
@@ -100,6 +98,8 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		close(in_fd); //
 		close(new_pipe_fd[0]); //
 		close(new_pipe_fd[1]); //
+		// execute_redirection(cmd, data, env);
+		apply_redirections(cmd);
 		execute_for_one(tokens, cmd, data, env);
 		exit(data->exit_status);
 	}
@@ -131,6 +131,8 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 			}
 			close(in_fd);
 		}
+		// execute_redirection(cmd, data, env);
+		apply_redirections(cmd);
 		execute_for_one(tokens, cmd, data, env);
 		exit(data->exit_status);
 	}
@@ -142,21 +144,25 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
 	int		n_cmds;
-	n_cmds = count_commands(cmd);
-	if (n_cmds == 0)
-		return ;
-	pid_t	pids[n_cmds];
+	pid_t	*pids;
 	int		pipe_fd[2];
 	int		new_pipe_fd[2];
 	int		process_count;
 	t_cmd	*current;
 	int		in_fd;
 	int		status;
-	//int		last_exit_status;
+	int		i;
 
+	n_cmds = count_commands(cmd);
+	if (n_cmds == 0)
+		return ;
+	pids = malloc(sizeof(pid_t) * n_cmds);
+	if (!pids)
+		return ;
 	process_count = 0;
 	current = cmd;
 	in_fd = -1;
+
 	pids[process_count++] = execute_first_command(tokens, current, data, env,
 			pipe_fd);
 	in_fd = pipe_fd[0];
@@ -174,7 +180,8 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	else
 		close(in_fd);
 	//last_exit_status = 0;
-	for (int i = 0; i < process_count; i++)
+	i = 0; 
+	while (i < process_count)
 	{
 		waitpid(pids[i], &status, 0);
 		if (WIFEXITED(status))
@@ -182,6 +189,8 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 			data->exit_status = WEXITSTATUS(status);
 			//printf("Process %d exited with status %d\n", pids[i], data->exit_status);
 		}
+		i++;
 	}
 	//data->exit_status = last_exit_status;
+	free(pids);
 }

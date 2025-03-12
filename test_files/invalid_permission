@@ -1,7 +1,4 @@
-<
->>
-|
-0 user -
+
 echo
 exists
 libft
@@ -21,16 +18,11 @@ tmp_err_bash
 tmp_err_minishell
 tmp_out_bash
 tmp_out_minishell
-<
->>
-|
-0 user -
 echo
 exists
 libft
  lol.c
 Makefile
-mgallyam home -
 minishell
 minishell.h
 minishell_tester
