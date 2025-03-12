@@ -15,14 +15,15 @@
 
 // need to fix:
 
-//grep hi "<infile" <         ./test_files/infile ("<infile"  - one arg, it isnt redir)
-//echo "exit_code ->$? user ->$USER home -> $HOME"
-//echo "cat lol.c | cat > lol.c" (should print cat lol.c | cat > lol.c)
-//echo "cat lol.c '|' cat > lol.c" (should print cat lol.c '|' cat > lol.c)
-//echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
-//echo '' ""
+
 //exit "" (bash: exit: : numeric argument required, EC - 2)
-//"" (: command not found)
+
+//&& and || with parenthesis for priorities (no segfault, maybe print error)
+
+
+// fixed:
+
+//echo '' ""
 
 //awk 'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j++){printf("%4d ",i*j)} printf("\n")}}' /dev/null | tail -n 10
 //Expected tkens:
@@ -34,25 +35,10 @@
 //6) "-n"
 //7) "10"
 
-//echo "aspas ->'"  ("aspas ->'" - one arg without redir)
-//echo "aspas -> ' " 
-//echo 'aspas ->"' 
-//echo 'aspas -> " ' 
-//echo "exit_code ->$? user ->$USER home -> $HOME"
-//echo 'exit_code ->$? user ->$USER home -> $HOME'
-
-
-//"" " "(need to check)
-
 // echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
-
-//&& and || with parenthesis for priorities (no segfault, maybe print error)
-
-// what will be in cmd if there are few redirects?
-
-//echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER ''
-
-// fixed:
+//echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
+//echo "cat lol.c '|' cat > lol.c" (should print cat lol.c '|' cat > lol.c)
+//grep hi "<infile" <         ./test_files/infile ("<infile"  - one arg, it isnt redir)
 // echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
 // or directory)
 //| echo hi (bash: syntax error near unexpected token `|', in our minishell -
@@ -194,34 +180,6 @@ void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
     //printf("✅ Added redirect: %s (new size: %d)\n", (*redirects)[count], count + 1);
 }
 
-
-
-// char **add_to_redirect_list(char **list, char *new_redirect)
-// {
-//     int i = 0;
-//     while (list && list[i])
-//         i++;
-
-//     char **new_list = malloc(sizeof(char *) * (i + 2));
-//     if (!new_list)
-//     {
-//         perror("malloc");
-//         return NULL;
-//     }
-
-//     i = 0;
-//     while (list && list[i])
-//     {
-//         new_list[i] = list[i];
-//         i++;
-//     }
-
-//     new_list[i] = strdup(new_redirect);
-//     new_list[i + 1] = NULL;
-//     free(list);
-//     return new_list;
-// }
-
 char	**append_to_args(char **args, char *new_arg)
 {
 	int		len;
@@ -253,80 +211,7 @@ char	**append_to_args(char **args, char *new_arg)
 	return (new_args);
 }
 
-// t_cmd	*parse_tokens(t_token **tokens)
-//{
-//	t_cmd	*cmd;
-//	int		cmd_count;
-//	int		i;
-//	int		last_index;
-
-//	cmd = malloc(sizeof(t_cmd) * MAX_COMMANDS);
-//	if (!cmd)
-//	{
-//		perror("malloc");
-//		//free(tokens);
-//		return (NULL);
-//	}
-//	cmd_count = 0;
-//	i = 0;
-//	cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-//	last_index = 0;
-//	while (tokens[last_index])
-//		last_index++;
-//	if (tokens[0]->type == PIPE || tokens[last_index - 1]->type == PIPE)
-		//$notexists | ls | $notexists
-//	{
-//		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-//		free(cmd);
-//		return (NULL);
-//	}
-//	while (tokens[i])
-//	{
-//		if (tokens[i]->type == PIPE)
-//		{
-//			cmd_count++;
-//			cmd[cmd_count] = (t_cmd){NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-//		}
-//		else if (tokens[i]->type == REDIRECT_IN
-//				|| tokens[i]->type == REDIRECT_OUT ||
-//					tokens[i]->type == APPEND || tokens[i]->type == HEREDOC)
-//		{
-//			if (tokens[i + 1] && tokens[i + 1]->type == WORD)
-//			{
-//				if (tokens[i]->type == REDIRECT_IN)
-//					cmd[cmd_count].input_redirect = strdup(tokens[i
-//							+ 1]->value);
-//				else if (tokens[i]->type == REDIRECT_OUT)
-//					cmd[cmd_count].output_redirect = strdup(tokens[i
-//							+ 1]->value);
-//				else if (tokens[i]->type == APPEND)
-//					cmd[cmd_count].append_redirect = strdup(tokens[i
-//							+ 1]->value);
-//				else if (tokens[i]->type == HEREDOC)
-//					cmd[cmd_count].heredoc_delimiter = strdup(tokens[i
-//							+ 1]->value);
-//				i++;
-//			}
-//			else
-//			{
-//				// fprintf(stderr, "Syntax error near unexpected token `%s`\n",
-					//tokens[i]->value);
-//				free(cmd);
-//				return (NULL);
-//			}
-//		}
-//		else
-//		{
-//			cmd[cmd_count].args = append_to_args(cmd[cmd_count].args,
-//					tokens[i]->value);
-//		}
-//		i++;
-//	}
-//	//print_cmds(cmd);
-//	return (cmd);
-//}
-
-t_cmd	*parse_tokens(t_token **tokens)
+t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 {
 	t_cmd	*head;
 	t_cmd	*current;
@@ -340,10 +225,17 @@ t_cmd	*parse_tokens(t_token **tokens)
 	i = 0;
 	while (tokens[i])
 	{
+        if (tokens[i]->type == LOGICAL_AND || tokens[i]->type == LOGICAL_OR)
+        {
+            write_error("minishell: syntax error near unexpected token `%s'\n", tokens[i]->value);
+            data->exit_status = 2;
+            return (NULL);
+        }
 		if (tokens[i]->type == PIPE && (!tokens[i + 1] || i == 0))
 		{
 			ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-			//data->exit_status = 2;
+			data->exit_status = 2;
+            return (NULL);
 		}
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
@@ -367,10 +259,12 @@ t_cmd	*parse_tokens(t_token **tokens)
 			{
 				if (!tokens[i + 1] || tokens[i + 1]->type != WORD)
 				{
-
-					write_error("minishell: %s: ambiguous redirect", tokens[i + 1]->value); //> $lol (segfault)
+                    write_error("minishell: syntax error near unexpected token `%s'\n",
+                        tokens[i + 1] ? tokens[i + 1]->value : "newline");
+					// write_error("minishell: %s: ambiguous redirect", tokens[i + 1]->value); //> $lol (segfault)
 					//ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
-					//data->exit_status = 2;
+					data->exit_status = 2;
+                    return (NULL);
 				}
 				parse_redirects(current, tokens[i + 1], tokens[i]->type);
 				i++;

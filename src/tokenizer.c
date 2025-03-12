@@ -97,6 +97,18 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		k = 0;
 		inside_quotes = 0;
 		quote_type = 0;
+		if (str[j] == '&' && str[j + 1] == '&')
+		{
+			tokens[i++] = create_token("&&", LOGICAL_AND, index++);
+			j += 2;
+			continue;
+		}
+		if (str[j] == '|' && str[j + 1] == '|')
+		{
+			tokens[i++] = create_token("||", LOGICAL_OR, index++);
+			j += 2;
+			continue;
+		}
 		if (str[j] == '|')
 		{
 			tokens[i] = create_token("|", PIPE, index++);
@@ -104,7 +116,11 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 			j++;
 			continue ;
 		}
-		j = handle_redirection(str, j, tokens, &i, &index);
+		if (!inside_quotes && (str[j] == '>' || str[j] == '<'))
+		{
+			j = handle_redirection(str, j, tokens, &i, &index);
+			continue;
+		}
 		while (str[j] && (!ft_isspace((unsigned char)str[j]) || inside_quotes))
 		{
 			if (inside_quotes && str[j] == '|')
@@ -128,7 +144,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 				j++;
 				continue ;
 			}
-			if (str[j] == '>' || str[j] == '<')
+			if (!inside_quotes && (str[j] == '>' || str[j] == '<'))
 			{
 				if (k > 0)
 				{

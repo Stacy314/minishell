@@ -60,7 +60,7 @@ int	main(int argc, char **argv, char **env)
 			// fprintf(stderr, "Error: Failed to tokenize input\n");
 			continue ;
 		}
-		cmd = parse_tokens(tokens);
+		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
 			free_tokens(tokens);
