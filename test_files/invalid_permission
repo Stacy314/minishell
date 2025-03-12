@@ -1,13 +1,43 @@
+>
 |
+0 user -
+anastasiia home -
+asd
 echo
 exists
 libft
+ lol.c
 Makefile
 minishell
 minishell.h
 minishell_tester
 obj
 out0|
+out|cd
+README.md
+src
+test_files
+test.sh
+tmp_err_bash
+tmp_err_minishell
+tmp_out_bash
+tmp_out_minishell
+>
+|
+0 user -
+anastasiia home -
+asd
+echo
+exists
+libft
+ lol.c
+Makefile
+minishell
+minishell.h
+minishell_tester
+obj
+out0|
+out|cd
 README.md
 src
 test_files
@@ -17,100 +47,4 @@ tmp_err_minishell
 tmp_out_bash
 tmp_out_minishell
 hi
-Token[0]: Type: 0, Value: echo
-Token[1]: Type: 0, Value: hi
-Token[2]: Type: 4, Value: >>
-Token[3]: Type: 0, Value: ./test_files/invalid_permission
-Token[4]: Type: 0, Value: |
-Token[5]: Type: 0, Value: echo
-Token[6]: Type: 0, Value: bye
-
-Command[0]:
-  Args: "echo" "hi" "|" "echo" "bye" 
-  Input Redirect: (null)
-  Output Redirect: (null)
-  Append Redirect: ./test_files/invalid_permission
-  Heredoc Delimiter: (null)
-=== Command 0 ===
-args: "echo" "hi" "|" "echo" "bye" 
-input_redirect:   (none)
-output_redirect:  (none)
-append_redirect:  ./test_files/invalid_permission
-heredoc_delimiter:(none)
-data:            (null)
-
-=== Command 1 ===
-args: (none)
-input_redirect:   (none)
-output_redirect:  (none)
-append_redirect:  (none)
-heredoc_delimiter:(none)
-data:            (null)
-
-=== Command 2 ===
-args: (none)
-input_redirect:   (none)
-output_redirect:  (none)
-append_redirect:  (none)
-heredoc_delimiter:(none)
-data:            (null)
-
-=== Command 3 ===
-args: (none)
-input_redirect:   (none)
-output_redirect:  (none)
-append_redirect:  (none)
-heredoc_delimiter:(none)
-data:            (null)
-
 hi
-hi
-Token[0]: Type: 0, Value: echo
-Token[1]: Type: 0, Value: hi
-Token[2]: Type: 4, Value: >>
-Token[3]: Type: 0, Value: ./test_files/invalid_permission
-Token[4]: Type: 3, Value: >
-Token[5]: Type: 0, Value: ./outfiles/outfile01
-Token[6]: Type: 0, Value: |
-Token[7]: Type: 0, Value: echo
-Token[8]: Type: 0, Value: bye
-
-Command[0]:
-  Args: "echo" "hi" "|" "echo" "bye" 
-  Input Redirect: (null)
-  Output Redirect: ./outfiles/outfile01
-  Append Redirect: ./test_files/invalid_permission
-  Heredoc Delimiter: (null)
-=== Command 0 ===
-args: "echo" "hi" "|" "echo" "bye" 
-input_redirect:   (none)
-output_redirect:  ./outfiles/outfile01
-append_redirect:  ./test_files/invalid_permission
-heredoc_delimiter:(none)
-data:            (null)
-
-=== Command 1 ===
-args: (none)
-input_redirect:   (none)
-output_redirect:  (none)
-append_redirect:  (none)
-heredoc_delimiter:(none)
-data:            (null)
-
-=== Command 2 ===
-args: (none)
-input_redirect:   (none)
-output_redirect:  (none)
-append_redirect:  (none)
-heredoc_delimiter:(none)
-data:            (null)
-
-=== Command 3 ===
-args: (none)
-input_redirect:   (none)
-output_redirect:  (none)
-append_redirect:  (none)
-heredoc_delimiter:(none)
-data:            (null)
-
-minishell: ./outfiles/outfile01: No such file or directory

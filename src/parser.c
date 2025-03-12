@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 17:25:33 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/10 20:03:53 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,13 @@
 //5) "tail"
 //6) "-n"
 //7) "10"
+
+//echo "aspas ->'"  ("aspas ->'" - one arg without redir)
+//echo "aspas -> ' " 
+//echo 'aspas ->"' 
+//echo 'aspas -> " ' 
+//echo "exit_code ->$? user ->$USER home -> $HOME"
+//echo 'exit_code ->$? user ->$USER home -> $HOME'
 
 
 //"" " "(need to check)

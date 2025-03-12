@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 20:11:41 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/10 20:33:37 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//grep hi "<infile" <         ./test_files/infile
 
 //echo <"./test_files/infile_big" | cat <"./test_files/infile"
 
@@ -33,11 +35,11 @@ void	handle_input_redirect(t_cmd *cmd) // <
 			exit(1);
 			
 		}
-		else
-		{
+		// else
+		// {
 			dup2(fd, STDIN_FILENO);
 			close(fd);
-		}
+		// }
 		i++;
 	}
 	close(fd);
@@ -61,11 +63,11 @@ void	handle_output_redirect(t_cmd *cmd) // >
 				cmd->output_redirects[i]);
 			exit(1);
 		}
-		else
-		{
+		// else
+		// {
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
-		}
+		// }
 		i++;
 	}
 }
@@ -89,11 +91,11 @@ void	handle_append_redirect(t_cmd *cmd) // >>
 				cmd->append_redirects[i]);
 			exit(1);
 		}
-		else
-		{
+		// else
+		// {
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
-		}
+		// }
 		i++;
 	}
 }
@@ -121,7 +123,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 		while (1)
 		{
 			line = readline("> ");
-			if (!line || strcmp(line, cmd->heredoc_delimiter) == 0)
+			if (!line || ft_strncmp(line, cmd->heredoc_delimiter, ft_strlen(line)) == 0)
 			{
 				free(line);
 				break ;
@@ -144,7 +146,8 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 	pid_t	pid;
 	int		status;
 
-	(void)env;
+	//(void)env;
+	//(void)data;
 	pid = fork();
 	if (pid == -1)
 	{
@@ -162,10 +165,26 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 		if (cmd->append_redirects)
 			handle_append_redirect(cmd);
 		execute_command(cmd->args[0], data, cmd->args, env);
-		exit(1); //
+		exit(0); //
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
+	{
+		//printf("exit status: %d\n", WEXITSTATUS(status));	
 		data->exit_status = WEXITSTATUS(status);
+	}
+	//data->exit_status = 0;
 	return (1);
+}
+
+void	apply_redirections(t_cmd *cmd)
+{
+	if (cmd->heredoc_delimiter)
+		handle_heredoc(cmd);
+	if (cmd->input_redirects)
+		handle_input_redirect(cmd);
+	if (cmd->output_redirects)
+		handle_output_redirect(cmd);
+	if (cmd->append_redirects)
+		handle_append_redirect(cmd);
 }
