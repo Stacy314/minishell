@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/10 19:10:02 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/13 22:48:29 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,10 @@ static int	export_one_arg(char *arg, t_data *data)
 	equal_sign = ft_strchr(arg, '=');
 	if (!equal_sign)
 	{
+		/////////
+		add_or_update_export(arg, data);
 		data->exit_status = 0;
-		return (1);
+		return (0); //1
 	}
 	return (add_or_update_env(arg, data));
 }
@@ -126,6 +128,7 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 	if (!cmd->args[1])
 	{
 		print_sorted_env(data->env);
+		//print_sorted_env(data->export_env); 
 		data->exit_status = 0;
 		return (0);
 	}

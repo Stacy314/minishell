@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/12 18:16:17 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/13 22:45:26 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef struct s_data
 {
 	int some_value; // need to delete
 	char			**env;
+	char			**export_env;
 	int				exit_status;
 	struct s_cmd	*cmd;
 	// pid_t			last_command_pid;
@@ -129,7 +130,7 @@ void				builtin_echo(t_cmd *cmd, t_data *data);
 int					builtin_pwd(t_cmd *cmd, t_data *data);
 int					builtin_export(t_cmd *cmd, t_data *data);
 int					builtin_unset(t_cmd *cmd, t_data *data);
-int					builtin_env(t_data *data);
+int					builtin_env(t_data *data, t_cmd *cmd);
 int					builtin_exit(t_cmd *cmd, t_data *data);
 int					builtin_cd(t_cmd *cmd, t_data *data);
 char				**set_env_value(char **envp, const char *key,
@@ -146,6 +147,7 @@ int					ft_isspace(int c);
 // char **set_env_value(char **envp, const char *key, const char *value);
 int					count_args(char **args);
 void				print_sorted_env(char **env);
+void	add_or_update_export(char *key, t_data *data);
 
 // execution
 void				execute(t_token **tokens, t_cmd *cmd, t_data *data,

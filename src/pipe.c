@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 21:16:02 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/13 22:49:40 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 // exit | exit | exit (shouldn't exit and shouldn't print anything)
 // cat minishell.h | grep ");"$ (exit code - 1)
 // export GHOST=123 | env | grep GHOST (exit code - 1)
-
-// env | sort | grep -v SHLVL | grep -v ^_ (write it in stderr and open stdin)
-
 
 int	count_commands(t_cmd *cmd)
 {

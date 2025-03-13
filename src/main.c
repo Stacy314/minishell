@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 21:12:30 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/13 22:48:59 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,15 @@
 // volatile sig_atomic_t g_prompt_flag = 0;
 
 //Wildcards * (print error)
+
+// #invalid command, followed by empty variable, should clear the exit code
+// doesntexist
+// $EMPTY
+// echo $?
+
+// # Local variables are options
+// aa==vv
+// echo $aa
 
 int	main(int argc, char **argv, char **env)
 {

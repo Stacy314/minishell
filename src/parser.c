@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/12 17:06:51 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/13 22:49:19 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 // need to fix:
 
+//cat <minishell.h|ls 
 
 //exit "" (bash: exit: : numeric argument required, EC - 2)
 

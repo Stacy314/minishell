@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/12 18:07:59 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/13 22:45:42 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	else if (ft_strncmp(cmd->args[0], "unset", ft_strlen(cmd->args[0])) == 0)
 		builtin_unset(cmd, data);
 	else if (ft_strncmp(cmd->args[0], "env", ft_strlen(cmd->args[0])) == 0)
-		builtin_env(data);
+		builtin_env(data, cmd);
 	else if (ft_strncmp(cmd->args[0], "exit", ft_strlen(cmd->args[0])) == 0)
 		builtin_exit(cmd, data);
 	else

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 21:47:09 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/13 22:42:45 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ t_cmd	*init_structure(t_data *data, char **env)
 	t_cmd	*cmd;
 
 	data->env = env;
+	data->export_env = env;
 	data->exit_status = 0;
 	increment_shlvl(data);
 	cmd = initialize_cmd(data);
