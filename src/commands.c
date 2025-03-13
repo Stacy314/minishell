@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 17:52:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:19:42 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	check_permissions(char *cmd)
 	if (stat(cmd, &buf) == -1)
 	{
 		write_error("minishell: %s: No such file or directory\n", cmd);
-		return (127);
+		return (127); // 2
 	}
 	if (S_ISDIR(buf.st_mode))
 	{
@@ -62,7 +62,7 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 	{
 		execve(executable, args, env);
 		// perror("execve");
-		exit(127);
+		exit(0);  // 127 ?
 	}
 	else
 	{
@@ -75,7 +75,7 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 	return (data->exit_status);
 }
 
-static int	try_execute_direct_path(char *cmd, t_data *data, char **args,
+static int	execute_direct_path(char *cmd, t_data *data, char **args,
 		char **env)
 {
 	int	error_code;
@@ -90,7 +90,7 @@ static int	try_execute_direct_path(char *cmd, t_data *data, char **args,
 	return (-1);
 }
 
-static int	try_execute_via_path(char *cmd, t_data *data, char **args,
+static int	execute_via_path(char *cmd, t_data *data, char **args,
 		char **env)
 {
 	char	*path;
@@ -123,8 +123,8 @@ int	execute_command(char *cmd, t_data *data, char **args, char **env)
 {
 	int	result;
 
-	result = try_execute_direct_path(cmd, data, args, env);
+	result = execute_direct_path(cmd, data, args, env);
 	if (result >= 0)
 		return (result);
-	return (try_execute_via_path(cmd, data, args, env));
+	return (execute_via_path(cmd, data, args, env));
 }

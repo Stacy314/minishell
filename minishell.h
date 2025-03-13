@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/10 20:30:30 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/12 18:16:17 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,22 +90,23 @@ typedef struct s_cmd
 	// struct s_cmd	*prev;
 }					t_cmd;
 
-void	apply_redirections(t_cmd *cmd);
+void				apply_redirections(t_cmd *cmd);
 
 void				write_error(const char *format, ...);
-void free_array(char **arr);
+void				free_array(char **arr);
+
+int	check_permissions(char *cmd);
 
 // delete after
 void				print_cmd_list(t_cmd *cmd_list, size_t count);
 // void print_data(t_data *data);
-
 char				*find_executable(const char *cmd, char **paths);
 char				*get_path_from_env(char **env);
 char				**split_path(const char *path);
-
 void				free_cmd(t_cmd *cmd);
 bool				contains_special_char(t_token **tokens, t_token_type type);
 int					ft_str_only_spaces(const char *str);
+
 // initialization
 t_cmd				*init_structure(t_data *data, char **env);
 
@@ -144,23 +145,22 @@ long				ft_atol(const char *str, int *error);
 int					ft_isspace(int c);
 // char **set_env_value(char **envp, const char *key, const char *value);
 int					count_args(char **args);
-void			print_sorted_env(char **env);
+void				print_sorted_env(char **env);
+
 // execution
 void				execute(t_token **tokens, t_cmd *cmd, t_data *data,
-						char **env);
+						char **env, char	*input);
 int					execute_command(char *cmd, t_data *data, char **args,
 						char **env);
 void				execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data,
 						char **env);
 void				execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data,
 						char **env);
-// int		contains_special_char(t_cmd *cmd, char delimiter);
-// int		execute_redirection(t_cmd *cmd, char **env);
-int					execute_redirection(t_cmd *cmd, t_data *data, char **env);
+int					execute_redirection(t_cmd *cmd, t_data *data, char **env, char	*input);
+void				handle_heredoc(t_cmd *cmd);
 
 // expantion
 char				*expand_variable(const char *str, int *j, t_data *data);
-
 void				handle_input_redirect(t_cmd *cmd);
 
 #endif

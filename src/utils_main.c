@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 17:51:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:43:51 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 //	printf("=================\n");
 //}
 
-void	write_error(const char *format, ...)
+void	write_error(const char *format, ...) //need make shorter
 {
 	va_list	ap;
 	char	*s;

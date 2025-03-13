@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/06 20:06:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/12 18:07:59 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,20 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	}
 }
 
-void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
+void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env, char	*input)
 {
-	if (cmd->heredoc_delimiter ||
-		(cmd->input_redirects && cmd->input_redirects[0]) ||
-		(cmd->output_redirects && cmd->output_redirects[0]) ||
-		(cmd->append_redirects && cmd->append_redirects[0]))
-	{
-		if (execute_redirection(cmd, data, env) == 1)
-			return;
-	}
-
 	if (contains_special_char(tokens, PIPE))
 	{
 		execute_pipeline(tokens, cmd, data, env);
+		return ; 
+	}
+	if (cmd->heredoc_delimiter ||
+		(cmd->input_redirects && cmd->input_redirects[0]) ||
+		(cmd->output_redirects && cmd->output_redirects[0]) ||
+		(cmd->append_redirects && cmd->append_redirects[0]))  //cmd->input_redirects[0]
+	{
+		if (execute_redirection(cmd, data, env, input) == 1)
+			return;
 	}
 	else
 		execute_for_one(tokens, cmd, data, env);

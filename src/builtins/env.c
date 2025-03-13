@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 16:41:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:24:43 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int	builtin_env(t_data *data)
 	i = 0;
 	while (data->env[i])
 	{
-		ft_putstr_fd(data->env[i], 2);
-		ft_putstr_fd("\n", 2);
+		ft_putstr_fd(data->env[i], 1);
+		ft_putstr_fd("\n", 1);
 		i++;
 	}
 	return (data->exit_status = 0);

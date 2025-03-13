@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 16:09:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/13 21:12:30 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 // Global flag for prompt control
 // volatile sig_atomic_t g_prompt_flag = 0;
+
+//Wildcards * (print error)
 
 int	main(int argc, char **argv, char **env)
 {
@@ -50,7 +52,7 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		}
 		tokens = split_to_tokens(input, &data);
-		free(input);
+		//free(input);
 		if (tokens == (t_token **)(-1)) //do we need it?
 		{
 			continue ;
@@ -67,7 +69,8 @@ int	main(int argc, char **argv, char **env)
 			// ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
 			continue ;
 		}
-		execute(tokens, cmd, &data, env);
+		execute(tokens, cmd, &data, env, input);
+		free(input);
 	}
 	clear_history();
 	return (data.exit_status);

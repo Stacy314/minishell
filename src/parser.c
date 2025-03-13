@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/10 20:03:53 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/12 17:06:51 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,6 +278,6 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 		if (tokens[i] && tokens[i]->type == PIPE)
 			i++;
 	}
-	//debug_print_cmd(head);
+	// debug_print_cmd(head);
 	return (head);
 }
