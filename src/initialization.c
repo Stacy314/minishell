@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 22:42:45 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 16:07:31 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ t_cmd	*init_structure(t_data *data, char **env)
 	data->env = env;
 	data->export_env = env;
 	data->exit_status = 0;
+	data->input = NULL;
 	increment_shlvl(data);
 	cmd = initialize_cmd(data);
 	data->cmd = cmd;

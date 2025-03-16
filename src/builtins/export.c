@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 22:48:29 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 16:52:59 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,11 @@
 //env | grep mini_test
 
 //export (wrong output?) (4)
+
+// # Empty export isn't set on `env` but is set on `export`
+// export hello
+// env | grep hello
+// export | grep hello
 
 static int	update_env_var(char *arg, t_data *data, int var_index)
 {

@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 22:45:26 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 17:36:10 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@
 
 # define MAX_COMMANDS 265 // 128
 
+extern pid_t g_main_pid;
+
 //# define _DEFAULT_SOURSE
 
 // enum
@@ -74,6 +76,7 @@ typedef struct s_data
 	int				exit_status;
 	struct s_cmd	*cmd;
 	// pid_t			last_command_pid;
+	char *input;
 }					t_data;
 
 typedef struct s_cmd
@@ -91,7 +94,7 @@ typedef struct s_cmd
 	// struct s_cmd	*prev;
 }					t_cmd;
 
-void				apply_redirections(t_cmd *cmd);
+void				apply_redirections(t_cmd *cmd, t_data *data);
 
 void				write_error(const char *format, ...);
 void				free_array(char **arr);
@@ -113,6 +116,8 @@ t_cmd				*init_structure(t_data *data, char **env);
 
 // signals
 void				signal_handler(void);
+void				set_child_signals(void);
+void				set_heredoc_signals(void);
 
 // tokenization
 t_token				**split_to_tokens(const char *str, t_data *data);
@@ -151,14 +156,14 @@ void	add_or_update_export(char *key, t_data *data);
 
 // execution
 void				execute(t_token **tokens, t_cmd *cmd, t_data *data,
-						char **env, char	*input);
+						char **env);
 int					execute_command(char *cmd, t_data *data, char **args,
 						char **env);
 void				execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data,
 						char **env);
 void				execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data,
 						char **env);
-int					execute_redirection(t_cmd *cmd, t_data *data, char **env, char	*input);
+int					execute_redirection(t_cmd *cmd, t_data *data, char **env);
 void				handle_heredoc(t_cmd *cmd);
 
 // expantion

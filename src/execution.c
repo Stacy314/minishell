@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 22:45:42 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 16:10:36 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	}
 }
 
-void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env, char	*input)
+void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 {
 	if (contains_special_char(tokens, PIPE))
 	{
@@ -59,7 +59,7 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env, char	*input
 		(cmd->output_redirects && cmd->output_redirects[0]) ||
 		(cmd->append_redirects && cmd->append_redirects[0]))  //cmd->input_redirects[0]
 	{
-		if (execute_redirection(cmd, data, env, input) == 1)
+		if (execute_redirection(cmd, data, env) == 1)
 			return;
 	}
 	else

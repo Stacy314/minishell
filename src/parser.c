@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 22:49:19 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 17:15:57 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,13 @@
 
 // need to fix:
 
+//"" (: command not found, EC - 127)
+
+//echo hi | echo hi | (should open input or error)
+
 //cat <minishell.h|ls 
+
+// cat <<HEREDOC (we dont have HEREDOC)
 
 //exit "" (bash: exit: : numeric argument required, EC - 2)
 

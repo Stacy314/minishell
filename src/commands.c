@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/13 21:19:42 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 17:10:30 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 	}
 	if (pid == 0)
 	{
+		set_child_signals(); //
 		execve(executable, args, env);
 		// perror("execve");
 		exit(0);  // 127 ?
