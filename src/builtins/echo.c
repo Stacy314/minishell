@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/10 19:54:37 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 18:48:46 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 // echo "cat lol.c '|' cat > lol.c"(51)
 // echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (75) - space in the end 
 // echo '' "" (85)
+// echo $"" (should print \n)
 
 int	is_option(const char *arg)
 {

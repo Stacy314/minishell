@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:10:55 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 18:17:19 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,10 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		// execute_redirection(cmd, data, env);
 		
 		execute_for_one(tokens, cmd, data, env);
+		close(pipe_fd[1]);//
 		exit(data->exit_status);
 	}
-	close(pipe_fd[1]);
+	close(pipe_fd[1]);//
 	return (pid);
 }
 
@@ -132,10 +133,12 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		// execute_redirection(cmd, data, env);
 		apply_redirections(cmd, data);
 		execute_for_one(tokens, cmd, data, env);
+		close(0); //
 		exit(data->exit_status);
 	}
 	if (in_fd != -1)
 		close(in_fd);
+	//close(0); //
 	return (pid);
 }
 

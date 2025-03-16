@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:11:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 18:53:49 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 //echo hi | cat <"./test_files/infile"
 //cat <"./test_files/infile" | echo hi 
 
+// Ambigious redirection
+// export a="a b"
+// > $a (bash: $a: ambiguous redirect)
+
+// export a="a b"
+// echo > $a | echo > $a | echo > $a | echo hi
 
 int check_error(const char *filename)
 {

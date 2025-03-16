@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:07:30 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 18:51:08 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 //^\Quit (core dumped) (cat  ctrl + /)
 
+//print minishell twice
 
 void set_child_signals(void)
 {

@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 16:52:59 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 17:44:15 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 // export a="s -lsa"
 //		l$a
+
 // export a='"' (shouldn't crash)
 //		$a
 // export a='"'
@@ -52,6 +53,7 @@
 // export hello
 // env | grep hello
 // export | grep hello
+
 
 static int	update_env_var(char *arg, t_data *data, int var_index)
 {

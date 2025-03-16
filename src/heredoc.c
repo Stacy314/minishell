@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:09:37 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 18:57:53 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,23 @@
 
 // << echo oi
 // echo
+
+
+// delimiter should be $USER
+// 	cat << $USER
+// delimiter EOF (write f.e. $USER into the heredoc - should be expanded)
+//	 cat << EOF
+// delimiter EOF (write f.e. $USER into the heredoc - should not be expanded)
+//	 cat << EOF""
+// delimiter is "a c" without quotes
+//	 cat << "a c"
+// check with "EOF " and " EOF" when in heredoc without quotes but with the spaces - shouldn't quit - quit only with "EOF"
+// 	cat << EOF
+// press ctrl + d inside heredoc - should quit heredoc with a warning but not minishell
+//	 cat << EOF
+// 	cat << EOF
+// check f.e. with ctrl + c if all heredocs are closed with one command
+// 	<< 1 | << 2 | << 3 cat
 
 
 void	handle_heredoc(t_cmd *cmd) // <<

@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:36:10 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 18:20:52 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,14 @@ typedef struct s_token
 
 typedef struct s_data
 {
-	int some_value; // need to delete
+	int				some_value; // need to delete
 	char			**env;
 	char			**export_env;
 	int				exit_status;
 	struct s_cmd	*cmd;
+	char			*pwd; //
 	// pid_t			last_command_pid;
-	char *input;
+	char			*input;
 }					t_data;
 
 typedef struct s_cmd

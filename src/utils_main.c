@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/12 16:43:51 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 18:34:25 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,9 @@ int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 //	printf("=================\n");
 //}
 
-void	write_error(const char *format, ...) //need make shorter
+
+
+void	write_error(const char *format, ...) //need make shorter and add %C
 {
 	va_list	ap;
 	char	*s;

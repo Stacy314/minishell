@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:15:57 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/16 17:45:31 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 // need to fix:
 
 //"" (: command not found, EC - 127)
+
+// export a="s -lsa"
+//		l$a
 
 //echo hi | echo hi | (should open input or error)
 
