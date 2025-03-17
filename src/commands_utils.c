@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/10 19:45:44 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ char	**split_path(const char *path)
 	char	*token;
 
 	paths = ft_calloc(128 * sizeof(char *), 1); // why 128?
+	if (!paths)
+	{
+		// free
+		return (NULL);
+	}
 	path_copy = ft_strdup(path);
 	token = ft_strtok(path_copy, ":"); // need to cange
 	i = 0;
@@ -87,6 +92,12 @@ char	*find_executable(const char *cmd, char **paths)
 	int		i;
 
 	full_path = ft_calloc(1024, 1); // why 1024?
+	if (!full_path)
+	{
+		// free(void *ptr)
+		perror("calloc");
+		return (NULL);
+	}
 	i = 0;
 	while (paths[i] != NULL)
 	{

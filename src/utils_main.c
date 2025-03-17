@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 18:34:25 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 22:02:40 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,8 @@ void	free_cmd(t_cmd *cmd)
 	}
 	if (cmd->heredoc_delimiter)
 		free(cmd->heredoc_delimiter);
-	free(cmd);
+	if (cmd)
+		free(cmd);
 }
 
 int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
@@ -175,12 +176,10 @@ int	careful_exit(t_data data, t_cmd *cmd, int exit_status)
 //	printf("=================\n");
 //}
 
-
-
-void	write_error(const char *format, ...) //need make shorter and add %C
+void	write_error(const char *format, ...) // need make shorter and add %C
 {
-	va_list	ap;
-	char	*s;
+	va_list ap;
+	char *s;
 
 	va_start(ap, format);
 	while (*format)
@@ -207,12 +206,12 @@ void	write_error(const char *format, ...) //need make shorter and add %C
 	va_end(ap);
 }
 
-void free_array(char **arr)
+void	free_array(char **arr)
 {
-	int i;
+	int	i;
 
 	if (!arr)
-		return;
+		return ;
 	i = 0;
 	while (arr[i])
 	{

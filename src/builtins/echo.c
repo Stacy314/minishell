@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 18:48:46 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:09 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 // echo <123 <456 hi | echo 42 (37)
 // echo "cat lol.c | cat > lol.c"(49)
 // echo "cat lol.c '|' cat > lol.c"(51)
-// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (75) - space in the end 
+// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (75)
+	//- space in the end
 // echo '' "" (85)
 // echo $"" (should print \n)
 
@@ -39,9 +40,8 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 {
 	int	i;
 	int	n_flag;
+
 	(void)data;
-
-
 	i = 1;
 	n_flag = 0;
 	while (cmd->args[i] != NULL && is_option(cmd->args[i]))
@@ -58,6 +58,6 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 	}
 	if (!n_flag)
 		ft_putstr_fd("\n", STDOUT_FILENO);
-	//data->exit_status = 0;
+	// data->exit_status = 0;
 	return ;
 }

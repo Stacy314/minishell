@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:36:50 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 22:06:39 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // Global flag for prompt control
 // volatile sig_atomic_t g_prompt_flag = 0;
 
-//Wildcards * (print error)
+// Wildcards * (print error)
 
 // #invalid command, followed by empty variable, should clear the exit code
 // doesntexist
@@ -26,11 +26,26 @@
 // aa==vv
 // echo $aa
 
-pid_t g_main_pid;
-
-void init_main_pid(void)
+void	free_env(char **env)
 {
-    g_main_pid = getpid();
+	int	i;
+
+	i = 0;
+	if (!env)
+		return ;
+	while (env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
+}
+
+pid_t	g_main_pid;
+
+void	init_main_pid(void)
+{
+	g_main_pid = getpid();
 }
 
 int	main(int argc, char **argv, char **env)
@@ -43,8 +58,12 @@ int	main(int argc, char **argv, char **env)
 	if (argv && argc > 1)
 		return (ft_putstr_fd("Minishell cannot accept arguments\n",
 				STDOUT_FILENO), EXIT_FAILURE);
-	cmd = init_structure(&data, env);
-	init_main_pid(); 
+	if (!init_data(&data, env)) //
+		return (EXIT_FAILURE);
+	cmd = init_cmd();
+	if (!cmd)
+		return (free_env(data.env), EXIT_FAILURE);
+	init_main_pid();
 	signal_handler();
 	while (1)
 	{
@@ -60,7 +79,8 @@ int	main(int argc, char **argv, char **env)
 		///////////////
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), data.exit_status);
+			return (printf("exit\n"), /*free(cmd),*/ free(cmd),
+				free_env(data.env), data.exit_status);
 		data.input = input;
 		if (*input)
 			add_history(input);
@@ -70,16 +90,15 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		}
 		tokens = split_to_tokens(input, &data);
-		//free(input);
-		if (tokens == (t_token **)(-1)) //do we need it?
+		if (tokens == (t_token **)(-1)) // do we need it?
 		{
-			continue ;
+			continue ;		
 		}
-		if (!tokens) //do we need it?
-		{
-			// fprintf(stderr, "Error: Failed to tokenize input\n");
-			continue ;
-		}
+		// if (!tokens) // do we need it?
+		//{
+		//	// fprintf(stderr, "Error: Failed to tokenize input\n");
+		//	continue ;
+		//}
 		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
@@ -89,7 +108,9 @@ int	main(int argc, char **argv, char **env)
 		}
 		execute(tokens, cmd, &data, env);
 		free(input);
+		//free_cmd(cmd);
 	}
+	free_env(data.env);
 	clear_history();
 	return (data.exit_status);
 }

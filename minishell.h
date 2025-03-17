@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 18:20:52 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 21:44:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@
 
 # define MAX_COMMANDS 265 // 128
 
-extern pid_t g_main_pid;
+extern pid_t		g_main_pid;
 
 //# define _DEFAULT_SOURSE
 
@@ -70,12 +70,12 @@ typedef struct s_token
 
 typedef struct s_data
 {
-	int				some_value; // need to delete
+	int some_value; // need to delete
 	char			**env;
 	char			**export_env;
 	int				exit_status;
-	struct s_cmd	*cmd;
-	char			*pwd; //
+	// struct s_cmd	*cmd;
+	char *pwd; //
 	// pid_t			last_command_pid;
 	char			*input;
 }					t_data;
@@ -83,24 +83,26 @@ typedef struct s_data
 typedef struct s_cmd
 {
 	char			**args;
-	struct s_cmd *next; // del
+	struct s_cmd	*next; // del
 	char			**input_redirects;
 	char			**output_redirects;
 	char			**append_redirects;
 	char			*heredoc_delimiter;
 	// int		pipe_in;
 	// int		pipe_out;
-	t_data *data; // delete
+	//t_data *data; // delete
 
 	// struct s_cmd	*prev;
 }					t_cmd;
 
+
+void free_env(char **env);
 void				apply_redirections(t_cmd *cmd, t_data *data);
 
 void				write_error(const char *format, ...);
 void				free_array(char **arr);
 
-int	check_permissions(char *cmd);
+int					check_permissions(char *cmd);
 
 // delete after
 void				print_cmd_list(t_cmd *cmd_list, size_t count);
@@ -113,7 +115,9 @@ bool				contains_special_char(t_token **tokens, t_token_type type);
 int					ft_str_only_spaces(const char *str);
 
 // initialization
-t_cmd				*init_structure(t_data *data, char **env);
+t_cmd				*init_cmd();
+//t_data				*init_data(t_data *data, char **env);
+int					init_data(t_data *data, char **env);
 
 // signals
 void				signal_handler(void);
@@ -153,7 +157,7 @@ int					ft_isspace(int c);
 // char **set_env_value(char **envp, const char *key, const char *value);
 int					count_args(char **args);
 void				print_sorted_env(char **env);
-void	add_or_update_export(char *key, t_data *data);
+void				add_or_update_export(char *key, t_data *data);
 
 // execution
 void				execute(t_token **tokens, t_cmd *cmd, t_data *data,

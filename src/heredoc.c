@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 18:57:53 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,23 @@
 // << echo oi
 // echo
 
-
 // delimiter should be $USER
 // 	cat << $USER
 // delimiter EOF (write f.e. $USER into the heredoc - should be expanded)
-//	 cat << EOF
+//		cat << EOF
 // delimiter EOF (write f.e. $USER into the heredoc - should not be expanded)
-//	 cat << EOF""
+//		cat << EOF""
 // delimiter is "a c" without quotes
-//	 cat << "a c"
-// check with "EOF " and " EOF" when in heredoc without quotes but with the spaces - shouldn't quit - quit only with "EOF"
+//		cat << "a c"
+// check with "EOF " and " EOF" when in heredoc without quotes but with the spaces
+	//- shouldn't quit - quit only with "EOF"
 // 	cat << EOF
-// press ctrl + d inside heredoc - should quit heredoc with a warning but not minishell
-//	 cat << EOF
+// press ctrl + d inside heredoc
+	//- should quit heredoc with a warning but not minishell
+//		cat << EOF
 // 	cat << EOF
 // check f.e. with ctrl + c if all heredocs are closed with one command
 // 	<< 1 | << 2 | << 3 cat
-
 
 void	handle_heredoc(t_cmd *cmd) // <<
 {
@@ -76,7 +76,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 
 	if (pipe(pipe_fd) == -1)
 	{
-		//perror("pipe");
+		// perror("pipe");
 		exit(1);
 	}
 	pid = fork();
@@ -92,7 +92,8 @@ void	handle_heredoc(t_cmd *cmd) // <<
 		while (1)
 		{
 			line = readline("> ");
-			if (!line || ft_strncmp(line, cmd->heredoc_delimiter, ft_strlen(line)) == 0)
+			if (!line || ft_strncmp(line, cmd->heredoc_delimiter,
+					ft_strlen(line)) == 0)
 			{
 				free(line);
 				break ;

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 18:25:56 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:04 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 // cd '/////' >/dev/null (STD_ERR) (48)
-// cd "doesntexist" >/dev/null (bash: cd: doesntexist: No such file or 
-	//directory, EC - 1) (54)
+// cd "doesntexist" >/dev/null (bash: cd: doesntexist: No such file or
+// directory, EC - 1) (54)
 /// cd "wtf" >/dev/null (58)
 
 static void	perform_cd(const char *dest_path, t_data *data)

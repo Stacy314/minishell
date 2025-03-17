@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/10 20:09:09 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:42:58 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,47 +34,47 @@ t_token	*create_token(const char *value, t_token_type type, int index)
 	return (new);
 }
 
-int handle_redirection(const char *str, int j, t_token **tokens, int *i, int *index)
+int	handle_redirection(const char *str, int j, t_token **tokens, int *i,
+		int *index)
 {
-    if (str[j] == '>' || str[j] == '<')
-    {
-        if (str[j] == '>' && str[j + 1] == '>')
-        {
-            tokens[*i] = create_token(">>", APPEND, (*index)++);
-            j += 2;
-        }
-        else if (str[j] == '<' && str[j + 1] == '<')
-        {
-            tokens[*i] = create_token("<<", HEREDOC, (*index)++);
-            j += 2;
-        }
-        else if (str[j] == '>')
-        {
-            tokens[*i] = create_token(">", REDIRECT_OUT, (*index)++);
-            j++;
-        }
-        else if (str[j] == '<')
-        {
-            tokens[*i] = create_token("<", REDIRECT_IN, (*index)++);
-            j++;
-        }
-
-        (*i)++;
-    }
-    return j;
+	if (str[j] == '>' || str[j] == '<')
+	{
+		if (str[j] == '>' && str[j + 1] == '>')
+		{
+			tokens[*i] = create_token(">>", APPEND, (*index)++);
+			j += 2;
+		}
+		else if (str[j] == '<' && str[j + 1] == '<')
+		{
+			tokens[*i] = create_token("<<", HEREDOC, (*index)++);
+			j += 2;
+		}
+		else if (str[j] == '>')
+		{
+			tokens[*i] = create_token(">", REDIRECT_OUT, (*index)++);
+			j++;
+		}
+		else if (str[j] == '<')
+		{
+			tokens[*i] = create_token("<", REDIRECT_IN, (*index)++);
+			j++;
+		}
+		(*i)++;
+	}
+	return (j);
 }
-
 
 t_token	**split_to_tokens(const char *str, t_data *data)
 {
 	t_token	**tokens;
-	char buffer[1024]; // realloc wrapper function to continuously increase size for every additional export
 	int		k;
 	int		inside_quotes;
 	char	quote_type;
 	size_t	len;
 	char	*expanded;
 
+	char buffer[1024];
+		// realloc wrapper function to continuously increase size for every additional export
 	int capacity, i, j, index;
 	if (!str || ft_strlen(str) == 0)
 		return (NULL);
@@ -101,13 +101,13 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		{
 			tokens[i++] = create_token("&&", LOGICAL_AND, index++);
 			j += 2;
-			continue;
+			continue ;
 		}
 		if (str[j] == '|' && str[j + 1] == '|')
 		{
 			tokens[i++] = create_token("||", LOGICAL_OR, index++);
 			j += 2;
-			continue;
+			continue ;
 		}
 		if (str[j] == '|')
 		{
@@ -119,7 +119,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		if (!inside_quotes && (str[j] == '>' || str[j] == '<'))
 		{
 			j = handle_redirection(str, j, tokens, &i, &index);
-			continue;
+			continue ;
 		}
 		while (str[j] && (!ft_isspace((unsigned char)str[j]) || inside_quotes))
 		{
@@ -153,7 +153,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 					k = 0;
 				}
 				j = handle_redirection(str, j, tokens, &i, &index);
-				continue;
+				continue ;
 			}
 			if (str[j] == '$' && quote_type != '\'')
 			{

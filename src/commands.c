@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 18:43:38 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 
 //"."
 
-//unset PATH
-//change to /bin/ - inside this directory the standard commands should work
+// unset PATH
+// change to /bin/ - inside this directory the standard commands should work
 
 int	check_permissions(char *cmd)
 {
@@ -66,7 +66,7 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 		set_child_signals(); //
 		execve(executable, args, env);
 		// perror("execve");
-		exit(0);  // 127 ?
+		exit(0); // 127 ?
 	}
 	else
 	{
@@ -94,8 +94,7 @@ static int	execute_direct_path(char *cmd, t_data *data, char **args,
 	return (-1);
 }
 
-static int	execute_via_path(char *cmd, t_data *data, char **args,
-		char **env)
+static int	execute_via_path(char *cmd, t_data *data, char **args, char **env)
 {
 	char	*path;
 	char	**paths;
@@ -108,7 +107,9 @@ static int	execute_via_path(char *cmd, t_data *data, char **args,
 			data->exit_status = 127);
 	paths = split_path(path);
 	if (!paths)
+	{
 		return (data->exit_status = 1);
+	}
 	executable = find_executable(cmd, paths);
 	if (!executable)
 	{

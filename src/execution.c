@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 16:10:36 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 21:52:41 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,21 +52,20 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	if (contains_special_char(tokens, PIPE))
 	{
 		execute_pipeline(tokens, cmd, data, env);
-		return ; 
+		return ;
 	}
-	if (cmd->heredoc_delimiter ||
-		(cmd->input_redirects && cmd->input_redirects[0]) ||
-		(cmd->output_redirects && cmd->output_redirects[0]) ||
-		(cmd->append_redirects && cmd->append_redirects[0]))  //cmd->input_redirects[0]
+	if (cmd->heredoc_delimiter || (cmd->input_redirects
+			&& cmd->input_redirects[0]) || (cmd->output_redirects
+			&& cmd->output_redirects[0]) || (cmd->append_redirects
+			&& cmd->append_redirects[0])) // cmd->input_redirects[0]
 	{
 		if (execute_redirection(cmd, data, env) == 1)
-			return;
+			return ;
 	}
 	else
 		execute_for_one(tokens, cmd, data, env);
-
-	if (cmd)
-		free_cmd(cmd);
+	//if (cmd)
+	//	free_cmd(cmd);
 	if (tokens)
 		free_tokens(tokens);
 }

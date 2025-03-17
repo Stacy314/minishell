@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:45:31 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 22:05:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../minishell.h"
 
@@ -20,35 +19,36 @@
 // export a="s -lsa"
 //		l$a
 
-//echo hi | echo hi | (should open input or error)
+// echo hi | echo hi | (should open input or error)
 
-//cat <minishell.h|ls 
+// cat <minishell.h|ls
 
 // cat <<HEREDOC (we dont have HEREDOC)
 
-//exit "" (bash: exit: : numeric argument required, EC - 2)
+// exit "" (bash: exit: : numeric argument required, EC - 2)
 
 //&& and || with parenthesis for priorities (no segfault, maybe print error)
 
-
 // fixed:
 
-//echo '' ""
+// echo '' ""
 
-//awk 'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j++){printf("%4d ",i*j)} printf("\n")}}' /dev/null | tail -n 10
-//Expected tkens:
-//1) "awk"
-//2) "'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j'){printf("%4d ",i*j)} printf("\n")}}'"
-//3) "/dev/null"
-//4) "|"
-//5) "tail"
-//6) "-n"
-//7) "10"
+// awk 'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j++){printf("%4d ",i*j)} printf("\n")}}'
+	///dev/null | tail -n 10
+// Expected tkens:
+// 1) "awk"
+// 2) "'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j'){printf("%4d ",i*j)} printf("\n")}}'"
+// 3) "/dev/null"
+// 4) "|"
+// 5) "tail"
+// 6) "-n"
+// 7) "10"
 
 // echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
-//echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
-//echo "cat lol.c '|' cat > lol.c" (should print cat lol.c '|' cat > lol.c)
-//grep hi "<infile" <         ./test_files/infile ("<infile"  - one arg, it isnt redir)
+// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
+// echo "cat lol.c '|' cat > lol.c" (should print cat lol.c '|' cat > lol.c)
+// grep hi "<infile" <         ./test_files/infile ("<infile"  - one arg,
+	//it isnt redir)
 // echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
 // or directory)
 //| echo hi (bash: syntax error near unexpected token `|', in our minishell -
@@ -73,121 +73,116 @@
 // echo "|" echo (should print - | echo)
 // echo " | "(should print -  | )
 
-void debug_print_cmd(t_cmd *cmd)
+void	debug_print_cmd(t_cmd *cmd)
 {
-    int i;
+	int	i;
 
-    printf("\n==== DEBUG CMD STRUCTURE ====\n");
-    printf("Args: ");
-    if (cmd->args)
-    {
-        i = 0;
-        while (cmd->args[i])
-        {
-            printf("\"%s\" ", cmd->args[i]);
-            i++;
-        }
-    }
-    else
-        printf("(null)");
-    printf("\n");
-
-    printf("Input Redirects: ");
-    if (cmd->input_redirects)
-    {
-        i = 0;
-        while (cmd->input_redirects[i])
-        {
-            printf("\"%s\" ", cmd->input_redirects[i]);
-            i++;
-        }
-    }
-    else
-        printf("(null)");
-    printf("\n");
-
-    printf("Output Redirects: ");
-    if (cmd->output_redirects)
-    {
-        i = 0;
-        while (cmd->output_redirects[i])
-        {
-            printf("\"%s\" ", cmd->output_redirects[i]);
-            i++;
-        }
-    }
-    else
-        printf("(null)");
-    printf("\n");
-
-    printf("Append Redirects: ");
-    if (cmd->append_redirects)
-    {
-        i = 0;
-        while (cmd->append_redirects[i])
-        {
-            printf("\"%s\" ", cmd->append_redirects[i]);
-            i++;
-        }
-    }
-    else
-        printf("(null)");
-    printf("\n============================\n");
+	printf("\n==== DEBUG CMD STRUCTURE ====\n");
+	printf("Args: ");
+	if (cmd->args)
+	{
+		i = 0;
+		while (cmd->args[i])
+		{
+			printf("\"%s\" ", cmd->args[i]);
+			i++;
+		}
+	}
+	else
+		printf("(null)");
+	printf("\n");
+	printf("Input Redirects: ");
+	if (cmd->input_redirects)
+	{
+		i = 0;
+		while (cmd->input_redirects[i])
+		{
+			printf("\"%s\" ", cmd->input_redirects[i]);
+			i++;
+		}
+	}
+	else
+		printf("(null)");
+	printf("\n");
+	printf("Output Redirects: ");
+	if (cmd->output_redirects)
+	{
+		i = 0;
+		while (cmd->output_redirects[i])
+		{
+			printf("\"%s\" ", cmd->output_redirects[i]);
+			i++;
+		}
+	}
+	else
+		printf("(null)");
+	printf("\n");
+	printf("Append Redirects: ");
+	if (cmd->append_redirects)
+	{
+		i = 0;
+		while (cmd->append_redirects[i])
+		{
+			printf("\"%s\" ", cmd->append_redirects[i]);
+			i++;
+		}
+	}
+	else
+		printf("(null)");
+	printf("\n============================\n");
 }
 
-void parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
+void	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
 {
-    char ***redirects;
-    int count = 0;
+	char	***redirects;
+	int		count;
+	char	**new_redirects;
 
-    //printf("⏳ parse_redirects: token->value = %s, token->type = %d\n", token->value, type);
-
-    if (type == REDIRECT_IN)
-        redirects = &cmd->input_redirects;
-    else if (type == REDIRECT_OUT)
-        redirects = &cmd->output_redirects;
-    else if (type == APPEND)
-        redirects = &cmd->append_redirects;
-    else
-    {
-       // printf("❌ Unknown token type!\n");
-        return;
-    }
-
-    // Проверяем, есть ли уже массив редиректов
-    if (!*redirects)
-    {
-       // printf("🔍 First redirect detected, allocating memory\n");
-        *redirects = ft_calloc(2, sizeof(char *));
-        if (!*redirects)
-        {
-            perror("ft_calloc");
-            return;
-        }
-        (*redirects)[0] = ft_strdup(token->value);
-        (*redirects)[1] = NULL;
-        //printf("✅ Added redirect: %s\n", (*redirects)[0]);
-        return;
-    }
-
-    // Если массив уже есть, считаем количество элементов
-    while ((*redirects)[count])
-        count++;
-
-   // printf("🔄 Expanding redirect array (current size: %d)\n", count);
-
-    // Расширяем массив
-    char **new_redirects = realloc(*redirects, (count + 2) * sizeof(char *));
-    if (!new_redirects)
-    {
-        perror("realloc");
-        return;
-    }
-
-    *redirects = new_redirects;
-    (*redirects)[count] = ft_strdup(token->value);
-    (*redirects)[count + 1] = NULL;
-    //printf("✅ Added redirect: %s (new size: %d)\n", (*redirects)[count], count + 1);
+	count = 0;
+	// printf("⏳ parse_redirects: token->value = %s, token->type = %d\n",
+		//token->value, type);
+	if (type == REDIRECT_IN)
+		redirects = &cmd->input_redirects;
+	else if (type == REDIRECT_OUT)
+		redirects = &cmd->output_redirects;
+	else if (type == APPEND)
+		redirects = &cmd->append_redirects;
+	else
+	{
+		// printf("❌ Unknown token type!\n");
+		return ;
+	}
+	// Проверяем, есть ли уже массив редиректов
+	if (!*redirects)
+	{
+		// printf("🔍 First redirect detected, allocating memory\n");
+		*redirects = ft_calloc(2, sizeof(char *));
+		if (!*redirects)
+		{
+			perror("ft_calloc");
+			return ;
+		}
+		(*redirects)[0] = ft_strdup(token->value);
+		(*redirects)[1] = NULL;
+		// printf("✅ Added redirect: %s\n", (*redirects)[0]);
+		return ;
+	}
+	// Если массив уже есть, считаем количество элементов
+	while ((*redirects)[count])
+		count++;
+	// printf("🔄 Expanding redirect array (current size: %d)\n", count);
+	// Расширяем массив
+	new_redirects = realloc(*redirects, (count + 2) * sizeof(char *));
+	if (!new_redirects)
+	{
+		perror("realloc");
+		return ;
+	}
+	*redirects = new_redirects;
+	(*redirects)[count] = ft_strdup(token->value);
+	(*redirects)[count + 1] = NULL;
+	// printf("✅ Added redirect: %s (new size: %d)\n", (*redirects)[count],
+		//count + 1);
 }
 
 char	**append_to_args(char **args, char *new_arg)
@@ -235,17 +230,19 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 	i = 0;
 	while (tokens[i])
 	{
-        if (tokens[i]->type == LOGICAL_AND || tokens[i]->type == LOGICAL_OR)
-        {
-            write_error("minishell: syntax error near unexpected token `%s'\n", tokens[i]->value);
-            data->exit_status = 2;
-            return (NULL);
-        }
+		if (tokens[i]->type == LOGICAL_AND || tokens[i]->type == LOGICAL_OR)
+		{
+			write_error("minishell: syntax error near unexpected token `%s'\n",
+				tokens[i]->value);
+			data->exit_status = 2;
+			return (NULL);
+		}
 		if (tokens[i]->type == PIPE && (!tokens[i + 1] || i == 0))
 		{
-			ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+			ft_putendl_fd("minishell: syntax error near unexpected token `|'",
+				2);
 			data->exit_status = 2;
-            return (NULL);
+			return (NULL);
 		}
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
@@ -264,17 +261,20 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 		prev = new_cmd;
 		while (tokens[i] && tokens[i]->type != PIPE)
 		{
-			if (tokens[i]->type == REDIRECT_IN || tokens[i]->type == REDIRECT_OUT
-				|| tokens[i]->type == APPEND || tokens[i]->type == HEREDOC)
+			if (tokens[i]->type == REDIRECT_IN
+				|| tokens[i]->type == REDIRECT_OUT || tokens[i]->type == APPEND
+				|| tokens[i]->type == HEREDOC)
 			{
 				if (!tokens[i + 1] || tokens[i + 1]->type != WORD)
 				{
-                    write_error("minishell: syntax error near unexpected token `%s'\n",
-                        tokens[i + 1] ? tokens[i + 1]->value : "newline");
-					// write_error("minishell: %s: ambiguous redirect", tokens[i + 1]->value); //> $lol (segfault)
-					//ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
+					write_error("minishell: syntax error near unexpected token `%s'\n",
+						tokens[i + 1] ? tokens[i + 1]->value : "newline");
+					// write_error("minishell: %s: ambiguous redirect", tokens[i
+						//+ 1]->value); //> $lol (segfault)
+					// ft_putendl_fd("minishell: syntax error near unexpected token `newline'",
+						//2);
 					data->exit_status = 2;
-                    return (NULL);
+					return (NULL);
 				}
 				parse_redirects(current, tokens[i + 1], tokens[i]->type);
 				i++;
@@ -282,6 +282,12 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 			else
 			{
 				current->args = append_to_args(current->args, tokens[i]->value);
+				if (!current->args)
+				{
+					//print_error
+					free (new_cmd);
+					return (NULL);
+				}
 			}
 			i++;
 		}

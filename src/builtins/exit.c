@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:36:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,10 +95,9 @@ long	ft_atol(const char *str, int *error)
 	return (res);
 }
 
-
-int is_main_shell_process(void)
+int	is_main_shell_process(void)
 {
-    return (getpid() == g_main_pid);
+	return (getpid() == g_main_pid);
 }
 
 int	builtin_exit(t_cmd *cmd, t_data *data)
@@ -108,8 +107,8 @@ int	builtin_exit(t_cmd *cmd, t_data *data)
 
 	error = 0;
 	if (is_main_shell_process())
-        printf("exit\n");
-	//printf("exit\n");  //need to move
+		printf("exit\n");
+	// printf("exit\n");  //need to move
 	if (!cmd->args[1])
 		exit(data->exit_status);
 	exit_code = ft_atol(cmd->args[1], &error);

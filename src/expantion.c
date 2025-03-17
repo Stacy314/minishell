@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expantion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/12 16:45:07 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*expand_variable(const char *str, int *j, t_data *data)
 	char	**env;
 	int		i;
 
-	if (!str || !*str) //need to check
+	if (!str || !*str) // need to check
 		return (NULL);
 	k = 0;
 	(*j)++;

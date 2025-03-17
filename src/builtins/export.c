@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 17:44:15 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 19:41:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,28 +32,27 @@
 /// bin/echo $HOME
 // env | grep HOME
 
-//export TES_T=123  (113)
-///bin/echo $TES_T
-//env | grep TES_T
+// export TES_T=123  (113)
+/// bin/echo $TES_T
+// env | grep TES_T
 
-//export HELLO42=T="" (117)
-///bin/echo $HELLO42
-//env | grep HELLO42
-//env | grep HELLO42=T=
+// export HELLO42=T="" (117)
+/// bin/echo $HELLO42
+// env | grep HELLO42
+// env | grep HELLO42=T=
 
-///bin/echo $mini_test (134)
-//env | grep mini_test
-//export mini_test=
-///bin/echo $mini_test
-//env | grep mini_test
+/// bin/echo $mini_test (134)
+// env | grep mini_test
+// export mini_test=
+/// bin/echo $mini_test
+// env | grep mini_test
 
-//export (wrong output?) (4)
+// export (wrong output?) (4)
 
 // # Empty export isn't set on `env` but is set on `export`
 // export hello
 // env | grep hello
 // export | grep hello
-
 
 static int	update_env_var(char *arg, t_data *data, int var_index)
 {
@@ -125,7 +124,7 @@ static int	export_one_arg(char *arg, t_data *data)
 		/////////
 		add_or_update_export(arg, data);
 		data->exit_status = 0;
-		return (0); //1
+		return (0); // 1
 	}
 	return (add_or_update_env(arg, data));
 }
@@ -135,11 +134,11 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 	if (!cmd->args[1])
 	{
 		print_sorted_env(data->env);
-		//print_sorted_env(data->export_env); 
+		// print_sorted_env(data->export_env);
 		data->exit_status = 0;
 		return (0);
 	}
-	// if (cmd->args[2])  
+	// if (cmd->args[2])
 	// {
 	// 	write_error("minishell: export: too many arguments\n");
 	// 	data->exit_status = 1;

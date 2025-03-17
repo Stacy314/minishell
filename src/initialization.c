@@ -3,74 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/16 16:07:31 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/17 21:50:21 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_cmd	*initialize_cmd(t_data *data)
+t_cmd	*init_cmd(void)
 {
 	t_cmd	*cmd;
 
-	cmd = ft_calloc(sizeof(t_cmd), 1);
+	cmd = ft_calloc(sizeof(t_cmd), 1);  //leak
 	if (!cmd)
 	{
 		perror("calloc");
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
 	cmd->args = NULL;
 	cmd->input_redirects = NULL;
 	cmd->output_redirects = NULL;
 	cmd->append_redirects = NULL;
 	cmd->heredoc_delimiter = NULL;
-	/* cmd->pipe_in = -1;
-	cmd->pipe_out = -1; */
-	cmd->data = data; // need to del
 	cmd->next = NULL;
 	return (cmd);
 }
 
-void	append_cmd(t_cmd **head, t_cmd *new_cmd)
-{
-	t_cmd	*temp;
-
-	if (!head || !new_cmd)
-		return ;
-	if (*head == NULL)
-	{
-		*head = new_cmd;
-		return ;
-	}
-	temp = *head;
-	while (temp->next)
-		temp = temp->next;
-	temp->next = new_cmd;
-}
-
-t_cmd	*create_cmd(void)
-{
-	t_cmd	*new_cmd;
-
-	new_cmd = ft_calloc(sizeof(t_cmd), 1);
-	if (!new_cmd)
-		return (NULL);
-	new_cmd->args = NULL;
-	new_cmd->input_redirects = NULL;
-	new_cmd->output_redirects = NULL;
-	new_cmd->append_redirects = NULL;
-	new_cmd->heredoc_delimiter = NULL;
-	/* new_cmd->pipe_in = 0;
-	new_cmd->pipe_out = 0; */
-	new_cmd->data = NULL;
-	new_cmd->next = NULL;
-	return (new_cmd);
-}
-
-void	increment_shlvl(t_data *data)
+int	increment_shlvl(t_data *data)
 {
 	int		i;
 	int		shlvl_value;
@@ -85,28 +46,71 @@ void	increment_shlvl(t_data *data)
 			shlvl_value = ft_atoi(data->env[i] + 6);
 			shlvl_value++;
 			shlvl_str = ft_itoa(shlvl_value);
+			if (!shlvl_str)
+			{
+				return (ERROR);
+			}
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
+			if (!new_shlvl)
+			{
+				free(shlvl_str);
+				return (ERROR);
+			}
 			free(shlvl_str);
-			// free(data->env[i]);
+			free(data->env[i]);
 			data->env[i] = new_shlvl;
-			return ;
+			return (SUCCESS);
 		}
 		i++;
 	}
-	data->env[i] = ft_strdup("SHLVL=1");
+	data->env[i] = ft_strdup("SHLVL=1"); 
 	data->env[i + 1] = NULL;
+	return (SUCCESS);
 }
-
-t_cmd	*init_structure(t_data *data, char **env)
+static char	**copy_env(char **env)
 {
-	t_cmd	*cmd;
+	int		i;
+	int		j;
+	char	**env_copy;
 
-	data->env = env;
-	data->export_env = env;
+	i = 0;
+	while (env[i])
+		i++;
+	env_copy = ft_calloc(sizeof(char *) * (i + 1), 1);
+	if (!env_copy) 
+		return (NULL);
+	env_copy[i] = NULL;
+	j = 0;
+	while (j < i)
+	{
+		env_copy[j] = ft_strdup(env[j]);
+		if (!env_copy[j])
+		{
+			free_env(env_copy);
+			// треба звільнити все, що вже скопійовано
+			// handle error ...
+			return (NULL);
+		}
+		j++;
+	}
+	return (env_copy);
+}
+int	init_data(t_data *data, char **env)
+{
+	int	shlvl;
+
+	// data->env = env;
+	data->env = copy_env(env);
+	if (!data->env)
+		return (ERROR);
+	data->export_env = env; //need to check 
 	data->exit_status = 0;
 	data->input = NULL;
-	increment_shlvl(data);
-	cmd = initialize_cmd(data);
-	data->cmd = cmd;
-	return (cmd);
+	shlvl = increment_shlvl(data);
+	if (!shlvl)
+	{
+		perror("init");
+		return (ERROR);
+	}
+	return (SUCCESS);
 }
