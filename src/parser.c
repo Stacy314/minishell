@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 22:05:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/17 23:38:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,60 +129,70 @@ void	debug_print_cmd(t_cmd *cmd)
 	}
 	else
 		printf("(null)");
+	printf("\n");
+	printf("Heredoc: ");
+	if (cmd->heredoc_delimiter)
+	{
+		int i = 0;
+		while (cmd->heredoc_delimiter[i])
+		{
+			printf("%s", cmd->heredoc_delimiter[i]);
+			i++;
+		}
+		printf("\n"); // перехід на новий рядок в кінці
+	}
 	printf("\n============================\n");
 }
 
-void	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
+static int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
 {
 	char	***redirects;
 	int		count;
 	char	**new_redirects;
+	//(void)token;
 
 	count = 0;
-	// printf("⏳ parse_redirects: token->value = %s, token->type = %d\n",
-		//token->value, type);
 	if (type == REDIRECT_IN)
 		redirects = &cmd->input_redirects;
 	else if (type == REDIRECT_OUT)
 		redirects = &cmd->output_redirects;
 	else if (type == APPEND)
 		redirects = &cmd->append_redirects;
+	else if (type == HEREDOC)
+		redirects = &cmd->heredoc_delimiter;
 	else
 	{
-		// printf("❌ Unknown token type!\n");
-		return ;
+		return (SUCCESS);
 	}
-	// Проверяем, есть ли уже массив редиректов
 	if (!*redirects)
 	{
-		// printf("🔍 First redirect detected, allocating memory\n");
 		*redirects = ft_calloc(2, sizeof(char *));
 		if (!*redirects)
 		{
 			perror("ft_calloc");
-			return ;
+			return (ERROR);
 		}
 		(*redirects)[0] = ft_strdup(token->value);
 		(*redirects)[1] = NULL;
-		// printf("✅ Added redirect: %s\n", (*redirects)[0]);
-		return ;
+		//return (ERROR);
 	}
-	// Если массив уже есть, считаем количество элементов
 	while ((*redirects)[count])
 		count++;
-	// printf("🔄 Expanding redirect array (current size: %d)\n", count);
-	// Расширяем массив
-	new_redirects = realloc(*redirects, (count + 2) * sizeof(char *));
+	new_redirects = realloc(*redirects, (count + 2) * sizeof(char *)); //forbidden func
 	if (!new_redirects)
 	{
 		perror("realloc");
-		return ;
+		return (ERROR);
 	}
 	*redirects = new_redirects;
 	(*redirects)[count] = ft_strdup(token->value);
+	if (!(*redirects)[count])
+	{
+		perror("ft_strdup");
+		return (ERROR);
+	}
 	(*redirects)[count + 1] = NULL;
-	// printf("✅ Added redirect: %s (new size: %d)\n", (*redirects)[count],
-		//count + 1);
+	return (SUCCESS);
 }
 
 char	**append_to_args(char **args, char *new_arg)
@@ -197,7 +207,7 @@ char	**append_to_args(char **args, char *new_arg)
 		while (args[len])
 			len++;
 	}
-	new_args = ft_calloc(sizeof(char *) * (len + 2), 1);
+	new_args = ft_calloc(sizeof(char *) * (len + 2), 1); //
 	if (!new_args)
 	{
 		perror("calloc");
@@ -210,7 +220,7 @@ char	**append_to_args(char **args, char *new_arg)
 		new_args[i] = args[i];
 		i++;
 	}
-	new_args[len] = strdup(new_arg);
+	new_args[len] = strdup(new_arg); //
 	new_args[len + 1] = NULL;
 	free(args);
 	return (new_args);
@@ -276,7 +286,12 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 					data->exit_status = 2;
 					return (NULL);
 				}
-				parse_redirects(current, tokens[i + 1], tokens[i]->type);
+				if (!parse_redirects(current, tokens[i + 1], tokens[i]->type))
+				{
+					//print_error
+					free (new_cmd);
+					return (NULL);
+				}
 				i++;
 			}
 			else

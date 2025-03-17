@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 22:06:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/17 23:14:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ int	main(int argc, char **argv, char **env)
 		return (free_env(data.env), EXIT_FAILURE);
 	init_main_pid();
 	signal_handler();
-	while (1)
+	while (1
+	)
 	{
 		///////////////
 		// if (isatty(fileno(stdin)))
@@ -90,24 +91,29 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		}
 		tokens = split_to_tokens(input, &data);
-		if (tokens == (t_token **)(-1)) // do we need it?
+		if (tokens == (t_token **)(-1))
 		{
+			free(input);
 			continue ;		
 		}
-		// if (!tokens) // do we need it?
-		//{
-		//	// fprintf(stderr, "Error: Failed to tokenize input\n");
-		//	continue ;
-		//}
+		 if (!tokens)
+		{
+			free(input);
+			// fprintf(stderr, "Error: Failed to tokenize input\n");
+			continue ;
+		}
 		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
 			free_tokens(tokens);
+			free(cmd);
+			free(input);
 			// ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
 			continue ;
 		}
 		execute(tokens, cmd, &data, env);
 		free(input);
+		//free_tokens(tokens);
 		//free_cmd(cmd);
 	}
 	free_env(data.env);

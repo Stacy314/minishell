@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:41:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/17 22:48:53 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 	char *line;
 	pid_t pid;
 
-	printf("heredoc\n");
+	//printf("heredoc\n");
 
 	if (pipe(pipe_fd) == -1)
 	{

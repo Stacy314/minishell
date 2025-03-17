@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 21:44:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/17 23:35:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ typedef struct s_cmd
 	char			**input_redirects;
 	char			**output_redirects;
 	char			**append_redirects;
-	char			*heredoc_delimiter;
+	char			**heredoc_delimiter;
 	// int		pipe_in;
 	// int		pipe_out;
 	//t_data *data; // delete
@@ -132,8 +132,8 @@ int					handle_redirection(const char *str, int j, t_token **tokens,
 
 // parsing
 t_cmd				*parse_tokens(t_token **tokens, t_data *data);
-void				parse_redirects(t_cmd *cmd, t_token *token,
-						t_token_type type);
+//void				parse_redirects(t_cmd *cmd, t_token *token,
+//						t_token_type type);
 
 // builtins
 void				builtin_echo(t_cmd *cmd, t_data *data);
