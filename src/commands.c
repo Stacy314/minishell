@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 22:58:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:41:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,11 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 		perror("fork");
 		return (data->exit_status = 1);
 	}
+	signal(SIGINT, SIG_IGN);
 	if (pid == 0)
 	{
-		set_child_signals(); //
+		//set_child_signals(); //
+		signal(SIGINT, SIG_DFL); 
 		execve(executable, args, env);
 		// perror("execve");
 		exit(0); // 127 ?
@@ -76,6 +78,8 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 		else
 			data->exit_status = 1;
 	}
+	printf("\n"); // wrong 
+	signal(SIGINT, handle_sigint); 
 	return (data->exit_status);
 }
 

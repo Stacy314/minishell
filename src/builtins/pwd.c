@@ -6,20 +6,19 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 18:05:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 19:38:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	builtin_pwd(t_cmd *cmd, t_data *data) // не треба викрилаки кожного разу getcwd
+ int	builtin_pwd(t_cmd *cmd, t_data *data)
 {
 	char *buf;
 
 	if (cmd->args[1] && ft_strchr(cmd->args[1], '-'))
 	{
 		write_error("minishell: pwd: -%c: invalid option\n", cmd->args[1][1]);
-			// need to change (print %c)
 		return (data->exit_status = 1);
 	}
 	buf = getcwd(NULL, 0);
@@ -27,38 +26,42 @@ int	builtin_pwd(t_cmd *cmd, t_data *data) // не треба викрилаки 
 	{
 		ft_putstr_fd("pwd: error retrieving current directory: getcwd: ", 2);
 		ft_putendl_fd("cannot access parent directories: No such file or directory",
-			2); // need to check
+			2);
 		data->exit_status = 2;
-		return (1); //
+		return (1);
 	}
 	return (ft_putendl_fd(buf, 1), free(buf), data->exit_status = 0);
 }
 
-// int builtin_pwd(t_cmd *cmd, t_data *data)
-// {
-//     (void)cmd;
+//int	builtin_pwd(t_cmd *cmd, t_data *data)
+//{
+//	if (cmd->args[1] && ft_strchr(cmd->args[1], '-'))
+//	{
+//		write_error("minishell: pwd: -%c: invalid option\n", cmd->args[1][1]);
+//		return (data->exit_status = 1);
+//	}
+//	if (data->pwd_p == NULL)
+//	{
+//		data->pwd_p = getcwd(NULL, 0);
+//		if (!data->pwd_p)
+//		{
+//			ft_putstr_fd("pwd: error retrieving current directory: getcwd: ",
+//				2);
+//			ft_putendl_fd("cannot access parent directories: No such file or directory",
+//							2);
+//			data->exit_status = 2;
+//			return (1);
+//		}
+//		ft_putendl_fd(data->pwd_p, 1);
+//		//free(data->pwd_p);
+//		data->exit_status = 0;
+//		return (0);
 
-//     if (data->pwd && *data->pwd)
-//     {
-//         ft_putendl_fd(data->pwd, 1);
-//         data->exit_status = 0;
-//         return (0);
-//     }
-//     else
-//     {
-//         char *buf = getcwd(NULL, 0);
-//         if (!buf)
-//         {
-// 			ft_putstr_fd("pwd: error retrieving current directory: getcwd: ",
-				//2);
-// 			ft_putendl_fd("cannot access parent directories: No such file or directory",
-				//2); //need to check
-// 			data->exit_status = 2;
-//             return (1);
-//         }
-//         ft_putendl_fd(buf, 1);
-//         free(buf);
-//         data->exit_status = 0;
-//         return (0);
-//     }
-// }
+//	}
+//	else
+//	{
+//		ft_putendl_fd(data->pwd_p, 1);
+//		data->exit_status = 0;
+//		return (0);
+//	}
+//}

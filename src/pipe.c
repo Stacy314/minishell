@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 16:48:36 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:31:13 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 // cat minishell.h | grep ");"$ (exit code - 1)
 // export GHOST=123 | env | grep GHOST (exit code - 1)
 
-//echo <"./test_files/infile_big" | cat <"./test_files/infile" (інколи принтить в різному порядку)
+// echo <"./test_files/infile_big" | cat <"./test_files/infile" (інколи принтить в різному порядку)
 
-//echo test |  <<lala
+// echo test |  <<lala
 
-//minishell$ /bin/env | grep "_="
+// minishell$ /bin/env | grep "_="
 
 // echo hi | echo hi | (should open input)
 
@@ -159,6 +159,7 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	int		in_fd;
 	int		status;
 	int		i;
+	//int		sig;
 
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
@@ -190,18 +191,32 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	while (i < process_count)
 	{
 		waitpid(pids[i], &status, 0);
-		if (WIFEXITED(status))
+		 if (WIFEXITED(status))
 		{
 			data->exit_status = WEXITSTATUS(status);
 			// printf("Process %d exited with status %d\n", pids[i],
 				//data->exit_status);
 		}
+		//if (WIFSIGNALED(status))
+		//{
+		//	sig = WTERMSIG(status);
+		//	if (sig == SIGINT)
+		//		data->exit_status = 130;
+		//	else if (sig == SIGQUIT)
+		//	{
+		//		// Накшталт bash:
+		//		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+		//		data->exit_status = 131;
+		//	}
+		//}
+		//else if (WIFEXITED(status))
+		//	data->exit_status = WEXITSTATUS(status);
 		i++;
 	}
 	// data->exit_status = last_exit_status;
-	//close(0);
-	//close(1);
-	//close(2);
-	//close(3);
+	// close(0);
+	// close(1);
+	// close(2);
+	// close(3);
 	free(pids);
 }

@@ -6,14 +6,14 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 17:14:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:30:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 // Global flag for prompt control
-// volatile sig_atomic_t g_prompt_flag = 0;
+ volatile sig_atomic_t g_prompt_flag = 0;
 
 // Wildcards * (print error)
 
@@ -26,20 +26,6 @@
 // aa==vv
 // echo $aa
 
-void	free_env(char **env)
-{
-	int	i;
-
-	i = 0;
-	if (!env)
-		return ;
-	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
-}
 
 //interactive/ non-int.
 int	main(int argc, char **argv, char **env)
@@ -69,12 +55,22 @@ int	main(int argc, char **argv, char **env)
 		///////////////
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), free_env(data.env), data.exit_status);
-		if (!input || *input == '\0' || ft_str_only_spaces(input))
+			return (printf("exit\n")/*, free_env(data.env)*/, data.exit_status);
+		if (*input == '\0' || ft_str_only_spaces(input)) //need to check
 		{
 			free(input);
 			continue ;
 		}
+		if (g_prompt_flag == 1)
+        {
+            data.exit_status = 130;
+            g_prompt_flag = 0;
+        }
+		if (g_prompt_flag == 2)
+        {
+            data.exit_status = 131;
+            g_prompt_flag = 0;
+        }
 		data.input = input;
 		if (*input)
 			add_history(input);
@@ -98,7 +94,7 @@ int	main(int argc, char **argv, char **env)
 		free_tokens(tokens);
 		free_cmd(cmd);
 	}
-	free_env(data.env);
+	//free_env(data.env);
 	clear_history();
 	return (data.exit_status);
 }

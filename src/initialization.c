@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 12:58:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 20:28:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	increment_shlvl(t_data *data)
+int	increment_shlvl(t_data *data) //need to fix
 {
 	int		i;
 	int		shlvl_value;
@@ -32,7 +32,7 @@ int	increment_shlvl(t_data *data)
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
 			if (!new_shlvl)
 				return (free(shlvl_str), ERROR);
-			return (free(shlvl_str), free(data->env[i]),
+			return (/*free(shlvl_str),*//* free(data->env[i]),*/
 				data->env[i] = new_shlvl, SUCCESS);
 		}
 		i++;
@@ -41,50 +41,51 @@ int	increment_shlvl(t_data *data)
 		SUCCESS);
 }
 
-static char	**copy_env(char **env)
-{
-	int		i;
-	int		j;
-	char	**env_copy;
+//static char	**copy_env(char **env)
+//{
+//	int		i;
+//	int		j;
+//	char	**env_copy;
 
-	i = 0;
-	while (env[i])
-		i++;
-	env_copy = ft_calloc(sizeof(char *) * (i + 1), 1);
-	if (!env_copy)
-		return (NULL);
-	env_copy[i] = NULL;
-	j = 0;
-	while (j < i)
-	{
-		env_copy[j] = ft_strdup(env[j]);
-		if (!env_copy[j])
-		{
-			free_env(env_copy);
-			// треба звільнити все, що вже скопійовано
-			// handle error ...
-			return (NULL);
-		}
-		j++;
-	}
-	return (env_copy);
-}
+//	i = 0;
+//	while (env[i])
+//		i++;
+//	env_copy = ft_calloc(sizeof(char *) * (i + 1), 1);
+//	if (!env_copy)
+//		return (NULL);
+//	env_copy[i] = NULL;
+//	j = 0;
+//	while (j < i)
+//	{
+//		env_copy[j] = ft_strdup(env[j]);
+//		if (!env_copy[j])
+//		{
+//			free_env(env_copy);
+//			return (NULL);
+//		}
+//		j++;
+//	}
+//	return (env_copy);
+//}
 int	init_data(t_data *data, char **env)
 {
 	int	shlvl;
+	
 
-	// data->env = env;
-	data->env = copy_env(env);
-	if (!data->env)
-		return (ERROR);
-	data->export_env = env; // need to check
-	data->exit_status = 0;
-	data->input = NULL;
+	 data->env = env;
+	//data->env = copy_env(env);
+	//if (!data->env)
+	//	return (ERROR);
+	data->export_env = data->env;
 	shlvl = increment_shlvl(data);
-	if (!shlvl)
+		if (!shlvl)
 	{
 		perror("init");
 		return (ERROR);
 	}
+
+	data->exit_status = 0;
+	data->input = NULL;
+	data->pwd_p = NULL;
 	return (SUCCESS);
 }

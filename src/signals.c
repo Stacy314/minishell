@@ -6,11 +6,52 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 16:41:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:33:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//CTRL+C
+//CTRL+D
+//CTRL+\
+//CTRL+C, CTRL+C, CTRL+C, exit
+//CTRL+C, CTRL+C, CTRL+C, Ctrl+D
+
+//cat | ls # testar dando depois:
+//#- Enter
+//#- Ctrl+D
+//#- Ctrl+\
+//#- Ctrl+C
+
+//grep oi | ls # testar dando depois:
+//#- Enter + Ctrl+D
+//#- Ctrl+D
+//#- "oi" + Enter + Ctrl+D
+//#- Ctrl+\
+//#- Ctrl+C
+//#- "oi" + Enter + Ctrl+\
+
+//./test_files/loop.out # finalizar com:
+//#- Ctrl+C
+//#- Ctrl+\  -> workspaces: ^\Quit\n
+//#- Ctrl+D  -> não faz nada
+
+//./test_files/loop.out | ls
+//# finalizar com:
+//#- Ctrl+C
+//#- Ctrl+\
+//#- Ctrl+D
+
+//ls | ./test_files/loop.out
+//# finalizar com:
+//#- Ctrl+C
+//#- Ctrl+\
+//#- Ctrl+D
+
+//hello + Ctrl+C
+//# Check that the new line is empty
+
 
 // handle herdoc and child (ctrl + c)
 
@@ -45,30 +86,31 @@ void	set_heredoc_signals(void)
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	printf("\n");
+	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	// g_prompt_flag = 1; //
-	// write(STDOUT_FILENO, "\nminishell$ ", 12);
+	g_prompt_flag = 1;
+	
 }
 
 void	handle_sigquit(int sig)
 {
 	(void)sig;
 	printf("Quit (core dumped)\n");
+	g_prompt_flag = 2;
 }
 
-void	signal_handler(void)
+void	signal_handler()
 {
 	struct sigaction	sa;
-
-	// Handle SIGINT (CTRL-C)  (exit code 130)
+	
+	// Handle SIGINT (CTRL-C)
 	sa.sa_handler = handle_sigint;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGINT, &sa, NULL);
-	// Handle SIGQUIT (CTRL-\) (131 in some case)
+	// Handle SIGQUIT (CTRL-\)
 	sa.sa_handler = handle_sigquit;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);

@@ -4,10 +4,11 @@ CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
-SRC_FILES = main.c utils_main.c tokenizer.c utils_tokenizer.c execution.c parser.c signals.c \
+SRC_FILES = main.c utils.c tokenizer.c utils_tokenizer.c execution.c parser.c signals.c \
 			initialization.c commands.c commands_utils.c pipe.c redirection.c heredoc.c expantion.c \
 			builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
-			builtins/export.c builtins/export_print.c builtins/export_single.c builtins/pwd.c builtins/unset.c
+			builtins/export.c builtins/export_print.c builtins/export_single.c builtins/pwd.c builtins/unset.c \
+			clean.c
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 
 MAKEFLAGS += --no-print-directory
