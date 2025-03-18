@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:41:30 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:05:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	builtin_pwd(t_cmd *cmd, t_data *data) // should I change
+int	builtin_pwd(t_cmd *cmd, t_data *data) // не треба викрилаки кожного разу getcwd
 {
 	char *buf;
 

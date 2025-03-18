@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 12:35:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:46:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 	}
 	if (pid == 0)
 	{
-		set_heredoc_signals();
+		//set_heredoc_signals();
 		close(pipe_fd[0]);
 		while (1)
 		{
@@ -93,6 +93,7 @@ void	handle_heredoc(t_cmd *cmd) // <<
 			if (!line || ft_strncmp(line, *cmd->heredoc_delimiter,
 					ft_strlen(line)) == 0)
 			{
+				/*printf("minishell: warning: here-document delimited by end-of-file (wanted `%s')", *cmd->heredoc_delimiter);*/
 				free(line);
 				break ;
 			}

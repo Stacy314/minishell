@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 13:33:27 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 17:14:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,7 @@ void	free_env(char **env)
 	free(env);
 }
 
-pid_t	g_main_pid;
-
-void	init_main_pid(void)
-{
-	g_main_pid = getpid();
-}
-
+//interactive/ non-int.
 int	main(int argc, char **argv, char **env)
 {
 	char	*input;
@@ -60,7 +54,6 @@ int	main(int argc, char **argv, char **env)
 				STDOUT_FILENO), EXIT_FAILURE);
 	if (!init_data(&data, env))
 		return (EXIT_FAILURE);
-	init_main_pid();
 	signal_handler();
 	while (1)
 	{

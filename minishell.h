@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 23:35:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 17:14:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@
 // extern volatile sig_atomic_t g_prompt_flag;
 
 # define MAX_COMMANDS 265 // 128
-
-extern pid_t		g_main_pid;
 
 //# define _DEFAULT_SOURSE
 

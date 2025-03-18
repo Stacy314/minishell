@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 22:02:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:48:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 // exit | exit | exit (shouldn't exit and shouldn't print anything)
 // cat minishell.h | grep ");"$ (exit code - 1)
 // export GHOST=123 | env | grep GHOST (exit code - 1)
+
+//echo <"./test_files/infile_big" | cat <"./test_files/infile" (інколи принтить в різному порядку)
+
+//echo test |  <<lala
+
+//minishell$ /bin/env | grep "_="
+
+// echo hi | echo hi | (should open input)
 
 int	count_commands(t_cmd *cmd)
 {
