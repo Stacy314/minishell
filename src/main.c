@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 13:33:27 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 14:13:48 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,16 @@ int	main(int argc, char **argv, char **env)
 	signal_handler();
 	while (1)
 	{
-		///////////////
+		// /////////////
 		// if (isatty(fileno(stdin)))
-		//	input = readline("minishell$ ");
+		// 	input = readline("minishell$ ");
 		// else
-		//{
-		//	char *line = get_next_line(fileno(stdin));
-		//	input = ft_strtrim(line, "\n");
-		//	free(line);
-		//}
-		///////////////
+		// {
+		// 	char *line = get_next_line(fileno(stdin));
+		// 	input = ft_strtrim(line, "\n");
+		// 	free(line);
+		// }
+		// /////////////
 		input = readline("minishell$ ");
 		if (!input)
 			return (printf("exit\n"), free_env(data.env), data.exit_status);

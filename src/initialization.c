@@ -3,14 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 12:58:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 20:28:40 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	initialize_state(t_tokenizer_state *state, const char *str, t_token **tokens)
+{
+	state->i = 0;
+	state->j = 0;
+	state->k = 0;
+	state->index = 0;
+	state->inside_quotes = 0;
+	state->quote_type = 0;
+	state->buffer_size = 64;
+	state->buffer = ft_calloc(state->buffer_size, sizeof(char));
+	if (!state->buffer)
+	{
+		perror("calloc");
+		return ;
+	}
+	state->tokens = tokens;
+}
+
 
 int	increment_shlvl(t_data *data)
 {

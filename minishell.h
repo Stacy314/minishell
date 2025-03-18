@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 23:35:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 22:16:09 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,19 @@ typedef struct s_token
 	int				index;
 }					t_token;
 
+typedef struct s_tokenizer_state
+{
+	int				i;
+	int				j;
+	int				k;
+	int				index;
+	int				inside_quotes;
+	int				buffer_size;
+	char			*buffer;
+	char			quote_type;
+	t_token			**tokens;
+}					t_tokenizer_state;
+
 typedef struct s_data
 {
 	int some_value; // need to delete
@@ -115,6 +128,7 @@ bool				contains_special_char(t_token **tokens, t_token_type type);
 int					ft_str_only_spaces(const char *str);
 
 // initialization
+void				initialize_state(t_tokenizer_state *state, const char *str, t_token **tokens);
 t_cmd				*init_cmd();
 //t_data				*init_data(t_data *data, char **env);
 int					init_data(t_data *data, char **env);
@@ -125,10 +139,14 @@ void				set_child_signals(void);
 void				set_heredoc_signals(void);
 
 // tokenization
+int					is_redirect(char c);
+int					is_quote(char c);
+int 				expand_buffer(t_tokenizer_state *state);
+void 				*append_char_to_buffer(t_tokenizer_state *state, char c);
+t_token				*create_token(const char *value, t_token_type type, int index);
 t_token				**split_to_tokens(const char *str, t_data *data);
 void				free_tokens(t_token **tokens);
-int					handle_redirection(const char *str, int j, t_token **tokens,
-						int *i, int *index);
+int					handle_redirection(t_tokenizer_state *state, const char *str);
 
 // parsing
 t_cmd				*parse_tokens(t_token **tokens, t_data *data);
