@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 23:11:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:48:56 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@ t_token	*create_token(const char *value, t_token_type type, int index)
 	if (!new)
 	{
 		perror("calloc");
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
 	new->value = ft_strdup(value);
 	if (!new->value)
 	{
 		perror("strdup");
 		free(new);
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
 	new->type = type;
 	new->index = index;
@@ -42,21 +42,41 @@ int	handle_redirection(const char *str, int j, t_token **tokens, int *i,
 		if (str[j] == '>' && str[j + 1] == '>')
 		{
 			tokens[*i] = create_token(">>", APPEND, (*index)++);
+			if (!tokens[*i])
+			{
+				perror("failed create token");
+				return (-1);
+			}
 			j += 2;
 		}
 		else if (str[j] == '<' && str[j + 1] == '<')
 		{
 			tokens[*i] = create_token("<<", HEREDOC, (*index)++);
+			if (!tokens[*i])
+			{
+				perror("failed create token");
+				return (-1);
+			}
 			j += 2;
 		}
 		else if (str[j] == '>')
 		{
 			tokens[*i] = create_token(">", REDIRECT_OUT, (*index)++);
+			if (!tokens[*i])
+			{
+				perror("failed create token");
+				return (-1);
+			}
 			j++;
 		}
 		else if (str[j] == '<')
 		{
 			tokens[*i] = create_token("<", REDIRECT_IN, (*index)++);
+			if (!tokens[*i])
+			{
+				perror("failed create token");
+				return (-1);
+			}
 			j++;
 		}
 		(*i)++;
@@ -72,16 +92,19 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	char	quote_type;
 	size_t	len;
 	char	*expanded;
+	int		capacity;
+	int		i;
+	int		j;
+	int		index;
 
-	char buffer[1024];
-		// realloc wrapper function to continuously increase size for every additional export
-	int capacity, i, j, index;
+	char buffer[1024]; // realloc wrapper function to continuously increase size for every additional export
 	if (!str || ft_strlen(str) == 0)
 		return (NULL);
 	capacity = ft_strlen(str) + 1;
 	tokens = ft_calloc(capacity, sizeof(t_token *));
 	if (!tokens)
 	{
+		//free(buffer);
 		perror("calloc");
 		return (NULL);
 	}
@@ -100,18 +123,33 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		if (str[j] == '&' && str[j + 1] == '&')
 		{
 			tokens[i++] = create_token("&&", LOGICAL_AND, index++);
+			if (!tokens[i])
+			{
+				perror("failed create token");
+				return (NULL);
+			}
 			j += 2;
 			continue ;
 		}
 		if (str[j] == '|' && str[j + 1] == '|')
 		{
 			tokens[i++] = create_token("||", LOGICAL_OR, index++);
+			if (!tokens[i])
+			{
+				perror("failed create token");
+				return (NULL);
+			}
 			j += 2;
 			continue ;
 		}
 		if (str[j] == '|')
 		{
 			tokens[i] = create_token("|", PIPE, index++);
+			if (!tokens[i])
+			{
+				perror("failed create token");
+				return (NULL);
+			}
 			i++;
 			j++;
 			continue ;
@@ -119,6 +157,10 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		if (!inside_quotes && (str[j] == '>' || str[j] == '<'))
 		{
 			j = handle_redirection(str, j, tokens, &i, &index);
+			if (j == -1)
+			{
+				return (NULL);
+			}
 			continue ;
 		}
 		while (str[j] && (!ft_isspace((unsigned char)str[j]) || inside_quotes))
@@ -150,6 +192,11 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 				{
 					buffer[k] = '\0';
 					tokens[i++] = create_token(buffer, WORD, index++);
+					if (!tokens[i])
+					{
+						perror("failed create token");
+						return (NULL);
+					}
 					k = 0;
 				}
 				j = handle_redirection(str, j, tokens, &i, &index);
@@ -158,11 +205,8 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 			if (str[j] == '$' && quote_type != '\'')
 			{
 				expanded = expand_variable(str, &j, data);
-				// move to parser
-				if (!expanded || !*expanded)  // If empty after expansion
+				if (!expanded || !*expanded)
 				{
-				//	printf("minishell: %s: ambiguous redirect\n",
-				// cmd->output_redirect); //change to stderr
 					data->exit_status = 1;
 					free(expanded);
 					return (NULL);

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 21:52:41 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:39:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,6 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 		execute_for_one(tokens, cmd, data, env);
 	//if (cmd)
 	//	free_cmd(cmd);
-	if (tokens)
-		free_tokens(tokens);
+	//if (tokens)
+	//	free_tokens(tokens);
 }

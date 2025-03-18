@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 23:38:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:45:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,8 @@ void	debug_print_cmd(t_cmd *cmd)
 		}
 		printf("\n"); // перехід на новий рядок в кінці
 	}
+	else
+		printf("(null)");
 	printf("\n============================\n");
 }
 
@@ -257,7 +259,7 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
 			return (perror("calloc"), NULL);
-		new_cmd->args = NULL; // move to init
+		new_cmd->args = NULL;
 		new_cmd->input_redirects = NULL;
 		new_cmd->output_redirects = NULL;
 		new_cmd->append_redirects = NULL;
@@ -284,6 +286,7 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 					// ft_putendl_fd("minishell: syntax error near unexpected token `newline'",
 						//2);
 					data->exit_status = 2;
+					free (new_cmd);
 					return (NULL);
 				}
 				if (!parse_redirects(current, tokens[i + 1], tokens[i]->type))
@@ -310,5 +313,6 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 			i++;
 	}
 	// debug_print_cmd(head);
+	//free (new_cmd);
 	return (head);
 }

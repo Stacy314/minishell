@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 23:14:36 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:33:27 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,11 @@ int	main(int argc, char **argv, char **env)
 	if (argv && argc > 1)
 		return (ft_putstr_fd("Minishell cannot accept arguments\n",
 				STDOUT_FILENO), EXIT_FAILURE);
-	if (!init_data(&data, env)) //
+	if (!init_data(&data, env))
 		return (EXIT_FAILURE);
-	cmd = init_cmd();
-	if (!cmd)
-		return (free_env(data.env), EXIT_FAILURE);
 	init_main_pid();
 	signal_handler();
-	while (1
-	)
+	while (1)
 	{
 		///////////////
 		// if (isatty(fileno(stdin)))
@@ -80,26 +76,20 @@ int	main(int argc, char **argv, char **env)
 		///////////////
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), /*free(cmd),*/ free(cmd),
-				free_env(data.env), data.exit_status);
-		data.input = input;
-		if (*input)
-			add_history(input);
+			return (printf("exit\n"), free_env(data.env), data.exit_status);
 		if (!input || *input == '\0' || ft_str_only_spaces(input))
 		{
 			free(input);
 			continue ;
 		}
+		data.input = input;
+		if (*input)
+			add_history(input);
 		tokens = split_to_tokens(input, &data);
-		if (tokens == (t_token **)(-1))
+		if (tokens == (t_token **)(-1) || !tokens)
 		{
 			free(input);
-			continue ;		
-		}
-		 if (!tokens)
-		{
-			free(input);
-			// fprintf(stderr, "Error: Failed to tokenize input\n");
+			//free_tokens(tokens);
 			continue ;
 		}
 		cmd = parse_tokens(tokens, &data);
@@ -108,13 +98,12 @@ int	main(int argc, char **argv, char **env)
 			free_tokens(tokens);
 			free(cmd);
 			free(input);
-			// ft_putendl_fd("Error: Failed to parse tokens", STDERR_FILENO);
 			continue ;
 		}
 		execute(tokens, cmd, &data, env);
 		free(input);
-		//free_tokens(tokens);
-		//free_cmd(cmd);
+		free_tokens(tokens);
+		free_cmd(cmd);
 	}
 	free_env(data.env);
 	clear_history();
