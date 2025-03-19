@@ -6,11 +6,9 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/03/19 16:16:17 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/19 16:31:41 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "../minishell.h"
 
 #include "../minishell.h"
 
@@ -73,4 +71,3 @@ int append_redirect_value(char ***redirects, const char *value)
 	*redirects = new_array;
 	return (SUCCESS);
 }
-
