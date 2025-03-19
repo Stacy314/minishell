@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 12:13:15 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/19 16:28:03 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,4 +106,18 @@ int	init_data(t_data *data, char **env)
 		return (ERROR);
 	}
 	return (SUCCESS);
+}
+
+t_cmd *init_new_cmd(void)
+{
+	t_cmd *cmd = ft_calloc(1, sizeof(t_cmd));
+	if (!cmd)
+		return (perror("calloc"), NULL);
+	cmd->args = NULL;
+	cmd->input_redirects = NULL;
+	cmd->output_redirects = NULL;
+	cmd->append_redirects = NULL;
+	cmd->heredoc_delimiter = NULL;
+	cmd->next = NULL;
+	return cmd;
 }

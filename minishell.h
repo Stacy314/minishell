@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 14:52:28 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/19 16:28:35 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ void				initialize_state(t_tokenizer_state *state, t_token **tokens);
 t_cmd				*init_cmd();
 //t_data				*init_data(t_data *data, char **env);
 int					init_data(t_data *data, char **env);
+t_cmd				*init_new_cmd(void);
 
 // signals
 void				signal_handler(void);
@@ -161,6 +162,16 @@ int					flush_word_before_redirect(t_tokenizer_state *state);
 int					add_redirect_token(t_tokenizer_state *state, const char *symbol, t_token_type type, int advance);
 
 // parsing
+int					parse_redirects(t_cmd *cmd, t_token *token, t_token_type type);
+char				**append_to_args(char **args, char *new_arg);
+int					build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i);
+int					fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i);
+int					handle_redirect(t_cmd *cmd, t_token **tokens, t_data *data, int *i);
+int					is_redirect_token(t_token *token);
+int					check_initial_syntax_errors(t_token **tokens, t_data *data);
+char				***get_redirect_target(t_cmd *cmd, t_token_type type);
+int					initialize_redirect_array(char ***redirects, const char *value);
+int					append_redirect_value(char ***redirects, const char *value);
 t_cmd				*parse_tokens(t_token **tokens, t_data *data);
 //void				parse_redirects(t_cmd *cmd, t_token *token,
 //						t_token_type type);
