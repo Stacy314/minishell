@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 19:58:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/19 17:17:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	update_env_var(char *arg, t_data *data, int var_index)
 		data->exit_status = 1;
 		return (1);
 	}
-	free(data->env[var_index]);
+	//free(data->env[var_index]);
 	data->env[var_index] = new_val;
 	data->exit_status = 0;
 	return (0);
