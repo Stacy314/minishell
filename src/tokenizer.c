@@ -6,11 +6,36 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 14:50:06 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/19 19:59:10 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+#include <stdio.h> // Для printf
+
+void debug_print_tokens(t_token **tokens)
+{
+    if (!tokens)
+    {
+        printf("No tokens (tokens == NULL)\n");
+        return;
+    }
+
+    int i = 0;
+    while (tokens[i])
+    {
+        printf("Token[%d]: Type = %d, Value = \"%s\", Index = %d\n",
+            i,
+            tokens[i]->type,
+            tokens[i]->value,
+            tokens[i]->index
+        );
+        i++;
+    }
+    printf("End of tokens (null)\n");
+}
+
 
 t_token	*create_token(const char *value, t_token_type type, int index)
 {
@@ -56,7 +81,7 @@ int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 		ft_strlcpy(&state->buffer[state->k], expanded, state->buffer_size - state->k);
 		state->k += len;
 		free(expanded);
-		state->j++;
+		//state->j++;
 		return (1);
 	}
 	return (0);
@@ -104,6 +129,7 @@ t_token **split_to_tokens(const char *str, t_data *data)
 	initialize_state(&state, tokens);
 	if (tokenize_loop(str, &state, tokens, data) == -1)
 		return (NULL);
+	printf("inside_quotes: %d\n", state.inside_quotes);
 	if (state.inside_quotes)
 	{
 		write_error("minishell: syntax error: unclosed quotes\n");
@@ -111,5 +137,6 @@ t_token **split_to_tokens(const char *str, t_data *data)
 	}
 	tokens[state.i] = NULL;
 	free(state.buffer);
+	debug_print_tokens(tokens);
 	return tokens;
 }
