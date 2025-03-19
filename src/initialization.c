@@ -6,13 +6,13 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 20:28:40 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/19 12:13:15 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	initialize_state(t_tokenizer_state *state, const char *str, t_token **tokens)
+void	initialize_state(t_tokenizer_state *state, t_token **tokens)
 {
 	state->i = 0;
 	state->j = 0;

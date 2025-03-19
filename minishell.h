@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 22:16:09 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/19 14:52:28 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ bool				contains_special_char(t_token **tokens, t_token_type type);
 int					ft_str_only_spaces(const char *str);
 
 // initialization
-void				initialize_state(t_tokenizer_state *state, const char *str, t_token **tokens);
+void				initialize_state(t_tokenizer_state *state, t_token **tokens);
 t_cmd				*init_cmd();
 //t_data				*init_data(t_data *data, char **env);
 int					init_data(t_data *data, char **env);
@@ -139,6 +139,9 @@ void				set_child_signals(void);
 void				set_heredoc_signals(void);
 
 // tokenization
+int					handle_expansion(t_tokenizer_state *state, const char *str, t_data *data);
+int					handle_quotes_and_redirects(t_tokenizer_state *state, const char *str);
+int					flush_buffer_to_token(t_tokenizer_state *state);
 int					is_redirect(char c);
 int					is_quote(char c);
 int 				expand_buffer(t_tokenizer_state *state);
@@ -147,6 +150,15 @@ t_token				*create_token(const char *value, t_token_type type, int index);
 t_token				**split_to_tokens(const char *str, t_data *data);
 void				free_tokens(t_token **tokens);
 int					handle_redirection(t_tokenizer_state *state, const char *str);
+void				skip_spaces(const char *str, t_tokenizer_state *state);
+int					is_logical_operator(const char *str, t_tokenizer_state *state);
+int					is_pipe_operator(const char *str, t_tokenizer_state *state);
+int					handle_token_word(t_tokenizer_state *state, const char *str, t_data *data);
+void				*cleanup_and_null(t_token **tokens, t_tokenizer_state *state);
+int					tokenize_loop(const char *str, t_tokenizer_state *state, t_token **tokens, t_data *data);
+int					update_quote_state(t_tokenizer_state *state, char c);
+int					flush_word_before_redirect(t_tokenizer_state *state);
+int					add_redirect_token(t_tokenizer_state *state, const char *symbol, t_token_type type, int advance);
 
 // parsing
 t_cmd				*parse_tokens(t_token **tokens, t_data *data);
@@ -167,7 +179,7 @@ char				*get_env_value(char **env, const char *key);
 int					check_cd_path(const char *dest_path, t_data *data);
 int					find_env_var(char **env, const char *var);
 int					is_option(const char *arg);
-char				*skip_spaces(char *str);
+//char				*skip_spaces(char *str);
 int					is_valid_identifier(const char *arg);
 bool				is_numeric(const char *str);
 long				ft_atol(const char *str, int *error);

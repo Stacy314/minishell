@@ -8,13 +8,10 @@ minishell_tester
 obj
 README.md
 src
-test
 test_files
 test.sh
 tmp_err_bash
 tmp_err_minishell
 tmp_out_bash
 tmp_out_minishell
-tmp_redir_out
-tmp_redir_out_file1
 hi
