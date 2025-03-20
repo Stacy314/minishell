@@ -6,11 +6,17 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 21:30:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/19 17:46:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//NEED TO FIX:
+//expot a
+//_ value
+//pwd (don't call getcwd every time)
+//signals
 
 // Global flag for prompt control
  volatile sig_atomic_t g_prompt_flag = 0;

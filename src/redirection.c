@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 21:20:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/20 19:27:42 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,13 @@
 
 // > $notexists
 // bash: $notexists: ambiguous redirect
+
+//echo <"./test_files/infile_big" | cat <"./test_files/infile" (18)
+//cat <missing | cat <"./test_files/infile" (38)
+
+//cat <minishell.h|ls (118) - parsing
+
+
 
 int	check_error(const char *filename)
 {
@@ -54,7 +61,7 @@ void	handle_input_redirect(t_cmd *cmd) // <
 		fd = open(cmd->input_redirects[i], O_RDONLY);
 		if (fd == -1)
 		{
-			ret = check_error(cmd->input_redirects[i]); // need to check
+			ret = check_error(cmd->input_redirects[i]);
 			if (ret != 0)
 				exit(1);
 		}
@@ -126,9 +133,9 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 		return (perror("fork"), 0);
 	if (pid == 0)
 	{
-		set_child_signals();
+		//set_child_signals();
 		i = 0;
-		while (data->input[i])
+		while (data->input[i]) //need expan
 		{
 			if (data->input[i] == '>' && data->input[i + 1] == '>')
 				handle_append_redirect(cmd);
@@ -146,6 +153,14 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 	{
+		///* Katya */
+		//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
+		//{
+		//	if (WEXITSTATUS(status) == 131)
+		//		printf("Quit (core dumped)");
+		//	write (1, "\n", 1);
+		//}
+		///* End */
 		// printf("exit status: %d\n", WEXITSTATUS(status));
 		data->exit_status = WEXITSTATUS(status);
 	}
@@ -160,21 +175,13 @@ void	apply_redirections(t_cmd *cmd, t_data *data)
 	while (data->input[i])
 	{
 		if (data->input[i] == '>' && data->input[i + 1] == '>')
-		{
 			handle_append_redirect(cmd);
-		}
 		else if (data->input[i] == '<' && data->input[i + 1] == '<')
-		{
 			handle_heredoc(cmd);
-		}
 		else if (data->input[i] == '<')
-		{
 			handle_input_redirect(cmd);
-		}
 		else if (data->input[i] == '>')
-		{
 			handle_output_redirect(cmd);
-		}
 		i++;
 	}
 }

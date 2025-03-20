@@ -6,11 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 17:06:25 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/20 17:23:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+///bin/env | grep "_=" 
 
 int	builtin_env(t_data *data, t_cmd *cmd)
 {

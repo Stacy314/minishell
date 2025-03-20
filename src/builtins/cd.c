@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:41:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:35:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,18 @@
 // cd "doesntexist" >/dev/null (bash: cd: doesntexist: No such file or
 // directory, EC - 1) (54)
 /// cd "wtf" >/dev/null (58)
+
+//apechkov@c3r4p2:~/projects/minishell$ cd 
+//apechkov@c3r4p2:~$ echo $_
+//cd
+//apechkov@c3r4p2:~$ env | echo $_
+//cd
+//apechkov@c3r4p2:~$ env | grep "_=" | echo $_
+//cd
+//apechkov@c3r4p2:~$ env | grep "_=" 
+//_=/usr/bin/env
+//apechkov@c3r4p2:~$ 
+
 
 static void	perform_cd(const char *dest_path, t_data *data)
 {

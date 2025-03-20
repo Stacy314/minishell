@@ -6,21 +6,60 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 21:31:13 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/20 17:34:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 // exit | exit | exit (shouldn't exit and shouldn't print anything)
-// cat minishell.h | grep ");"$ (exit code - 1)
-// export GHOST=123 | env | grep GHOST (exit code - 1)
-
-// echo <"./test_files/infile_big" | cat <"./test_files/infile" (інколи принтить в різному порядку)
 
 // echo test |  <<lala
 
-// minishell$ /bin/env | grep "_="
+///bin/env | grep "_=" (32)
+
+///bin/env | grep "SHLVL" (34)
+
+//ls | cat << stop | grep "asd"  (55)
+//is this good
+//stop
+
+//ls | cat << stop | ls -la | cat << stop1 (59)
+//12 
+//32232
+//23
+//stop
+//awdaw
+//daswd
+//stop1
+
+//ls | cat << stop | ls -la | cat << stop1 | ls | cat << stop2 | ls -la | cat << stop3 (68)
+//$USER
+//ad
+//as $HOME
+//stop
+//awd
+//wf$PWDdqwdwqd
+//stop1
+//das
+//das
+//stop2
+//dsq
+//wd
+//wf$PWDdqwdwqd
+//stop3
+
+//ls | cat << stop | ls -la | cat << stop1 | ls | cat << stop2 | ls -la > out | cat << 'stop3' (84)
+//$USER
+//ad
+//stop
+//dsa
+//stop1
+//sad
+//stop2
+//as $HOME
+//stop3
+///bin/rm -f out
 
 // echo hi | echo hi | (should open input)
 
@@ -50,7 +89,7 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		return (perror("fork"), -1);
 	if (pid == 0)
 	{
-		set_child_signals(); //
+		//set_child_signals(); //
 		// dup2(pipe_fd[1], STDOUT_FILENO);
 		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
 		{
@@ -193,6 +232,14 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 		waitpid(pids[i], &status, 0);
 		 if (WIFEXITED(status))
 		{
+			///* Katya */
+			//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
+			//{
+			//	if (WEXITSTATUS(status) == 131)
+			//		printf("Quit (core dumped)");
+			//	write (1, "\n", 1);
+			//}
+			///* End */
 			data->exit_status = WEXITSTATUS(status);
 			// printf("Process %d exited with status %d\n", pids[i],
 				//data->exit_status);

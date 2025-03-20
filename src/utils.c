@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 19:05:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/19 17:38:41 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ static int	print_err(char specifier, va_list ap)
 		return (ft_putchar_fd(specifier, 2));
 	}
 }
+
 void	write_error(const char *format, ...)
 {
 	va_list	ap;

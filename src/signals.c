@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 16:40:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:58:23 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	set_child_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	write(STDOUT_FILENO, "\n", 1); // ???
+	//write(STDOUT_FILENO, "\n", 1); // ???
 }
 
 ////////////////////////////
@@ -71,7 +71,7 @@ static void	heredoc_sigint_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
-		write(STDOUT_FILENO, "\n", 1);
+		//write(STDOUT_FILENO, "\n", 1);
 		exit(130);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 16:36:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/19 20:03:38 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,17 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 	{
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
+		{
+			///* Katya */
+			//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
+			//{
+			//	if (WEXITSTATUS(status) == 131)
+			//		printf("Quit (core dumped)");
+			//	write (1, "\n", 1);
+			//}
+			///* End */
 			data->exit_status = WEXITSTATUS(status);
+		}
 		else
 			data->exit_status = 1;
 	}
@@ -120,8 +130,7 @@ static int	execute_via_path(char *cmd, t_data *data, char **args, char **env)
 		write_error("%s: command not found\n", cmd);
 		return (free_array(paths), data->exit_status = 127);
 	}
-	fork_and_exec(executable, args, env, data);
-	free(executable);
+	(fork_and_exec(executable, args, env, data), free(executable));
 	i = 0;
 	while (paths[i])
 		free(paths[i++]);

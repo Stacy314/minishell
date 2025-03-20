@@ -6,13 +6,15 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 20:28:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/20 17:32:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	increment_shlvl(t_data *data) //need to fix
+///bin/env | grep "SHLVL" (2)
+
+int	increment_shlvl(t_data *data) //need to fix (should be 2 in the beginnig)
 {
 	int		i;
 	int		shlvl_value;
