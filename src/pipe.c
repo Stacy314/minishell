@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/20 17:34:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 23:00:40 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,37 +76,68 @@ int	count_commands(t_cmd *cmd)
 	return (count);
 }
 
-pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
-		char **env, int pipe_fd[2])
-{
-	pid_t	pid;
+// pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
+// 		char **env, int pipe_fd[2])
+// {
+// 	pid_t	pid;
 
-	(void)data;
-	if (pipe(pipe_fd) == -1)
-		return (perror("pipe"), -1);
-	pid = fork();
-	if (pid < 0)
-		return (perror("fork"), -1);
-	if (pid == 0)
+// 	(void)data;
+// 	apply_redirections(cmd, data);
+// 	if (pipe(pipe_fd) == -1)
+// 		return (perror("pipe"), -1);
+// 	pid = fork();
+// 	if (pid < 0)
+// 		return (perror("fork"), -1);
+// 	if (pid == 0)
+// 	{
+// 		//set_child_signals(); //
+// 		// dup2(pipe_fd[1], STDOUT_FILENO);
+// 		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+// 		{
+// 			perror("dup2");
+// 			exit(1);
+// 		}
+// 		close(pipe_fd[0]);
+// 		close(pipe_fd[1]);
+// 		// apply_redirections(cmd, data);
+// 		// execute_redirection(cmd, data, env);
+// 		execute_for_one(tokens, cmd, data, env);
+// 		close(pipe_fd[1]); //
+// 		exit(data->exit_status);
+// 	}
+// 	close(pipe_fd[1]); //
+// 	return (pid);
+// }
+
+pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data,
+	char **env, int pipe_fd[2])
+{
+pid_t	pid;
+
+if (pipe(pipe_fd) == -1)
+	return (perror("pipe"), -1);
+pid = fork();
+if (pid < 0)
+	return (perror("fork"), -1);
+if (pid == 0)
+{
+	// apply_redirections(cmd, data);
+	// Налаштовуємо пайп для STDOUT
+	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
 	{
-		//set_child_signals(); //
-		// dup2(pipe_fd[1], STDOUT_FILENO);
-		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			exit(1);
-		}
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		apply_redirections(cmd, data);
-		// execute_redirection(cmd, data, env);
-		execute_for_one(tokens, cmd, data, env);
-		close(pipe_fd[1]); //
-		exit(data->exit_status);
+		perror("dup2");
+		exit(1);
 	}
-	close(pipe_fd[1]); //
-	return (pid);
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+	apply_redirections(cmd, data);
+	execute_for_one(tokens, cmd, data, env);
+	exit(data->exit_status);
 }
+close(pipe_fd[1]);
+return (pid);
+}
+
 
 pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 		char **env, int in_fd, int new_pipe_fd[2])
@@ -114,6 +145,7 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 	pid_t	pid;
 
 	(void)data;
+	// apply_redirections(cmd, data);
 	if (pipe(new_pipe_fd) == -1)
 	{
 		perror("pipe");
@@ -127,6 +159,7 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 	}
 	if (pid == 0)
 	{
+		// apply_redirections(cmd, data);
 		// dup2(in_fd, STDIN_FILENO);
 		// dup2(new_pipe_fd[1], STDOUT_FILENO);
 		if (dup2(in_fd, STDIN_FILENO) == -1)
@@ -158,6 +191,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 	pid_t	pid;
 
 	(void)data;
+	// apply_redirections(cmd, data);
 	pid = fork();
 	if (pid < 0)
 	{
@@ -166,6 +200,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data,
 	}
 	if (pid == 0)
 	{
+		// apply_redirections(cmd, data);
 		if (in_fd != -1)
 		{
 			if (dup2(in_fd, STDIN_FILENO) == -1)
@@ -209,6 +244,20 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	process_count = 0;
 	current = cmd;
 	in_fd = -1;
+	t_cmd	*tmp = cmd;
+	while (tmp)
+	{
+		if (tmp->heredoc_delimiter)
+		{
+			tmp->heredoc_fd = prepare_heredoc(tmp);
+			if (tmp->heredoc_fd == -1)
+			{
+				return ;
+				// Можна встановити помилку або продовжити без here-doc
+			}
+		}
+		tmp = tmp->next;
+	}
 	pids[process_count++] = execute_first_command(tokens, current, data, env,
 			pipe_fd);
 	in_fd = pipe_fd[0];

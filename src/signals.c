@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 18:58:23 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 21:51:03 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,10 @@
 //^\Quit (core dumped) (cat  ctrl + /)
 
 // print minishell twice
+
+
+//////////////////// ioctl
+
 
 void	set_child_signals(void)
 {
@@ -117,3 +121,59 @@ void	signal_handler()
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGQUIT, &sa, NULL);
 }
+
+
+
+// void	handle_sigint(int sig)
+// {
+// 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// 	g_signal = sig;
+// }
+
+// void	handle_heredoc_sigint(int sig)
+// {
+// 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// 	g_signal = sig;
+// }
+
+// void	handle_child_sigint(int sig)
+// {
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// 	g_signal = sig;
+// }
+
+// void	handle_sigquit(int sig)
+// {
+// 	(void)sig;
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// }
+
+// void	set_signals(int type)
+// {
+// 	if (type == MAIN)
+// 	{
+// 		signal(SIGINT, handle_sigint);
+// 		signal(SIGQUIT, SIG_IGN);
+// 	}
+// 	else if (type == CHILD)
+// 	{
+// 		signal(SIGINT, handle_child_sigint);
+// 		signal(SIGQUIT, handle_sigquit);
+// 	}
+// 	else if (type == HEREDOC)
+// 	{
+// 		signal(SIGINT, handle_heredoc_sigint);
+// 		signal(SIGQUIT, SIG_IGN);
+// 	}
+// 	else if (type == WAIT)
+// 	{
+// 		signal(SIGINT, SIG_IGN);
+// 		signal(SIGQUIT, handle_sigquit);
+// 	}
+// }

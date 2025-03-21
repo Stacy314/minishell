@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/20 19:59:10 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 22:33:11 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,50 +180,121 @@
 //	close(pipe_fd[0]);
 //}
 
+static int create_unique_tmpfile(char *out_filename, size_t size)
+{
+    // srand(time(NULL) ^ getpid());
+
+    for (int tries = 0; tries < 100; tries++)
+    {
+        // Згенеруємо випадкове число, припустимо
+        int r = rand(); //need to change
+        // Робимо шлях "/tmp/heredoc_<число>.tmp"
+        snprintf(out_filename, size, "/tmp/heredoc_%d.tmp", r);
+
+        // Відкриваємо з O_CREAT|O_EXCL, аби «вилітати», якщо файл уже існує.
+        int fd = open(out_filename, O_RDWR | O_CREAT | O_EXCL, 0600);
+        if (fd >= 0)
+            return fd; // успіх: унікальний файл створено.
+
+        // Якщо fd < 0, подивимося на errno: якщо EEXIST, пробуємо інше число
+        // Якщо інша помилка, завершуємо
+        // if (errno != EEXIST)
+        // {
+        //     perror("open");
+        //     return -1;
+        // }
+    }
+    // Якщо не вдалося знайти унікальне імʼя за 100 спроб
+    fprintf(stderr, "Failed to create unique heredoc tmp file\n");
+    return -1;
+}
 
 void	handle_heredoc(t_cmd *cmd)
 {
 	char	*line;
-	char	tmp_filename[] = "/tmp/heredocXXXXXX";
+	char	tmp_filename[128]; // Буфер для імені файлу
 	int		tmp_fd;
 	int		infile_fd;
 
-	// Створюємо тимчасовий файл
-	tmp_fd = mkstemp(tmp_filename); //need to check
+	// 1) Створюємо унікальне імʼя файлу і відкриваємо його
+	tmp_fd = create_unique_tmpfile(tmp_filename, sizeof(tmp_filename));
 	if (tmp_fd == -1)
 	{
-		perror("mkstemp");
-		return ;
+		// Помилка вже виведена або код зупинено
+		return;
 	}
+
+	// 2) Зчитуємо рядки, допоки не зустрінемо delimiter або Ctrl+D
 	while (1)
 	{
 		line = readline("> ");
 		// Якщо Ctrl+D (line == NULL) або line == delimiter – break
 		if (!line || (cmd->heredoc_delimiter
-			&& ft_strncmp(line, *cmd->heredoc_delimiter, ft_strlen(*cmd->heredoc_delimiter) == 0)))
+			&& ft_strcmp(line, *cmd->heredoc_delimiter) == 0))
 		{
 			free(line);
 			break ;
 		}
-		dprintf(tmp_fd, "%s\n", line); //need to change
+		dprintf(tmp_fd, "%s\n", line);  // need to change
 		free(line);
 	}
 	close(tmp_fd);
 
-	// 3) Відкриваємо цей файл ще раз на читання
+	// 3) Відкриваємо згенерований файл знову на читання
+	infile_fd = open(tmp_filename, O_RDONLY);
+	if (infile_fd == -1)
+	{
+		perror("open heredoc file");
+		unlink(tmp_filename); // видаляємо, щоб не залишався
+		return;
+	}
+
+	// 4) Dup2 -> замінюємо STDIN_FILENO на наш тимчасовий файл
+	if (dup2(infile_fd, STDIN_FILENO) == -1)
+		perror("dup2");
+	close(infile_fd);
+
+	// 5) Видаляємо файл (уже відкритий), він більше не потрібен
+	unlink(tmp_filename);
+}
+
+
+int	prepare_heredoc(t_cmd *cmd)
+{
+	char	*line;
+	char	tmp_filename[128];
+	int		tmp_fd;
+	int		infile_fd;
+
+	// Створюємо унікальний файл для here-doc
+	tmp_fd = create_unique_tmpfile(tmp_filename, sizeof(tmp_filename));
+	if (tmp_fd == -1)
+		return (-1);
+
+	// Зчитуємо рядки до зустрічі delimiter або Ctrl+D
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || (cmd->heredoc_delimiter &&
+			ft_strcmp(line, *cmd->heredoc_delimiter) == 0))
+		{
+			free(line);
+			break;
+		}
+		dprintf(tmp_fd, "%s\n", line);
+		free(line);
+	}
+	close(tmp_fd);
+
+	// Відкриваємо файл на читання
 	infile_fd = open(tmp_filename, O_RDONLY);
 	if (infile_fd == -1)
 	{
 		perror("open heredoc file");
 		unlink(tmp_filename);
-		return ;
+		return (-1);
 	}
-
-	// 4) Dup2, щоб замінити STDIN на наш файл
-	if (dup2(infile_fd, STDIN_FILENO) == -1)
-		perror("dup2");
-	close(infile_fd);
-
-	// 5) Видаляємо тимчасовий файл, бо він нам більше не потрібен
-	unlink(tmp_filename); //need to check
+	// Видаляємо тимчасовий файл – він ще відкритий
+	unlink(tmp_filename);
+	return (infile_fd);
 }

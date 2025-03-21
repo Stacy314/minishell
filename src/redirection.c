@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/20 19:27:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 22:26:29 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,17 +167,48 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 	return (1);
 }
 
+// void	apply_redirections(t_cmd *cmd, t_data *data)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (data->input[i])
+// 	{
+// 		if (data->input[i] == '>' && data->input[i + 1] == '>')
+// 			handle_append_redirect(cmd);
+// 		else if (data->input[i] == '<' && data->input[i + 1] == '<')
+// 			handle_heredoc(cmd);
+// 		else if (data->input[i] == '<')
+// 			handle_input_redirect(cmd);
+// 		else if (data->input[i] == '>')
+// 			handle_output_redirect(cmd);
+// 		i++;
+// 	}
+// }
 void	apply_redirections(t_cmd *cmd, t_data *data)
 {
 	int	i;
 
+	/* Якщо here-doc був оброблений у батькові,
+	 * застосовуємо його дескриптор як STDIN.
+	 */
+	if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
+	{
+		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2 heredoc");
+			exit(1);
+		}
+		close(cmd->heredoc_fd);
+	}
 	i = 0;
 	while (data->input[i])
 	{
 		if (data->input[i] == '>' && data->input[i + 1] == '>')
 			handle_append_redirect(cmd);
+		/* Пропускаємо here-doc, оскільки він вже оброблений */
 		else if (data->input[i] == '<' && data->input[i + 1] == '<')
-			handle_heredoc(cmd);
+			;
 		else if (data->input[i] == '<')
 			handle_input_redirect(cmd);
 		else if (data->input[i] == '>')

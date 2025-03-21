@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 21:30:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 22:30:31 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,14 @@ typedef struct s_cmd
 	char						**output_redirects;
 	char						**append_redirects;
 	char						**heredoc_delimiter;
+	int 						heredoc_fd;
 	// int		pipe_in;
 	// int		pipe_out;
 	// t_data *data; // delete
 
 	// struct s_cmd	*prev;
 }								t_cmd;
-
+int	prepare_heredoc(t_cmd *cmd);
 // void				free_env(char **env);
 void							apply_redirections(t_cmd *cmd, t_data *data);
 
@@ -179,5 +180,7 @@ void							handle_heredoc(t_cmd *cmd);
 char							*expand_variable(const char *str, int *j,
 									t_data *data);
 void							handle_input_redirect(t_cmd *cmd);
+
+int	ft_strcmp(const char *s1, const char *s2);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 18:02:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 22:08:06 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,78 +36,80 @@
 //export A='"echo hi"'
 //$A  ("echo: command not found)
 
+// void	debug_print_cmd(t_cmd *cmd)
+// {
+// 	int	i;
+
 void	debug_print_cmd(t_cmd *cmd)
 {
 	int	i;
+	int	cmd_num = 1;
 
 	printf("\n==== DEBUG CMD STRUCTURE ====\n");
-	printf("Args: ");
+	while (cmd)
+	{
+		printf("Command #%d\n", cmd_num++);
+
+		// Args
+		printf("Args: ");
 		if (cmd->args)
 		{
-			i = 0;
-			while (cmd->args[i])
-			{
+			for (i = 0; cmd->args[i]; i++)
 				printf("\"%s\" ", cmd->args[i]);
-				i++;
-			}
 		}
 		else
 			printf("(null)");
 		printf("\n");
+
+		// Input Redirects
 		printf("Input Redirects: ");
 		if (cmd->input_redirects)
 		{
-			i = 0;
-			while (cmd->input_redirects[i])
-			{
+			for (i = 0; cmd->input_redirects[i]; i++)
 				printf("\"%s\" ", cmd->input_redirects[i]);
-				i++;
-			}
 		}
 		else
 			printf("(null)");
 		printf("\n");
+
+		// Output Redirects
 		printf("Output Redirects: ");
 		if (cmd->output_redirects)
 		{
-			i = 0;
-			while (cmd->output_redirects[i])
-			{
+			for (i = 0; cmd->output_redirects[i]; i++)
 				printf("\"%s\" ", cmd->output_redirects[i]);
-				i++;
-			}
 		}
 		else
 			printf("(null)");
 		printf("\n");
+
+		// Append Redirects
 		printf("Append Redirects: ");
 		if (cmd->append_redirects)
 		{
-			i = 0;
-			while (cmd->append_redirects[i])
-			{
+			for (i = 0; cmd->append_redirects[i]; i++)
 				printf("\"%s\" ", cmd->append_redirects[i]);
-				i++;
-			}
 		}
 		else
 			printf("(null)");
 		printf("\n");
-		printf("Heredoc: ");
+
+		// Heredoc Delimiters
+		printf("Heredoc Delimiters: ");
 		if (cmd->heredoc_delimiter)
 		{
-			int i = 0;
-			while (cmd->heredoc_delimiter[i])
-			{
-				printf("%s", cmd->heredoc_delimiter[i]);
-				i++;
-			}
-			printf("\n"); // перехід на новий рядок в кінці
+			for (i = 0; cmd->heredoc_delimiter[i]; i++)
+				printf("\"%s\" ", cmd->heredoc_delimiter[i]);
 		}
 		else
 			printf("(null)");
-	printf("\n============================\n");
+		printf("\n");
+
+		printf("============================\n");
+		cmd = cmd->next;
+	}
 }
+
 
 static int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
 {

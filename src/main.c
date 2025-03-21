@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 17:46:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 22:35:58 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 //pwd (don't call getcwd every time)
 //signals
 
-// Global flag for prompt control
- volatile sig_atomic_t g_prompt_flag = 0;
+//interactive/ non-int.
 
 // Wildcards * (print error)
 
@@ -32,8 +31,8 @@
 // aa==vv
 // echo $aa
 
+volatile sig_atomic_t g_prompt_flag = 0;
 
-//interactive/ non-int.
 int	main(int argc, char **argv, char **env)
 {
 	char	*input;
@@ -67,16 +66,16 @@ int	main(int argc, char **argv, char **env)
 			free(input);
 			continue ;
 		}
-		if (g_prompt_flag == 1)
-        {
-            data.exit_status = 130;
-            g_prompt_flag = 0;
-        }
-		if (g_prompt_flag == 2)
-        {
-            data.exit_status = 131;
-            g_prompt_flag = 0;
-        }
+		// if (g_prompt_flag == 1)
+        // {
+        //     data.exit_status = 130;
+        //     g_prompt_flag = 0;
+        // }
+		// if (g_prompt_flag == 2)
+        // {
+        //     data.exit_status = 131;
+        //     g_prompt_flag = 0;
+        // }
 		data.input = input;
 		if (*input)
 			add_history(input);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 17:38:41 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 21:31:45 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,21 +58,35 @@ static int	print_err(char specifier, va_list ap)
 void	write_error(const char *format, ...)
 {
 	va_list	ap;
-	int		i;
+	//int		i;
 
-	i = 0;
+	//i = 0;
 	va_start(ap, format);
 	while (*format != '\0')
 	{
 		if (*format == '%')
 		{
-			i += print_err(*(++format), ap);
+			/* i +=  */print_err(*(++format), ap);
 		}
 		else
 		{
-			i += write(2, format, 1);
+			/* i +=  */write(2, format, 1);
 		}
 		++format;
 	}
 	va_end(ap);
+}
+
+int	ft_strcmp(const char *s1, const char *s2) 
+{
+	size_t	i;
+
+	if (s1 == NULL || s2 == NULL)
+		return (0);
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] != '\0')
+	{
+		i++;
+	}
+	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));
 }
