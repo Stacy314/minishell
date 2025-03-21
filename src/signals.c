@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 21:51:03 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/21 23:45:47 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,29 +60,54 @@
 // print minishell twice
 
 
-//////////////////// ioctl
-
-
-void	set_child_signals(void)
+////////////////////////////
+void	handle_sigint_child(int sig)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	g_signal_flag = sig;
+}
+
+// void	handle_sigquit_child(int sig)
+// {
+// 	(void)sig;
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// }
+void	handle_sigquit_child(int sig)
+{
+	(void)sig;
+	printf("Quit (core dumped)\n");
+	g_signal_flag = sig;
+}
+
+
+void	set_signals_child(void) // need to fix
+{
+	// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
 	//write(STDOUT_FILENO, "\n", 1); // ???
+	signal(SIGINT, handle_sigint_child);
+	signal(SIGQUIT, handle_sigquit_child);
 }
 
 ////////////////////////////
-static void	heredoc_sigint_handler(int sig)
+static void	handle_sigint_heredoc(int sig) //need to fix
 {
-	if (sig == SIGINT)
-	{
-		//write(STDOUT_FILENO, "\n", 1);
-		exit(130);
-	}
+
+	write(STDOUT_FILENO, "\n", 1);
+	// exit(130);
+	// ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay(); 
+	g_signal_flag = sig;
+
 }
 
-void	set_heredoc_signals(void)
+void	set_signals_heredoc(void)
 {
-	signal(SIGINT, heredoc_sigint_handler);
+	signal(SIGINT, handle_sigint_heredoc);
 	signal(SIGQUIT, SIG_IGN);
 }
 
@@ -92,88 +117,46 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 	write(STDOUT_FILENO, "\n", 1);
+	// ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_prompt_flag = 1;
-	
+	g_signal_flag = sig; // 128 + 2 (SIGINT) = 130
 }
-
-void	handle_sigquit(int sig)
-{
-	(void)sig;
-	printf("Quit (core dumped)\n");
-	g_prompt_flag = 2;
-}
-
-void	signal_handler()
-{
-	struct sigaction	sa;
-	
-	// Handle SIGINT (CTRL-C)
-	sa.sa_handler = handle_sigint;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGINT, &sa, NULL);
-	// Handle SIGQUIT (CTRL-\)
-	sa.sa_handler = handle_sigquit;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGQUIT, &sa, NULL);
-}
-
-
 
 // void	handle_sigint(int sig)
 // {
 // 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 // 	rl_on_new_line();
 // 	rl_replace_line("", 0);
-// 	g_signal = sig;
+// 	g_signal_flag = sig;
 // }
 
-// void	handle_heredoc_sigint(int sig)
-// {
-// 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
-// 	rl_on_new_line();
-// 	rl_replace_line("", 0);
-// 	g_signal = sig;
-// }
 
-// void	handle_child_sigint(int sig)
-// {
-// 	rl_on_new_line();
-// 	rl_replace_line("", 0);
-// 	g_signal = sig;
-// }
 
 // void	handle_sigquit(int sig)
 // {
 // 	(void)sig;
 // 	rl_on_new_line();
 // 	rl_replace_line("", 0);
+// 	rl_redisplay();
 // }
 
-// void	set_signals(int type)
-// {
-// 	if (type == MAIN)
-// 	{
-// 		signal(SIGINT, handle_sigint);
-// 		signal(SIGQUIT, SIG_IGN);
-// 	}
-// 	else if (type == CHILD)
-// 	{
-// 		signal(SIGINT, handle_child_sigint);
-// 		signal(SIGQUIT, handle_sigquit);
-// 	}
-// 	else if (type == HEREDOC)
-// 	{
-// 		signal(SIGINT, handle_heredoc_sigint);
-// 		signal(SIGQUIT, SIG_IGN);
-// 	}
-// 	else if (type == WAIT)
-// 	{
-// 		signal(SIGINT, SIG_IGN);
-// 		signal(SIGQUIT, handle_sigquit);
-// 	}
-// }
+void	set_signals_main()
+{
+	// struct sigaction	sa;
+	
+	// // Handle SIGINT (CTRL-C)
+	// sa.sa_handler = handle_sigint;
+	// sa.sa_flags = SA_RESTART;
+	// sigemptyset(&sa.sa_mask);
+	// sigaction(SIGINT, &sa, NULL);
+	// // Handle SIGQUIT (CTRL-\)
+	// sa.sa_handler = handle_sigquit;
+	// sa.sa_flags = SA_RESTART;
+	// sigemptyset(&sa.sa_mask);
+	// sigaction(SIGQUIT, &sa, NULL);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
+}
+////////////////////////////////////////////////////////////////////////////////////

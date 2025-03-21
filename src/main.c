@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:35:58 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/21 23:27:38 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 // aa==vv
 // echo $aa
 
-volatile sig_atomic_t g_prompt_flag = 0;
+volatile sig_atomic_t g_signal_flag = 0;
 
 int	main(int argc, char **argv, char **env)
 {
@@ -45,7 +45,7 @@ int	main(int argc, char **argv, char **env)
 				STDOUT_FILENO), EXIT_FAILURE);
 	if (!init_data(&data, env))
 		return (EXIT_FAILURE);
-	signal_handler();
+	set_signals_main();
 	while (1)
 	{
 		///////////////

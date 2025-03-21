@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:30:31 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/21 23:27:32 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+#include <sys/ioctl.h>
 
 # define SUCCESS 1
 # define ERROR 0
@@ -39,7 +40,7 @@
 //# define ERROR_CODE_INVALID_VAR_NAME 10
 //# define ERROR_CODE_NO_PATH 11
 
-extern volatile sig_atomic_t	g_prompt_flag;
+extern volatile sig_atomic_t	g_signal_flag;
 
 # define MAX_COMMANDS 265 // 128
 
@@ -120,11 +121,14 @@ t_cmd							*init_cmd(void);
 int								init_data(t_data *data, char **env);
 
 // signals
-void							signal_handler();
-void							set_child_signals(void);
-void							set_heredoc_signals(void);
-// void							signal_handler(t_data data);
-void							handle_sigint(int sig);
+void						set_signals_main();
+void	set_signals_heredoc();
+void	set_signals_child();
+
+// void							set_child_signals(void);
+// void							set_heredoc_signals(void);
+// // void							signal_handler(t_data data);
+// void							handle_sigint(int sig);
 
 // tokenization
 t_token							**split_to_tokens(const char *str,

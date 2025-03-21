@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:33:11 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/21 23:29:36 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,6 +266,7 @@ int	prepare_heredoc(t_cmd *cmd)
 	int		tmp_fd;
 	int		infile_fd;
 
+	set_signals_heredoc();
 	// Створюємо унікальний файл для here-doc
 	tmp_fd = create_unique_tmpfile(tmp_filename, sizeof(tmp_filename));
 	if (tmp_fd == -1)
