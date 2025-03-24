@@ -3,18 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:24:48 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/24 14:37:45 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-///bin/env | grep "SHLVL" (2)
+/// bin/env | grep "SHLVL" (2)
 
-int	increment_shlvl(t_data *data) //need to fix (should be 2 in the beginnig)
+void	initialize_state(t_tokenizer_state *state, t_token **tokens)
+{
+	state->i = 0;
+	state->j = 0;
+	state->k = 0;
+	state->index = 0;
+	state->inside_quotes = 0;
+	state->quote_type = 0;
+	state->buffer_size = 64;
+	state->buffer = ft_calloc(state->buffer_size, sizeof(char));
+	if (!state->buffer)
+	{
+		perror("calloc");
+		return ;
+	}
+	state->tokens = tokens;
+}
+t_cmd	*init_new_cmd(void)
+{
+	t_cmd *cmd;
+	
+	cmd = ft_calloc(1, sizeof(t_cmd));
+	if (!cmd)
+		return (perror("calloc"), NULL);
+	cmd->args = NULL;
+	cmd->input_redirects = NULL;
+	cmd->output_redirects = NULL;
+	cmd->append_redirects = NULL;
+	cmd->heredoc_delimiter = NULL;
+	cmd->next = NULL;
+	return (cmd);
+}
+
+int	increment_shlvl(t_data *data) // need to fix (should be 2 in the beginnig)
 {
 	int		i;
 	int		shlvl_value;
@@ -34,8 +67,9 @@ int	increment_shlvl(t_data *data) //need to fix (should be 2 in the beginnig)
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
 			if (!new_shlvl)
 				return (free(shlvl_str), ERROR);
-			return (/*free(shlvl_str),*//* free(data->env[i]),*/
-				data->env[i] = new_shlvl, SUCCESS);
+			return (/*free(shlvl_str),*/ /* free(data->env[i]),*/
+					data->env[i] = new_shlvl,
+					SUCCESS);
 		}
 		i++;
 	}
@@ -43,7 +77,7 @@ int	increment_shlvl(t_data *data) //need to fix (should be 2 in the beginnig)
 		SUCCESS);
 }
 
-//static char	**copy_env(char **env)
+// static char	**copy_env(char **env)
 //{
 //	int		i;
 //	int		j;
@@ -72,23 +106,20 @@ int	increment_shlvl(t_data *data) //need to fix (should be 2 in the beginnig)
 int	init_data(t_data *data, char **env)
 {
 	int	shlvl;
-	
 
-	 data->env = env;
-	//data->env = copy_env(env);
-	//if (!data->env)
+	data->env = env;
+	// data->env = copy_env(env);
+	// if (!data->env)
 	//	return (ERROR);
 	data->export_env = data->env;
 	shlvl = increment_shlvl(data);
-		if (!shlvl)
+	if (!shlvl)
 	{
 		perror("init");
 		return (ERROR);
 	}
-
 	data->exit_status = 0;
 	data->input = NULL;
 	data->pwd_p = NULL;
-	
 	return (SUCCESS);
 }

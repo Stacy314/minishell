@@ -6,11 +6,30 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 16:45:34 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 14:36:50 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	debug_print_tokens(t_token **tokens)
+{
+	int	i;
+
+	if (!tokens)
+	{
+		printf("No tokens (tokens == NULL)\n");
+		return ;
+	}
+	i = 0;
+	while (tokens[i])
+	{
+		printf("Token[%d]: Type = %d, Value = \"%s\", Index = %d\n", i,
+			tokens[i]->type, tokens[i]->value, tokens[i]->index);
+		i++;
+	}
+	printf("End of tokens (null)\n");
+}
 
 t_token	*create_token(const char *value, t_token_type type, int index)
 {
@@ -34,214 +53,84 @@ t_token	*create_token(const char *value, t_token_type type, int index)
 	return (new);
 }
 
-int	handle_redirection(const char *str, int j, t_token **tokens, int *i,
-		int *index)
+int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 {
-	if (str[j] == '>' || str[j] == '<')
+	char	*expanded;
+	size_t	len;
+
+	if (str[state->j] == '$' && state->quote_type != '\'')
 	{
-		if (str[j] == '>' && str[j + 1] == '>')
+		expanded = expand_variable(str, &state->j, data);
+		if (!expanded || !*expanded)
 		{
-			tokens[*i] = create_token(">>", APPEND, (*index)++);
-			//if (!tokens[*i])
-			//{
-			//	perror("failed create token");
-			//	return (-1);
-			//}
-			j += 2;
+			data->exit_status = 1;
+			return (free(expanded), -1);
 		}
-		else if (str[j] == '<' && str[j + 1] == '<')
+		len = ft_strlen(expanded);
+		while (state->k + len >= (size_t)state->buffer_size)
 		{
-			tokens[*i] = create_token("<<", HEREDOC, (*index)++);
-			//if (!tokens[*i])
-			//{
-			//	perror("failed create token");
-			//	return (-1);
-			//}
-			j += 2;
+			if (expand_buffer(state) == -1)
+				return (free(expanded), -1);
 		}
-		else if (str[j] == '>')
-		{
-			tokens[*i] = create_token(">", REDIRECT_OUT, (*index)++);
-			//if (!tokens[*i])
-			//{
-			//	perror("failed create token");
-			//	return (-1);
-			//}
-			j++;
-		}
-		else if (str[j] == '<')
-		{
-			tokens[*i] = create_token("<", REDIRECT_IN, (*index)++);
-			//if (!tokens[*i])
-			//{
-			//	perror("failed create token");
-			//	return (-1);
-			//}
-			j++;
-		}
-		(*i)++;
+		ft_strlcpy(&state->buffer[state->k], expanded, state->buffer_size
+			- state->k);
+		state->k += len;
+		free(expanded);
+		// state->j++;
+		return (1);
 	}
-	return (j);
+	return (0);
+}
+
+int	handle_redirection(t_tokenizer_state *state, const char *str)
+{
+	if (str[state->j] == '>' && str[state->j + 1] == '>')
+		return (add_redirect_token(state, ">>", APPEND, 2));
+	else if (str[state->j] == '<' && str[state->j + 1] == '<')
+		return (add_redirect_token(state, "<<", HEREDOC, 2));
+	else if (str[state->j] == '>')
+		return (add_redirect_token(state, ">", REDIRECT_OUT, 1));
+	else if (str[state->j] == '<')
+		return (add_redirect_token(state, "<", REDIRECT_IN, 1));
+	return (0);
+}
+
+int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str)
+{
+	if (is_quote(str[state->j]) && (!state->inside_quotes
+			|| str[state->j] == state->quote_type))
+		return (update_quote_state(state, str[state->j]));
+	if (!state->inside_quotes && is_redirect(str[state->j]))
+	{
+		if (state->k > 0 && flush_word_before_redirect(state) == -1)
+			return (-1);
+		if (handle_redirection(state, str) == -1)
+			return (-1);
+		return (1);
+	}
+	return (0);
 }
 
 t_token	**split_to_tokens(const char *str, t_data *data)
 {
-	t_token	**tokens;
-	int		k;
-	int		inside_quotes;
-	char	quote_type;
-	size_t	len;
-	char	*expanded;
-	int		capacity;
-	int		i;
-	int		j;
-	int		index;
+	t_tokenizer_state	state;
+	t_token				**tokens;
 
-	char buffer[1024]; // realloc wrapper function to continuously increase size for every additional export
 	if (!str || ft_strlen(str) == 0)
 		return (NULL);
-	capacity = ft_strlen(str) + 1;
-	tokens = ft_calloc(capacity, sizeof(t_token *));
+	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
 	if (!tokens)
-	{
-		//free(buffer);
-		perror("calloc");
+		return (perror("calloc"), NULL);
+	initialize_state(&state, tokens);
+	if (tokenize_loop(str, &state, tokens, data) == -1)
 		return (NULL);
-	}
-	i = 0;
-	j = 0;
-	index = 0;
-	while (str[j])
+	if (state.inside_quotes)
 	{
-		while (str[j] && (str[j] == ' ' || str[j] == '	'))
-			j++;
-		if (str[j] == '\0')
-			break ;
-		k = 0;
-		inside_quotes = 0;
-		quote_type = 0;
-		if (str[j] == '&' && str[j + 1] == '&')
-		{
-			tokens[i++] = create_token("&&", LOGICAL_AND, index++);
-			//if (!tokens[i])
-			//{
-			//	perror("failed create token");
-			//	return (NULL);
-			//}
-			j += 2;
-			continue ;
-		}
-		if (str[j] == '|' && str[j + 1] == '|')
-		{
-			tokens[i++] = create_token("||", LOGICAL_OR, index++);
-			//if (!tokens[i])
-			//{
-			//	perror("failed create token");
-			//	return (NULL);
-			//}
-			j += 2;
-			continue ;
-		}
-		if (str[j] == '|')
-		{
-			tokens[i] = create_token("|", PIPE, index++);
-			//if (!tokens[i])
-			//{
-			//	perror("failed create token");
-			//	return (NULL);
-			//}
-			i++;
-			j++;
-			continue ;
-		}
-		if (!inside_quotes && (str[j] == '>' || str[j] == '<'))
-		{
-			j = handle_redirection(str, j, tokens, &i, &index);
-			if (j == -1)
-			{
-				return (NULL);
-			}
-			continue ;
-		}
-		while (str[j] && (!ft_isspace((unsigned char)str[j]) || inside_quotes))
-		{
-			if (inside_quotes && str[j] == '|')
-			{
-				buffer[k++] = str[j++];
-				continue ;
-			}
-			if ((str[j] == '\'' || str[j] == '\"') && (!inside_quotes
-					|| str[j] == quote_type))
-			{
-				if (!inside_quotes)
-				{
-					inside_quotes = 1;
-					quote_type = str[j];
-				}
-				else if (inside_quotes && str[j] == quote_type)
-				{
-					inside_quotes = 0;
-					quote_type = 0;
-				}
-				j++;
-				continue ;
-			}
-			if (!inside_quotes && (str[j] == '>' || str[j] == '<'))
-			{
-				if (k > 0)
-				{
-					buffer[k] = '\0';
-					tokens[i++] = create_token(buffer, WORD, index++);
-					//if (!tokens[i])
-					//{
-					//	perror("failed create token");
-					//	return (NULL);
-					//}
-					k = 0;
-				}
-				j = handle_redirection(str, j, tokens, &i, &index);
-				continue ;
-			}
-			if (str[j] == '$' && quote_type != '\'')
-			{
-				expanded = expand_variable(str, &j, data);
-				//if (!expanded || !*expanded)
-				//{
-				//	//data->exit_status = 1;
-				//	//free(expanded);
-				//	//return (NULL);
-				//}
-				len = ft_strlen(expanded);
-				if (k + len < sizeof(buffer))
-				{
-					ft_strlcpy(&buffer[k], expanded, sizeof(buffer) - k);
-					k += len;
-				}
-				free(expanded);
-				continue ;
-			}
-			if (k < (int)(sizeof(buffer) - 1))
-				buffer[k++] = str[j++];
-		}
-		if (inside_quotes)
-		{
-			write_error("minishell: syntax error: unclosed quotes\n");
-			free_tokens(tokens);
-			return (t_token **)(-1);
-		}
-		buffer[k] = '\0';
-		if (buffer[0] != '\0')
-			tokens[i++] = create_token(buffer, WORD, index++);
+		write_error("minishell: syntax error: unclosed quotes\n");
+		return (free_tokens(tokens), free(state.buffer), (t_token **)(-1));
 	}
-	if (i == 0)
-	{
-		free(tokens);
-		return (NULL);
-	}
-	tokens[i] = NULL;
-	// Debug print
-	// for (int i = 0; tokens[i] != NULL; i++)
-	//   printf("Token[%d]: Type: %d, Value: %s\n", i, tokens[i]->type,
-	// 	tokens[i]->value);
+	tokens[state.i] = NULL;
+	free(state.buffer);
+	// debug_print_tokens(tokens);
 	return (tokens);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 23:27:32 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/24 14:36:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@
 # include <stdbool.h>
 # include <stdlib.h>
 # include <string.h>
+# include <sys/ioctl.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-#include <sys/ioctl.h>
 
 # define SUCCESS 1
 # define ERROR 0
@@ -67,6 +67,19 @@ typedef struct s_token
 	int							index;
 }								t_token;
 
+typedef struct s_tokenizer_state
+{
+	int							i;
+	int							j;
+	int							k;
+	int							index;
+	int							inside_quotes;
+	int							buffer_size;
+	char						*buffer;
+	char						quote_type;
+	t_token						**tokens;
+}								t_tokenizer_state;
+
 typedef struct s_data
 {
 	int some_value; // need to delete
@@ -88,15 +101,10 @@ typedef struct s_cmd
 	char						**output_redirects;
 	char						**append_redirects;
 	char						**heredoc_delimiter;
-	int 						heredoc_fd;
-	// int		pipe_in;
-	// int		pipe_out;
-	// t_data *data; // delete
-
-	// struct s_cmd	*prev;
+	int							heredoc_fd;
 }								t_cmd;
-int	prepare_heredoc(t_cmd *cmd);
-// void				free_env(char **env);
+
+int								prepare_heredoc(t_cmd *cmd);
 void							apply_redirections(t_cmd *cmd, t_data *data);
 
 void							write_error(const char *format, ...);
@@ -117,13 +125,15 @@ int								ft_str_only_spaces(const char *str);
 
 // initialization
 t_cmd							*init_cmd(void);
-// t_data				*init_data(t_data *data, char **env);
 int								init_data(t_data *data, char **env);
+void							initialize_state(t_tokenizer_state *state,
+									t_token **tokens);
+t_cmd							*init_new_cmd(void);
 
 // signals
-void						set_signals_main();
-void	set_signals_heredoc();
-void	set_signals_child();
+void							set_signals_main(void);
+void							set_signals_heredoc(void);
+void							set_signals_child(void);
 
 // void							set_child_signals(void);
 // void							set_heredoc_signals(void);
@@ -131,16 +141,63 @@ void	set_signals_child();
 // void							handle_sigint(int sig);
 
 // tokenization
+int								handle_expansion(t_tokenizer_state *state,
+									const char *str, t_data *data);
+int								handle_quotes_and_redirects(t_tokenizer_state *state,
+									const char *str);
+int								flush_buffer_to_token(t_tokenizer_state *state);
+int								is_redirect(char c);
+int								is_quote(char c);
+int								expand_buffer(t_tokenizer_state *state);
+void							*append_char_to_buffer(t_tokenizer_state *state,
+									char c);
+t_token							*create_token(const char *value,
+									t_token_type type, int index);
 t_token							**split_to_tokens(const char *str,
 									t_data *data);
 void							free_tokens(t_token **tokens);
-int								handle_redirection(const char *str, int j,
-									t_token **tokens, int *i, int *index);
+int								handle_redirection(t_tokenizer_state *state,
+									const char *str);
+void							skip_spaces(const char *str,
+									t_tokenizer_state *state);
+int								is_logical_operator(const char *str,
+									t_tokenizer_state *state);
+int								is_pipe_operator(const char *str,
+									t_tokenizer_state *state);
+int								handle_token_word(t_tokenizer_state *state,
+									const char *str, t_data *data);
+void							*cleanup_and_null(t_token **tokens,
+									t_tokenizer_state *state);
+int								tokenize_loop(const char *str,
+									t_tokenizer_state *state, t_token **tokens,
+									t_data *data);
+int								update_quote_state(t_tokenizer_state *state,
+									char c);
+int								flush_word_before_redirect(t_tokenizer_state *state);
+int								add_redirect_token(t_tokenizer_state *state,
+									const char *symbol, t_token_type type,
+									int advance);
 
 // parsing
+int								parse_redirects(t_cmd *cmd, t_token *token,
+									t_token_type type);
+char							**append_to_args(char **args, char *new_arg);
+int								build_command_list(t_cmd **head,
+									t_token **tokens, t_data *data, int *i);
+int								fill_cmd(t_cmd *cmd, t_token **tokens,
+									t_data *data, int *i);
+int								handle_redirect(t_cmd *cmd, t_token **tokens,
+									t_data *data, int *i);
+int								is_redirect_token(t_token *token);
+int								check_initial_syntax_errors(t_token **tokens,
+									t_data *data);
+char							***get_redirect_target(t_cmd *cmd,
+									t_token_type type);
+int								initialize_redirect_array(char ***redirects,
+									const char *value);
+int								append_redirect_value(char ***redirects,
+									const char *value);
 t_cmd							*parse_tokens(t_token **tokens, t_data *data);
-// void				parse_redirects(t_cmd *cmd, t_token *token,
-//						t_token_type type);
 
 // builtins
 void							builtin_echo(t_cmd *cmd, t_data *data);
@@ -157,7 +214,6 @@ int								check_cd_path(const char *dest_path,
 									t_data *data);
 int								find_env_var(char **env, const char *var);
 int								is_option(const char *arg);
-char							*skip_spaces(char *str);
 int								is_valid_identifier(const char *arg);
 bool							is_numeric(const char *str);
 long							ft_atol(const char *str, int *error);
@@ -185,6 +241,6 @@ char							*expand_variable(const char *str, int *j,
 									t_data *data);
 void							handle_input_redirect(t_cmd *cmd);
 
-int	ft_strcmp(const char *s1, const char *s2);
+int								ft_strcmp(const char *s1, const char *s2);
 
 #endif
