@@ -1,0 +1,10 @@
+tmp_path_test1/test1.c: No such file or directory
+gcc: error: tmp_path_test1/test1.c: Нет такого файла или каталога
+gcc: fatal error: no input files
+compilation terminated.
+tmp_path_test2/test2.c: No such file or directory
+gcc: error: tmp_path_test2/test2.c: Нет такого файла или каталога
+gcc: fatal error: no input files
+compilation terminated.
+a.out: command not found
+a.out: command not found

@@ -1,0 +1,208 @@
+==106934== Memcheck, a memory error detector
+==106934== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==106934== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==106934== Command: /home/mgallyam/Projects/minishell/minishell
+==106934== Parent PID: 106933
+==106934== 
+==106935== Invalid read of size 8
+==106935==    at 0x4052C3: handle_append_redirect (redirection.c:112)
+==106935==    by 0x40540C: execute_redirection (redirection.c:152)
+==106935==    by 0x4035BF: execute (execution.c:62)
+==106935==    by 0x401522: main (main.c:103)
+==106935==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==106935== 
+==106935== 
+==106935== Process terminating with default action of signal 11 (SIGSEGV)
+==106935==  Access not within mapped region at address 0x0
+==106935==    at 0x4052C3: handle_append_redirect (redirection.c:112)
+==106935==    by 0x40540C: execute_redirection (redirection.c:152)
+==106935==    by 0x4035BF: execute (execution.c:62)
+==106935==    by 0x401522: main (main.c:103)
+==106935==  If you believe this happened as a result of a stack
+==106935==  overflow in your program's main thread (unlikely but
+==106935==  possible), you can try to increase the size of the
+==106935==  main thread stack using the --main-stacksize= flag.
+==106935==  The main thread stack size used in this run was 8388608.
+==106935== 
+==106935== FILE DESCRIPTORS: 4 open (3 std) at exit.
+==106935== Open file descriptor 3: /tmp/tmp.3WGQW66sio/tmp_valgrind_out
+==106935==    <inherited from parent>
+==106935== 
+==106935== Open file descriptor 2: /dev/null
+==106935==    <inherited from parent>
+==106935== 
+==106935== Open file descriptor 1: /dev/null
+==106935==    <inherited from parent>
+==106935== 
+==106935== Open file descriptor 0:
+==106935==    <inherited from parent>
+==106935== 
+==106935== 
+==106935== HEAP SUMMARY:
+==106935==     in use at exit: 13,248 bytes in 87 blocks
+==106935==   total heap usage: 90 allocs, 3 frees, 13,322 bytes allocated
+==106935== 
+==106935== 3 bytes in 1 blocks are still reachable in loss record 1 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x4079F0: ft_strdup (ft_strdup.c:23)
+==106935==    by 0x401C34: create_token (tokenizer.c:50)
+==106935==    by 0x402B70: add_redirect_token (utils_tokenizer.c:199)
+==106935==    by 0x401E53: handle_redirection (tokenizer.c:93)
+==106935==    by 0x402990: tokenize_loop (utils_tokenizer.c:157)
+==106935==    by 0x402121: split_to_tokens (tokenizer.c:130)
+==106935==    by 0x4014A3: main (main.c:88)
+==106935== 
+==106935== 4 bytes in 1 blocks are still reachable in loss record 2 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x4079F0: ft_strdup (ft_strdup.c:23)
+==106935==    by 0x401C34: create_token (tokenizer.c:50)
+==106935==    by 0x40231B: flush_buffer_to_token (utils_tokenizer.c:44)
+==106935==    by 0x402875: handle_token_word (utils_tokenizer.c:133)
+==106935==    by 0x4029C8: tokenize_loop (utils_tokenizer.c:161)
+==106935==    by 0x402121: split_to_tokens (tokenizer.c:130)
+==106935==    by 0x4014A3: main (main.c:88)
+==106935== 
+==106935== 4 bytes in 1 blocks are still reachable in loss record 3 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x4079F0: ft_strdup (ft_strdup.c:23)
+==106935==    by 0x40309A: initialize_redirect_array (utils_parse_redirects.c:36)
+==106935==    by 0x403A77: parse_redirects (parser.c:177)
+==106935==    by 0x402D49: handle_redirect (utils_parser.c:30)
+==106935==    by 0x402E0D: fill_cmd (utils_parser.c:42)
+==106935==    by 0x402F2C: build_command_list (utils_parser.c:69)
+==106935==    by 0x403C06: parse_tokens (parser.c:216)
+==106935==    by 0x4014DE: main (main.c:95)
+==106935== 
+==106935== 8 bytes in 1 blocks are still reachable in loss record 5 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x407F0C: ft_strjoin (ft_strjoin.c:23)
+==106935==    by 0x403F41: increment_shlvl (initialization.c:51)
+==106935==    by 0x40406A: init_data (initialization.c:102)
+==106935==    by 0x4013DB: main (main.c:61)
+==106935== 
+==106935== 16 bytes in 1 blocks are still reachable in loss record 7 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x407C34: ft_calloc (ft_calloc.c:23)
+==106935==    by 0x401C00: create_token (tokenizer.c:44)
+==106935==    by 0x402B70: add_redirect_token (utils_tokenizer.c:199)
+==106935==    by 0x401E53: handle_redirection (tokenizer.c:93)
+==106935==    by 0x402990: tokenize_loop (utils_tokenizer.c:157)
+==106935==    by 0x402121: split_to_tokens (tokenizer.c:130)
+==106935==    by 0x4014A3: main (main.c:88)
+==106935== 
+==106935== 16 bytes in 1 blocks are still reachable in loss record 8 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x407C34: ft_calloc (ft_calloc.c:23)
+==106935==    by 0x401C00: create_token (tokenizer.c:44)
+==106935==    by 0x40231B: flush_buffer_to_token (utils_tokenizer.c:44)
+==106935==    by 0x402875: handle_token_word (utils_tokenizer.c:133)
+==106935==    by 0x4029C8: tokenize_loop (utils_tokenizer.c:161)
+==106935==    by 0x402121: split_to_tokens (tokenizer.c:130)
+==106935==    by 0x4014A3: main (main.c:88)
+==106935== 
+==106935== 16 bytes in 1 blocks are still reachable in loss record 9 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x407C34: ft_calloc (ft_calloc.c:23)
+==106935==    by 0x40305E: initialize_redirect_array (utils_parse_redirects.c:30)
+==106935==    by 0x403A77: parse_redirects (parser.c:177)
+==106935==    by 0x402D49: handle_redirect (utils_parser.c:30)
+==106935==    by 0x402E0D: fill_cmd (utils_parser.c:42)
+==106935==    by 0x402F2C: build_command_list (utils_parser.c:69)
+==106935==    by 0x403C06: parse_tokens (parser.c:216)
+==106935==    by 0x4014DE: main (main.c:95)
+==106935== 
+==106935== 48 bytes in 1 blocks are still reachable in loss record 11 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x407C34: ft_calloc (ft_calloc.c:23)
+==106935==    by 0x4041C6: init_new_cmd (initialization.c:113)
+==106935==    by 0x402ED2: build_command_list (utils_parser.c:62)
+==106935==    by 0x403C06: parse_tokens (parser.c:216)
+==106935==    by 0x4014DE: main (main.c:95)
+==106935== 
+==106935== 56 bytes in 1 blocks are still reachable in loss record 12 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x407C34: ft_calloc (ft_calloc.c:23)
+==106935==    by 0x4020D4: split_to_tokens (tokenizer.c:126)
+==106935==    by 0x4014A3: main (main.c:88)
+==106935== 
+==106935== 120 bytes in 1 blocks are still reachable in loss record 13 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x494A122: getdelim (iogetdelim.c:62)
+==106935==    by 0x485C410: readline (in /home/mgallyam/42_minishell_tester/utils/libintercept/libintercept.so)
+==106935==    by 0x401409: main (main.c:77)
+==106935== 
+==106935== 584 bytes in 1 blocks are still reachable in loss record 14 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x407C34: ft_calloc (ft_calloc.c:23)
+==106935==    by 0x4040FA: copy_env (initialization.c:72)
+==106935==    by 0x404018: init_data (initialization.c:96)
+==106935==    by 0x4013DB: main (main.c:61)
+==106935== 
+==106935== 4,096 bytes in 1 blocks are still reachable in loss record 16 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x4948BA3: _IO_file_doallocate (filedoalloc.c:101)
+==106935==    by 0x4957CDF: _IO_doallocbuf (genops.c:347)
+==106935==    by 0x4956CDB: _IO_file_underflow@@GLIBC_2.2.5 (fileops.c:485)
+==106935==    by 0x494A307: getdelim (iogetdelim.c:73)
+==106935==    by 0x485C410: readline (in /home/mgallyam/42_minishell_tester/utils/libintercept/libintercept.so)
+==106935==    by 0x401409: main (main.c:77)
+==106935== 
+==106935== 4,218 bytes in 71 blocks are still reachable in loss record 17 of 17
+==106935==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==106935==    by 0x4079F0: ft_strdup (ft_strdup.c:23)
+==106935==    by 0x40414A: copy_env (initialization.c:79)
+==106935==    by 0x404018: init_data (initialization.c:96)
+==106935==    by 0x4013DB: main (main.c:61)
+==106935== 
+==106935== LEAK SUMMARY:
+==106935==    definitely lost: 0 bytes in 0 blocks
+==106935==    indirectly lost: 0 bytes in 0 blocks
+==106935==      possibly lost: 0 bytes in 0 blocks
+==106935==    still reachable: 9,189 bytes in 83 blocks
+==106935==         suppressed: 4,059 bytes in 4 blocks
+==106935== 
+==106935== ERROR SUMMARY: 14 errors from 14 contexts (suppressed: 4 from 4)
+==106935== 
+==106935== 1 errors in context 1 of 14:
+==106935== Invalid read of size 8
+==106935==    at 0x4052C3: handle_append_redirect (redirection.c:112)
+==106935==    by 0x40540C: execute_redirection (redirection.c:152)
+==106935==    by 0x4035BF: execute (execution.c:62)
+==106935==    by 0x401522: main (main.c:103)
+==106935==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==106935== 
+--106935-- 
+--106935-- used_suppression:      4 libreadline /home/mgallyam/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,059 bytes in 4 blocks
+==106935== 
+==106935== ERROR SUMMARY: 14 errors from 14 contexts (suppressed: 4 from 4)
+==106934== 
+==106934== FILE DESCRIPTORS: 4 open (3 std) at exit.
+==106934== Open file descriptor 3: /tmp/tmp.3WGQW66sio/tmp_valgrind_out
+==106934==    <inherited from parent>
+==106934== 
+==106934== Open file descriptor 2: /dev/null
+==106934==    <inherited from parent>
+==106934== 
+==106934== Open file descriptor 1: /dev/null
+==106934==    <inherited from parent>
+==106934== 
+==106934== Open file descriptor 0:
+==106934==    <inherited from parent>
+==106934== 
+==106934== 
+==106934== HEAP SUMMARY:
+==106934==     in use at exit: 4,110 bytes in 7 blocks
+==106934==   total heap usage: 111 allocs, 104 frees, 18,091 bytes allocated
+==106934== 
+==106934== LEAK SUMMARY:
+==106934==    definitely lost: 0 bytes in 0 blocks
+==106934==    indirectly lost: 0 bytes in 0 blocks
+==106934==      possibly lost: 0 bytes in 0 blocks
+==106934==    still reachable: 0 bytes in 0 blocks
+==106934==         suppressed: 4,110 bytes in 7 blocks
+==106934== 
+==106934== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
+--106934-- 
+--106934-- used_suppression:      4 libreadline /home/mgallyam/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,110 bytes in 7 blocks
+==106934== 
+==106934== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)

@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/03/19 16:31:41 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/24 11:22:57 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,12 @@ int initialize_redirect_array(char ***redirects, const char *value)
 
 int append_redirect_value(char ***redirects, const char *value)
 {
-	int		count = 0;
+	int		count;
 	char	**new_array;
+	int		i;
 
+	count = 0;
+	i = 0;
 	while ((*redirects)[count])
 		count++;
 	new_array = ft_calloc(count + 2, sizeof(char *));
@@ -57,8 +60,11 @@ int append_redirect_value(char ***redirects, const char *value)
 		perror("ft_calloc");
 		return (ERROR);
 	}
-	for (int i = 0; i < count; i++)
+	while (i < count)
+	{
 		new_array[i] = (*redirects)[i];
+		i++;
+	}
 	new_array[count] = ft_strdup(value);
 	if (!new_array[count])
 	{

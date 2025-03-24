@@ -1,0 +1,2 @@
+строка 2: синтаксическая ошибка рядом с неожиданным маркером «>»
+строка 2: `/bin/cat Makefile > out >>out1 >out2 | /bin/cat << stop > out3 | /bin/ls > > | /bin/cat << file'

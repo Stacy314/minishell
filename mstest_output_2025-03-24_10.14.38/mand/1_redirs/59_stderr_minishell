@@ -1,0 +1,3 @@
+tmp_redir_out: No such file or directory
+cat: tmp_redir_out: Нет такого файла или каталога
+rm: невозможно удалить 'tmp_redir_out': Нет такого файла или каталога
