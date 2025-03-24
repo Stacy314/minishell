@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/24 14:38:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 18:10:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,3 +96,33 @@ void	free_cmd(t_cmd *cmd)
 //	}
 //	free(tokens);
 //}
+
+
+void	free_env_array(char **env)
+{
+	int	i;
+
+	if (!env)
+		return ;
+	i = 0;
+	while (env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
+}
+
+void	free_data(t_data *data)
+{
+	if (!data)
+		return ;
+	if (data->env)
+		free_env_array(data->env);
+	if (data->export_env && data->export_env != data->env)
+		free_env_array(data->export_env);
+	if (data->input)
+		free(data->input);
+	if (data->pwd_p)
+		free(data->pwd_p);
+}

@@ -6,13 +6,16 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/24 14:37:45 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 18:14:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include <readline/chardefs.h>
 
-/// bin/env | grep "SHLVL" (2)
+// /bin/env | grep "SHLVL" (2)
+
+int		g_shlvl = 1;
 
 void	initialize_state(t_tokenizer_state *state, t_token **tokens)
 {
@@ -33,8 +36,8 @@ void	initialize_state(t_tokenizer_state *state, t_token **tokens)
 }
 t_cmd	*init_new_cmd(void)
 {
-	t_cmd *cmd;
-	
+	t_cmd	*cmd;
+
 	cmd = ft_calloc(1, sizeof(t_cmd));
 	if (!cmd)
 		return (perror("calloc"), NULL);
@@ -47,13 +50,14 @@ t_cmd	*init_new_cmd(void)
 	return (cmd);
 }
 
-int	increment_shlvl(t_data *data) // need to fix (should be 2 in the beginnig)
+int	increment_shlvl(t_data *data)
 {
 	int		i;
 	int		shlvl_value;
 	char	*new_shlvl;
 	char	*shlvl_str;
 
+	new_shlvl = NULL;
 	i = 0;
 	while (data->env[i])
 	{
@@ -65,11 +69,11 @@ int	increment_shlvl(t_data *data) // need to fix (should be 2 in the beginnig)
 			if (!shlvl_str)
 				return (ERROR);
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
+			//free(shlvl_str);
 			if (!new_shlvl)
-				return (free(shlvl_str), ERROR);
-			return (/*free(shlvl_str),*/ /* free(data->env[i]),*/
-					data->env[i] = new_shlvl,
-					SUCCESS);
+				return (ERROR);
+			data->env[i] = new_shlvl;
+			return (SUCCESS);
 		}
 		i++;
 	}
@@ -77,43 +81,46 @@ int	increment_shlvl(t_data *data) // need to fix (should be 2 in the beginnig)
 		SUCCESS);
 }
 
-// static char	**copy_env(char **env)
-//{
-//	int		i;
-//	int		j;
-//	char	**env_copy;
+char	**copy_env(char **env)
+{
+	int		i;
+	int		count;
+	char	**new_env;
 
-//	i = 0;
-//	while (env[i])
-//		i++;
-//	env_copy = ft_calloc(sizeof(char *) * (i + 1), 1);
-//	if (!env_copy)
-//		return (NULL);
-//	env_copy[i] = NULL;
-//	j = 0;
-//	while (j < i)
-//	{
-//		env_copy[j] = ft_strdup(env[j]);
-//		if (!env_copy[j])
-//		{
-//			free_env(env_copy);
-//			return (NULL);
-//		}
-//		j++;
-//	}
-//	return (env_copy);
-//}
+	i = 0;
+	count = 0;
+	while (env[count])
+		count++;
+	new_env = ft_calloc(sizeof(char *) * (count + 1), 1);
+	if (!new_env)
+		return (NULL);
+	while (i < count)
+	{
+		new_env[i] = ft_strdup(env[i]);
+		if (!new_env[i])
+		{
+			while (--i >= 0)
+				free(new_env[i]);
+			free(new_env);
+			return (NULL);
+		}
+		i++;
+	}
+	new_env[i] = NULL;
+	return (new_env);
+}
+
 int	init_data(t_data *data, char **env)
 {
-	int	shlvl;
-
-	data->env = env;
-	// data->env = copy_env(env);
-	// if (!data->env)
-	//	return (ERROR);
+	data->env = copy_env(env);
+	if (!data->env)
+	{
+		perror("init");
+		return (ERROR);
+	}
 	data->export_env = data->env;
-	shlvl = increment_shlvl(data);
-	if (!shlvl)
+	data->shlvl = increment_shlvl(data);
+	if (!data->shlvl)
 	{
 		perror("init");
 		return (ERROR);

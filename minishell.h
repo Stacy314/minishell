@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/24 14:36:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 18:04:02 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 //# define ERROR_CODE_NO_PATH 11
 
 extern volatile sig_atomic_t	g_signal_flag;
+extern int shlvl;
 
 # define MAX_COMMANDS 265 // 128
 
@@ -86,6 +87,7 @@ typedef struct s_data
 	char						**env;
 	char						**export_env;
 	int							exit_status;
+	int							shlvl;
 	// struct s_cmd	*cmd;
 	char *pwd; //
 	// pid_t			last_command_pid;
@@ -109,7 +111,7 @@ void							apply_redirections(t_cmd *cmd, t_data *data);
 
 void							write_error(const char *format, ...);
 void							free_array(char **arr);
-
+void	free_data(t_data *data);
 int								check_permissions(char *cmd);
 
 // delete after
@@ -168,9 +170,6 @@ int								handle_token_word(t_tokenizer_state *state,
 									const char *str, t_data *data);
 void							*cleanup_and_null(t_token **tokens,
 									t_tokenizer_state *state);
-int								tokenize_loop(const char *str,
-									t_tokenizer_state *state, t_token **tokens,
-									t_data *data);
 int								update_quote_state(t_tokenizer_state *state,
 									char c);
 int								flush_word_before_redirect(t_tokenizer_state *state);

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/24 14:33:12 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 17:13:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 // need to fix:
 // cat << $USER (wrong expansion)
 //"" (: command not found, EC - 127)
-// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
-// echo '' "" (print space)
+// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end) 84
+// echo '' "" (print space) 94
 // exit "" (bash: exit: : numeric argument required, EC - 2)
+
+// /bin/echo $USER$TESTNOTFOUND$HOME$
+// /bin/echo $USER$TESTNOTFOUND$HOME$WTF$PWD
 
 // cat <minishell.h|ls
 
@@ -36,9 +39,7 @@
 // export A='"echo hi"'
 //$A  ("echo: command not found)
 
-// void	debug_print_cmd(t_cmd *cmd)
-// {
-// 	int	i;
+//echo '' -n 
 
 void	debug_print_cmd(t_cmd *cmd)
 {
@@ -105,58 +106,6 @@ void	debug_print_cmd(t_cmd *cmd)
 	}
 }
 
-//int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
-//{
-//	char	***redirects;
-//	int		count;
-//	char	**new_redirects;
-
-//	//(void)token;
-//	count = 0;
-//	if (type == REDIRECT_IN)
-//		redirects = &cmd->input_redirects;
-//	else if (type == REDIRECT_OUT)
-//		redirects = &cmd->output_redirects;
-//	else if (type == APPEND)
-//		redirects = &cmd->append_redirects;
-//	else if (type == HEREDOC)
-//		redirects = &cmd->heredoc_delimiter;
-//	else
-//	{
-//		return (SUCCESS);
-//	}
-//	if (!*redirects)
-//	{
-//		*redirects = ft_calloc(2, sizeof(char *));
-//		if (!*redirects)
-//		{
-//			perror("ft_calloc");
-//			return (ERROR);
-//		}
-//		(*redirects)[0] = ft_strdup(token->value);
-//		(*redirects)[1] = NULL;
-//		// return (ERROR);
-//	}
-//	while ((*redirects)[count])
-//		count++;
-//	new_redirects = realloc(*redirects, (count + 2) * sizeof(char *));
-//		// forbidden func
-//	if (!new_redirects)
-//	{
-//		perror("realloc");
-//		return (ERROR);
-//	}
-//	*redirects = new_redirects;
-//	(*redirects)[count] = ft_strdup(token->value);
-//	if (!(*redirects)[count])
-//	{
-//		perror("ft_strdup");
-//		return (ERROR);
-//	}
-//	(*redirects)[count + 1] = NULL;
-//	return (SUCCESS);
-//}
-
 int	check_initial_syntax_errors(t_token **tokens, t_data *data)
 {
 	int	i;
@@ -207,7 +156,7 @@ char	**append_to_args(char **args, char *new_arg)
 		while (args[len])
 			len++;
 	}
-	new_args = ft_calloc(sizeof(char *) * (len + 2), 1); //
+	new_args = ft_calloc(sizeof(char *) * (len + 2), 1);
 	if (!new_args)
 		return (perror("calloc"), NULL);
 	i = 0;
@@ -236,5 +185,6 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 		free_cmd(head);
 		return (NULL);
 	}
+	//debug_print_cmd(head);
 	return (head);
 }

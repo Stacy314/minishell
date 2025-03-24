@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expantion.c                                        :+:      :+:    :+:   */
+/*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 22:49:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:49:57 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 //> $notexists echo "haha" (bash: $notexists: ambiguous redirect, exit code 1)
 
 //$NOVAR (\n)
+
+//need protection 
 
 char	*expand_variable(const char *str, int *j, t_data *data)
 {

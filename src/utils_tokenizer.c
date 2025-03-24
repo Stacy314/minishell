@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/24 14:26:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 17:12:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ void	free_tokens(t_token **tokens)
 	while (tokens[i])
 	{
 		free(tokens[i]->value);
+		//if (tokens[i]->value)
+		//	free(tokens[i]->value); 
 		free(tokens[i]);
 		i++;
 	}
@@ -108,6 +110,22 @@ int	is_pipe_operator(const char *str, t_tokenizer_state *state)
 	return (0);
 }
 
+int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str)
+{
+	if (is_quote(str[state->j]) && (!state->inside_quotes
+			|| str[state->j] == state->quote_type))
+		return (update_quote_state(state, str[state->j]));
+	if (!state->inside_quotes && is_redirect(str[state->j]))
+	{
+		if (state->k > 0 && flush_word_before_redirect(state) == -1)
+			return (-1);
+		if (handle_redirection(state, str) == -1)
+			return (-1);
+		return (1);
+	}
+	return (0);
+}
+
 int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	int	result;
@@ -144,30 +162,6 @@ void	*cleanup_and_null(t_token **tokens, t_tokenizer_state *state)
 	return (NULL);
 }
 
-int	tokenize_loop(const char *str, t_tokenizer_state *state, t_token **tokens,
-		t_data *data)
-{
-	while (str[state->j])
-	{
-		skip_spaces(str, state);
-		if (str[state->j] == '\0')
-			break ;
-		if (is_logical_operator(str, state))
-			continue ;
-		if (is_pipe_operator(str, state))
-			continue ;
-		if (!state->inside_quotes && is_redirect(str[state->j]))
-		{
-			flush_buffer_to_token(state);
-			if (handle_redirection(state, str) == -1)
-				return (cleanup_and_null(tokens, state), -1);
-			continue ;
-		}
-		if (handle_token_word(state, str, data) == -1)
-			return (cleanup_and_null(tokens, state), -1);
-	}
-	return (0);
-}
 
 int	update_quote_state(t_tokenizer_state *state, char c)
 {
@@ -199,16 +193,4 @@ int	flush_word_before_redirect(t_tokenizer_state *state)
 	return (0);
 }
 
-int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
-		t_token_type type, int advance)
-{
-	state->tokens[state->i] = create_token(symbol, type, (state->index)++);
-	if (!state->tokens[state->i])
-	{
-		perror("failed create token");
-		return (-1);
-	}
-	state->j += advance;
-	state->i++;
-	return (0);
-}
+

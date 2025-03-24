@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 16:46:29 by apechkov          #+#    #+#             */
-/*   Updated: 2024/04/19 16:46:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 16:06:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,3 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	res[i] = '\0';
 	return (res);
 }
-
-/*int	main(void)
-{
-    char *s1 = "Hello, ";
-    char *s2 = "world!";
-    char *result = ft_strjoin(s1, s2);
-
-    if (result != NULL)
-    {
-        printf("Concatenated string: %s\n", result);
-        free(result);
-    }
-    else
-        printf("Memory allocation failed\n");
-    return 0;
-}*/
