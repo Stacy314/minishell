@@ -3,17 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 13:33:27 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 23:27:38 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// Global flag for prompt control
-// volatile sig_atomic_t g_prompt_flag = 0;
+//NEED TO FIX:
+//expot a
+//_ value
+//pwd (don't call getcwd every time)
+//signals
+
+//interactive/ non-int.
 
 // Wildcards * (print error)
 
@@ -26,27 +31,7 @@
 // aa==vv
 // echo $aa
 
-void	free_env(char **env)
-{
-	int	i;
-
-	i = 0;
-	if (!env)
-		return ;
-	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
-}
-
-pid_t	g_main_pid;
-
-void	init_main_pid(void)
-{
-	g_main_pid = getpid();
-}
+volatile sig_atomic_t g_signal_flag = 0;
 
 int	main(int argc, char **argv, char **env)
 {
@@ -60,8 +45,7 @@ int	main(int argc, char **argv, char **env)
 				STDOUT_FILENO), EXIT_FAILURE);
 	if (!init_data(&data, env))
 		return (EXIT_FAILURE);
-	init_main_pid();
-	signal_handler();
+	set_signals_main();
 	while (1)
 	{
 		///////////////
@@ -76,12 +60,22 @@ int	main(int argc, char **argv, char **env)
 		///////////////
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), free_env(data.env), data.exit_status);
-		if (!input || *input == '\0' || ft_str_only_spaces(input))
+			return (printf("exit\n")/*, free_env(data.env)*/, data.exit_status);
+		if (*input == '\0' || ft_str_only_spaces(input)) //need to check
 		{
 			free(input);
 			continue ;
 		}
+		// if (g_prompt_flag == 1)
+        // {
+        //     data.exit_status = 130;
+        //     g_prompt_flag = 0;
+        // }
+		// if (g_prompt_flag == 2)
+        // {
+        //     data.exit_status = 131;
+        //     g_prompt_flag = 0;
+        // }
 		data.input = input;
 		if (*input)
 			add_history(input);
@@ -105,7 +99,7 @@ int	main(int argc, char **argv, char **env)
 		free_tokens(tokens);
 		free_cmd(cmd);
 	}
-	free_env(data.env);
+	//free_env(data.env);
 	clear_history();
 	return (data.exit_status);
 }

@@ -6,11 +6,52 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:42:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 13:14:57 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//CTRL+C
+//CTRL+D
+//CTRL+\
+//CTRL+C, CTRL+C, CTRL+C, exit
+//CTRL+C, CTRL+C, CTRL+C, Ctrl+D
+
+//cat | ls # testar dando depois:
+//#- Enter
+//#- Ctrl+D
+//#- Ctrl+\
+//#- Ctrl+C
+
+//grep oi | ls # testar dando depois:
+//#- Enter + Ctrl+D
+//#- Ctrl+D
+//#- "oi" + Enter + Ctrl+D
+//#- Ctrl+\
+//#- Ctrl+C
+//#- "oi" + Enter + Ctrl+\
+
+//./test_files/loop.out # finalizar com:
+//#- Ctrl+C
+//#- Ctrl+\  -> workspaces: ^\Quit\n
+//#- Ctrl+D  -> não faz nada
+
+//./test_files/loop.out | ls
+//# finalizar com:
+//#- Ctrl+C
+//#- Ctrl+\
+//#- Ctrl+D
+
+//ls | ./test_files/loop.out
+//# finalizar com:
+//#- Ctrl+C
+//#- Ctrl+\
+//#- Ctrl+D
+
+//hello + Ctrl+C
+//# Check that the new line is empty
+
 
 // handle herdoc and child (ctrl + c)
 
@@ -18,28 +59,58 @@
 
 // print minishell twice
 
-void	set_child_signals(void)
+//bash: warning: here-document at line 7 delimited by end-of-file (heredoc ctrl+D)
+
+
+
+////////////////////////////
+void	handle_sigint_child(int sig)
 {
-	signal(SIGINT, SIG_DFL);  // повернути дефолтну дію
-	signal(SIGQUIT, SIG_DFL); // те саме
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	g_signal_flag = sig;
+}
+
+// void	handle_sigquit_child(int sig)
+// {
+// 	(void)sig;
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// }
+void	handle_sigquit_child(int sig)
+{
+	(void)sig;
+	printf("Quit (core dumped)\n");  //ioctl
+	g_signal_flag = sig;
+}
+
+
+void	set_signals_child(void) // need to fix
+{
+	// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
+	//write(STDOUT_FILENO, "\n", 1); // ???
+	signal(SIGINT, handle_sigint_child); // SIGINT = 2
+	signal(SIGQUIT, handle_sigquit_child); // SIGQUIT = 3 
 }
 
 ////////////////////////////
-static void	heredoc_sigint_handler(int sig)
+static void	handle_sigint_heredoc(int sig) //need to fix
 {
-	if (sig == SIGINT)
-	{
-		// Наприклад, надрукувати \n і вийти з кодом 130
-		// (залежить від того, як ви хочете обробляти exit-code)
-		write(STDOUT_FILENO, "\n", 1);
-		exit(130);
-	}
+
+	write(STDOUT_FILENO, "\n", 1);  //ioctl
+	// exit(130);
+	// ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay(); 
+	g_signal_flag = sig;
+
 }
 
-void	set_heredoc_signals(void)
+void	set_signals_heredoc(void)
 {
-	signal(SIGINT, heredoc_sigint_handler);
-	// Для Ctrl+\ можна ігнорувати:
+	signal(SIGINT, handle_sigint_heredoc);
 	signal(SIGQUIT, SIG_IGN);
 }
 
@@ -48,32 +119,37 @@ void	set_heredoc_signals(void)
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	printf("\n");
+	write(STDOUT_FILENO, "\n", 1); //ioctl
+	// ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	// g_prompt_flag = 1; //
-	// write(STDOUT_FILENO, "\nminishell$ ", 12);
+	g_signal_flag = sig; // 128 + 2 (SIGINT) = 130
 }
 
-void	handle_sigquit(int sig)
+// void	handle_sigquit(int sig)
+// {
+// 	(void)sig;
+// 	rl_on_new_line();
+// 	rl_replace_line("", 0);
+// 	rl_redisplay();
+// }
+
+void	set_signals_main()
 {
-	(void)sig;
-	printf("Quit: 3\n");
+	// struct sigaction	sa;
+	
+	// // Handle SIGINT (CTRL-C)
+	// sa.sa_handler = handle_sigint;
+	// sa.sa_flags = SA_RESTART;
+	// sigemptyset(&sa.sa_mask);
+	// sigaction(SIGINT, &sa, NULL);
+	// // Handle SIGQUIT (CTRL-\)
+	// sa.sa_handler = handle_sigquit;
+	// sa.sa_flags = SA_RESTART;
+	// sigemptyset(&sa.sa_mask);
+	// sigaction(SIGQUIT, &sa, NULL);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }
-
-void	signal_handler(void)
-{
-	struct sigaction	sa;
-
-	// Handle SIGINT (CTRL-C)
-	sa.sa_handler = handle_sigint;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGINT, &sa, NULL);
-	// Handle SIGQUIT (CTRL-\)
-	sa.sa_handler = handle_sigquit;
-	sa.sa_flags = SA_RESTART;
-	sigemptyset(&sa.sa_mask);
-	sigaction(SIGQUIT, &sa, NULL);
-}
+////////////////////////////////////////////////////////////////////////////////////

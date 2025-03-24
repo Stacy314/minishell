@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 23:35:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 23:27:32 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+#include <sys/ioctl.h>
 
 # define SUCCESS 1
 # define ERROR 0
@@ -39,11 +40,9 @@
 //# define ERROR_CODE_INVALID_VAR_NAME 10
 //# define ERROR_CODE_NO_PATH 11
 
-// extern volatile sig_atomic_t g_prompt_flag;
+extern volatile sig_atomic_t	g_signal_flag;
 
 # define MAX_COMMANDS 265 // 128
-
-extern pid_t		g_main_pid;
 
 //# define _DEFAULT_SOURSE
 
@@ -59,120 +58,133 @@ typedef enum e_token_type
 	LOGICAL_AND,
 	LOGICAL_OR,
 	END
-}					t_token_type;
+}								t_token_type;
 
 typedef struct s_token
 {
-	char			*value;
-	t_token_type	type;
-	int				index;
-}					t_token;
+	char						*value;
+	t_token_type				type;
+	int							index;
+}								t_token;
 
 typedef struct s_data
 {
 	int some_value; // need to delete
-	char			**env;
-	char			**export_env;
-	int				exit_status;
+	char						**env;
+	char						**export_env;
+	int							exit_status;
 	// struct s_cmd	*cmd;
 	char *pwd; //
 	// pid_t			last_command_pid;
-	char			*input;
-}					t_data;
+	char						*input;
+	char						*pwd_p;
+}								t_data;
 
 typedef struct s_cmd
 {
-	char			**args;
-	struct s_cmd	*next; // del
-	char			**input_redirects;
-	char			**output_redirects;
-	char			**append_redirects;
-	char			**heredoc_delimiter;
+	char						**args;
+	struct s_cmd *next; // del
+	char						**input_redirects;
+	char						**output_redirects;
+	char						**append_redirects;
+	char						**heredoc_delimiter;
+	int 						heredoc_fd;
 	// int		pipe_in;
 	// int		pipe_out;
-	//t_data *data; // delete
+	// t_data *data; // delete
 
 	// struct s_cmd	*prev;
-}					t_cmd;
+}								t_cmd;
+int	prepare_heredoc(t_cmd *cmd);
+// void				free_env(char **env);
+void							apply_redirections(t_cmd *cmd, t_data *data);
 
+void							write_error(const char *format, ...);
+void							free_array(char **arr);
 
-void free_env(char **env);
-void				apply_redirections(t_cmd *cmd, t_data *data);
-
-void				write_error(const char *format, ...);
-void				free_array(char **arr);
-
-int					check_permissions(char *cmd);
+int								check_permissions(char *cmd);
 
 // delete after
-void				print_cmd_list(t_cmd *cmd_list, size_t count);
+void							print_cmd_list(t_cmd *cmd_list, size_t count);
 // void print_data(t_data *data);
-char				*find_executable(const char *cmd, char **paths);
-char				*get_path_from_env(char **env);
-char				**split_path(const char *path);
-void				free_cmd(t_cmd *cmd);
-bool				contains_special_char(t_token **tokens, t_token_type type);
-int					ft_str_only_spaces(const char *str);
+char							*find_executable(const char *cmd, char **paths);
+char							*get_path_from_env(char **env);
+char							**split_path(const char *path);
+void							free_cmd(t_cmd *cmd);
+bool							contains_special_char(t_token **tokens,
+									t_token_type type);
+int								ft_str_only_spaces(const char *str);
 
 // initialization
-t_cmd				*init_cmd();
-//t_data				*init_data(t_data *data, char **env);
-int					init_data(t_data *data, char **env);
+t_cmd							*init_cmd(void);
+// t_data				*init_data(t_data *data, char **env);
+int								init_data(t_data *data, char **env);
 
 // signals
-void				signal_handler(void);
-void				set_child_signals(void);
-void				set_heredoc_signals(void);
+void						set_signals_main();
+void	set_signals_heredoc();
+void	set_signals_child();
+
+// void							set_child_signals(void);
+// void							set_heredoc_signals(void);
+// // void							signal_handler(t_data data);
+// void							handle_sigint(int sig);
 
 // tokenization
-t_token				**split_to_tokens(const char *str, t_data *data);
-void				free_tokens(t_token **tokens);
-int					handle_redirection(const char *str, int j, t_token **tokens,
-						int *i, int *index);
+t_token							**split_to_tokens(const char *str,
+									t_data *data);
+void							free_tokens(t_token **tokens);
+int								handle_redirection(const char *str, int j,
+									t_token **tokens, int *i, int *index);
 
 // parsing
-t_cmd				*parse_tokens(t_token **tokens, t_data *data);
-//void				parse_redirects(t_cmd *cmd, t_token *token,
+t_cmd							*parse_tokens(t_token **tokens, t_data *data);
+// void				parse_redirects(t_cmd *cmd, t_token *token,
 //						t_token_type type);
 
 // builtins
-void				builtin_echo(t_cmd *cmd, t_data *data);
-int					builtin_pwd(t_cmd *cmd, t_data *data);
-int					builtin_export(t_cmd *cmd, t_data *data);
-int					builtin_unset(t_cmd *cmd, t_data *data);
-int					builtin_env(t_data *data, t_cmd *cmd);
-int					builtin_exit(t_cmd *cmd, t_data *data);
-int					builtin_cd(t_cmd *cmd, t_data *data);
-char				**set_env_value(char **envp, const char *key,
-						const char *value);
-char				*get_env_value(char **env, const char *key);
-int					check_cd_path(const char *dest_path, t_data *data);
-int					find_env_var(char **env, const char *var);
-int					is_option(const char *arg);
-char				*skip_spaces(char *str);
-int					is_valid_identifier(const char *arg);
-bool				is_numeric(const char *str);
-long				ft_atol(const char *str, int *error);
-int					ft_isspace(int c);
+void							builtin_echo(t_cmd *cmd, t_data *data);
+int								builtin_pwd(t_cmd *cmd, t_data *data);
+int								builtin_export(t_cmd *cmd, t_data *data);
+int								builtin_unset(t_cmd *cmd, t_data *data);
+int								builtin_env(t_data *data, t_cmd *cmd);
+int								builtin_exit(t_cmd *cmd, t_data *data);
+int								builtin_cd(t_cmd *cmd, t_data *data);
+char							**set_env_value(char **envp, const char *key,
+									const char *value);
+char							*get_env_value(char **env, const char *key);
+int								check_cd_path(const char *dest_path,
+									t_data *data);
+int								find_env_var(char **env, const char *var);
+int								is_option(const char *arg);
+char							*skip_spaces(char *str);
+int								is_valid_identifier(const char *arg);
+bool							is_numeric(const char *str);
+long							ft_atol(const char *str, int *error);
+int								ft_isspace(int c);
 // char **set_env_value(char **envp, const char *key, const char *value);
-int					count_args(char **args);
-void				print_sorted_env(char **env);
-void				add_or_update_export(char *key, t_data *data);
+int								count_args(char **args);
+void							print_sorted_env(char **env);
+void							add_or_update_export(char *key, t_data *data);
 
 // execution
-void				execute(t_token **tokens, t_cmd *cmd, t_data *data,
-						char **env);
-int					execute_command(char *cmd, t_data *data, char **args,
-						char **env);
-void				execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data,
-						char **env);
-void				execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data,
-						char **env);
-int					execute_redirection(t_cmd *cmd, t_data *data, char **env);
-void				handle_heredoc(t_cmd *cmd);
+void							execute(t_token **tokens, t_cmd *cmd,
+									t_data *data, char **env);
+int								execute_command(char *cmd, t_data *data,
+									char **args, char **env);
+void							execute_pipeline(t_token **tokens, t_cmd *cmd,
+									t_data *data, char **env);
+void							execute_for_one(t_token **tokens, t_cmd *cmd,
+									t_data *data, char **env);
+int								execute_redirection(t_cmd *cmd, t_data *data,
+									char **env);
+void							handle_heredoc(t_cmd *cmd);
 
 // expantion
-char				*expand_variable(const char *str, int *j, t_data *data);
-void				handle_input_redirect(t_cmd *cmd);
+char							*expand_variable(const char *str, int *j,
+									t_data *data);
+void							handle_input_redirect(t_cmd *cmd);
+
+int	ft_strcmp(const char *s1, const char *s2);
 
 #endif

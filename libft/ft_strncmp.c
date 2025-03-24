@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 15:53:13 by apechkov          #+#    #+#             */
-/*   Updated: 2025/01/15 18:25:27 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/21 21:31:00 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n) //need to inprove
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t	i;
 
@@ -28,7 +28,3 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n) //need to inprove
 	}
 	return ((unsigned char)(s1[i]) - (unsigned char)(s2[i]));
 }
-//int main() 
-//{
-//	printf("%d", ft_strncmp("nn-nn", "-nn", 100));
-//}

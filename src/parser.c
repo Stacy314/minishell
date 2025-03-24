@@ -6,145 +6,110 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 13:45:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/24 13:23:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 // need to fix:
-
+//cat << $USER (wrong expansion)
 //"" (: command not found, EC - 127)
+// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end) 
+// echo '' "" (print space)
+// exit "" (bash: exit: : numeric argument required, EC - 2)
+
+// cat <minishell.h|ls
 
 // export a="s -lsa"
 //		l$a
 
-// echo hi | echo hi | (should open input or error)
+// echo hi | echo hi | (should open input)
 
-// cat <minishell.h|ls
+//$notexists | ls | $notexists
 
-// cat <<HEREDOC (we dont have HEREDOC)
+//> $notexists echo "haha" (bash: $notexists: ambiguous redirect)
 
-// exit "" (bash: exit: : numeric argument required, EC - 2)
+//export A="haha         123"
+//echo $A  (should print haha 123 with one space)
 
-//&& and || with parenthesis for priorities (no segfault, maybe print error)
+//export A='"echo hi"'
+//$A  ("echo: command not found)
 
-// fixed:
-
-// echo '' ""
-
-// awk 'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j++){printf("%4d ",i*j)} printf("\n")}}'
-	///dev/null | tail -n 10
-// Expected tkens:
-// 1) "awk"
-// 2) "'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j'){printf("%4d ",i*j)} printf("\n")}}'"
-// 3) "/dev/null"
-// 4) "|"
-// 5) "tail"
-// 6) "-n"
-// 7) "10"
-
-// echo hi>>4 >>5 >>6 (should create be 3 append's redirects)
-// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
-// echo "cat lol.c '|' cat > lol.c" (should print cat lol.c '|' cat > lol.c)
-// grep hi "<infile" <         ./test_files/infile ("<infile"  - one arg,
-	//it isnt redir)
-// echo hi | echo hi | (error with pipe, in our minishell - execve: No such file
-// or directory)
-//| echo hi (bash: syntax error near unexpected token `|', in our minishell -
-// execve: No such file or directory + Conditional jump)
-// empty line (segfault), should print prompt again
-//				(segfault) - tab
-//                (segfault) - space
-//"" (should be empty arg)
-// echo "" (should print a new line)
-// echo $SHLVL (parse of env, also with "" and '')
-// echo "" "        h           a           " (should print         h           a           )
-//"echo" hi (should print hi)
-//"ls" and 'ls' (should work as regular ls)
-// e"ch"o hi (should print hi)
-//'echo' hi (should print hi)
-// echo hi '$USER is great, home is $HOME' (hi $USER is great, home is $HOME)
-// echo hi "$USER is great, home is $HOME" (hi apechkov is great, home is
-/// home/apechkov)
-//"<" sasdad
-//<: command not found (in bash), in minishell - it is a command
-//"echo hi" and 'echo hi' (should pars as one arg, echo hi: command not found)
-// echo "|" echo (should print - | echo)
-// echo " | "(should print -  | )
+// void	debug_print_cmd(t_cmd *cmd)
+// {
+// 	int	i;
 
 void	debug_print_cmd(t_cmd *cmd)
 {
 	int	i;
+	int	cmd_num = 1;
 
 	printf("\n==== DEBUG CMD STRUCTURE ====\n");
-	printf("Args: ");
-	if (cmd->args)
+	while (cmd)
 	{
-		i = 0;
-		while (cmd->args[i])
+		printf("Command #%d\n", cmd_num++);
+
+		// Args
+		printf("Args: ");
+		if (cmd->args)
 		{
-			printf("\"%s\" ", cmd->args[i]);
-			i++;
+			for (i = 0; cmd->args[i]; i++)
+				printf("\"%s\" ", cmd->args[i]);
 		}
-	}
-	else
-		printf("(null)");
-	printf("\n");
-	printf("Input Redirects: ");
-	if (cmd->input_redirects)
-	{
-		i = 0;
-		while (cmd->input_redirects[i])
+		else
+			printf("(null)");
+		printf("\n");
+
+		// Input Redirects
+		printf("Input Redirects: ");
+		if (cmd->input_redirects)
 		{
-			printf("\"%s\" ", cmd->input_redirects[i]);
-			i++;
+			for (i = 0; cmd->input_redirects[i]; i++)
+				printf("\"%s\" ", cmd->input_redirects[i]);
 		}
-	}
-	else
-		printf("(null)");
-	printf("\n");
-	printf("Output Redirects: ");
-	if (cmd->output_redirects)
-	{
-		i = 0;
-		while (cmd->output_redirects[i])
+		else
+			printf("(null)");
+		printf("\n");
+
+		// Output Redirects
+		printf("Output Redirects: ");
+		if (cmd->output_redirects)
 		{
-			printf("\"%s\" ", cmd->output_redirects[i]);
-			i++;
+			for (i = 0; cmd->output_redirects[i]; i++)
+				printf("\"%s\" ", cmd->output_redirects[i]);
 		}
-	}
-	else
-		printf("(null)");
-	printf("\n");
-	printf("Append Redirects: ");
-	if (cmd->append_redirects)
-	{
-		i = 0;
-		while (cmd->append_redirects[i])
+		else
+			printf("(null)");
+		printf("\n");
+
+		// Append Redirects
+		printf("Append Redirects: ");
+		if (cmd->append_redirects)
 		{
-			printf("\"%s\" ", cmd->append_redirects[i]);
-			i++;
+			for (i = 0; cmd->append_redirects[i]; i++)
+				printf("\"%s\" ", cmd->append_redirects[i]);
 		}
-	}
-	else
-		printf("(null)");
-	printf("\n");
-	printf("Heredoc: ");
-	if (cmd->heredoc_delimiter)
-	{
-		int i = 0;
-		while (cmd->heredoc_delimiter[i])
+		else
+			printf("(null)");
+		printf("\n");
+
+		// Heredoc Delimiters
+		printf("Heredoc Delimiters: ");
+		if (cmd->heredoc_delimiter)
 		{
-			printf("%s", cmd->heredoc_delimiter[i]);
-			i++;
+			for (i = 0; cmd->heredoc_delimiter[i]; i++)
+				printf("\"%s\" ", cmd->heredoc_delimiter[i]);
 		}
-		printf("\n"); // перехід на новий рядок в кінці
+		else
+			printf("(null)");
+		printf("\n");
+
+		printf("============================\n");
+		cmd = cmd->next;
 	}
-	else
-		printf("(null)");
-	printf("\n============================\n");
 }
+
 
 static int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
 {

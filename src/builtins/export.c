@@ -6,53 +6,33 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:41:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/20 17:19:21 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
+// _ value
+
+//export a (ignire in env)
+
+// export (19)
+
 // export a="s -lsa"
 //		l$a
-
-// export a='"' (shouldn't crash)
-//		$a
-// export a='"'
-//		echo $a
-
-/// bin/echo $HALLO42 (1)
-// env | grep HALLO42
-// export HALLO42=42
-/// bin/echo $HALLO42
-// env | grep HALLO42
-
-/// bin/echo $HOME (2)
-// env | grep HOME
-// export HOME=42
-/// bin/echo $HOME
-// env | grep HOME
-
-// export TES_T=123  (113)
-/// bin/echo $TES_T
-// env | grep TES_T
-
-// export HELLO42=T="" (117)
-/// bin/echo $HELLO42
-// env | grep HELLO42
-// env | grep HELLO42=T=
-
-/// bin/echo $mini_test (134)
-// env | grep mini_test
-// export mini_test=
-/// bin/echo $mini_test
-// env | grep mini_test
-
-// export (wrong output?) (4)
 
 // # Empty export isn't set on `env` but is set on `export`
 // export hello
 // env | grep hello
 // export | grep hello
+
+//echo $? (122)
+//export "?"=hallo
+//echo $?
+
+//echo $? (126)
+//export $?=hallo
+//echo $?
 
 static int	update_env_var(char *arg, t_data *data, int var_index)
 {
@@ -108,7 +88,7 @@ static int	add_or_update_env(char *arg, t_data *data)
 		return (append_env_var(arg, data));
 }
 
-static int	export_one_arg(char *arg, t_data *data)
+static int	export_env(char *arg, t_data *data)
 {
 	char	*equal_sign;
 
@@ -121,10 +101,9 @@ static int	export_one_arg(char *arg, t_data *data)
 	equal_sign = ft_strchr(arg, '=');
 	if (!equal_sign)
 	{
-		/////////
-		add_or_update_export(arg, data);
+		add_or_update_export(arg, data); // need to check
 		data->exit_status = 0;
-		return (0); // 1
+		return (0);
 	}
 	return (add_or_update_env(arg, data));
 }
@@ -138,11 +117,5 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 		data->exit_status = 0;
 		return (0);
 	}
-	// if (cmd->args[2])
-	// {
-	// 	write_error("minishell: export: too many arguments\n");
-	// 	data->exit_status = 1;
-	// 	return (1);
-	// }
-	return (export_one_arg(cmd->args[1], data));
+	return (export_env(cmd->args[1], data));
 }

@@ -6,13 +6,12 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:41:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:04:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// exit 0 0, exit 1 2, exit 1 2 3, exit 42 42 42 42 42 (dont write exit in out?)
 // exit "" (bash: exit: : numeric argument required, EC - 2)
 
 int	ft_isspace(int c)
@@ -95,34 +94,30 @@ long	ft_atol(const char *str, int *error)
 	return (res);
 }
 
-int	is_main_shell_process(void)
-{
-	return (getpid() == g_main_pid);
-}
-
 int	builtin_exit(t_cmd *cmd, t_data *data)
 {
 	long	exit_code;
 	int		error;
 
 	error = 0;
-	if (is_main_shell_process())
-		printf("exit\n");
-	// printf("exit\n");  //need to move
 	if (!cmd->args[1])
-		exit(data->exit_status);
+		return ((printf("exit\n"), exit(data->exit_status), 1));
 	exit_code = ft_atol(cmd->args[1], &error);
 	if (error)
 	{
+		if (isatty(0) || isatty(1))
+			printf("exit\n");
 		write_error("minishell: exit: %s: numeric argument required\n",
 			cmd->args[1]);
 		exit(2);
 	}
 	if (cmd->args[2])
 	{
+		if (isatty(0) || isatty(1))
+			printf("exit\n");
 		write_error("minishell: exit: too many arguments\n");
 		data->exit_status = 1;
 		return (1);
 	}
-	exit(exit_code % 256);
+	return (printf("exit\n"), exit(exit_code % 256), 1);
 }

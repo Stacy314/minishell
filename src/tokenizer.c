@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 13:48:56 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:45:34 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,41 +42,41 @@ int	handle_redirection(const char *str, int j, t_token **tokens, int *i,
 		if (str[j] == '>' && str[j + 1] == '>')
 		{
 			tokens[*i] = create_token(">>", APPEND, (*index)++);
-			if (!tokens[*i])
-			{
-				perror("failed create token");
-				return (-1);
-			}
+			//if (!tokens[*i])
+			//{
+			//	perror("failed create token");
+			//	return (-1);
+			//}
 			j += 2;
 		}
 		else if (str[j] == '<' && str[j + 1] == '<')
 		{
 			tokens[*i] = create_token("<<", HEREDOC, (*index)++);
-			if (!tokens[*i])
-			{
-				perror("failed create token");
-				return (-1);
-			}
+			//if (!tokens[*i])
+			//{
+			//	perror("failed create token");
+			//	return (-1);
+			//}
 			j += 2;
 		}
 		else if (str[j] == '>')
 		{
 			tokens[*i] = create_token(">", REDIRECT_OUT, (*index)++);
-			if (!tokens[*i])
-			{
-				perror("failed create token");
-				return (-1);
-			}
+			//if (!tokens[*i])
+			//{
+			//	perror("failed create token");
+			//	return (-1);
+			//}
 			j++;
 		}
 		else if (str[j] == '<')
 		{
 			tokens[*i] = create_token("<", REDIRECT_IN, (*index)++);
-			if (!tokens[*i])
-			{
-				perror("failed create token");
-				return (-1);
-			}
+			//if (!tokens[*i])
+			//{
+			//	perror("failed create token");
+			//	return (-1);
+			//}
 			j++;
 		}
 		(*i)++;
@@ -123,33 +123,33 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		if (str[j] == '&' && str[j + 1] == '&')
 		{
 			tokens[i++] = create_token("&&", LOGICAL_AND, index++);
-			if (!tokens[i])
-			{
-				perror("failed create token");
-				return (NULL);
-			}
+			//if (!tokens[i])
+			//{
+			//	perror("failed create token");
+			//	return (NULL);
+			//}
 			j += 2;
 			continue ;
 		}
 		if (str[j] == '|' && str[j + 1] == '|')
 		{
 			tokens[i++] = create_token("||", LOGICAL_OR, index++);
-			if (!tokens[i])
-			{
-				perror("failed create token");
-				return (NULL);
-			}
+			//if (!tokens[i])
+			//{
+			//	perror("failed create token");
+			//	return (NULL);
+			//}
 			j += 2;
 			continue ;
 		}
 		if (str[j] == '|')
 		{
 			tokens[i] = create_token("|", PIPE, index++);
-			if (!tokens[i])
-			{
-				perror("failed create token");
-				return (NULL);
-			}
+			//if (!tokens[i])
+			//{
+			//	perror("failed create token");
+			//	return (NULL);
+			//}
 			i++;
 			j++;
 			continue ;
@@ -192,11 +192,11 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 				{
 					buffer[k] = '\0';
 					tokens[i++] = create_token(buffer, WORD, index++);
-					if (!tokens[i])
-					{
-						perror("failed create token");
-						return (NULL);
-					}
+					//if (!tokens[i])
+					//{
+					//	perror("failed create token");
+					//	return (NULL);
+					//}
 					k = 0;
 				}
 				j = handle_redirection(str, j, tokens, &i, &index);
@@ -205,12 +205,12 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 			if (str[j] == '$' && quote_type != '\'')
 			{
 				expanded = expand_variable(str, &j, data);
-				if (!expanded || !*expanded)
-				{
-					data->exit_status = 1;
-					free(expanded);
-					return (NULL);
-				}
+				//if (!expanded || !*expanded)
+				//{
+				//	//data->exit_status = 1;
+				//	//free(expanded);
+				//	//return (NULL);
+				//}
 				len = ft_strlen(expanded);
 				if (k + len < sizeof(buffer))
 				{

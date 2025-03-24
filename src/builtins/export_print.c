@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:41:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/19 17:40:21 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ static void	print_env_line(const char *env_line)
 	free(key);
 }
 
-void	print_sorted_env(char **env) // env | sort
+void	print_sorted_env(char **env)
 {
 	int size;
 	char **copy;
