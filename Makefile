@@ -5,7 +5,7 @@ LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
 SRC_FILES = main.c utils.c tokenizer.c execution.c parser.c signals.c \
-			initialization.c commands.c commands_utils.c pipe.c redirection.c heredoc.c expantion.c \
+			initialization.c commands.c commands_utils.c pipe.c redirection.c heredoc.c expansion.c \
 			builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
 			builtins/export.c builtins/export_print.c builtins/export_single.c builtins/pwd.c builtins/unset.c \
 			clean.c

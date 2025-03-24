@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:08:06 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/24 13:23:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 // need to fix:
-
+//cat << $USER (wrong expansion)
 //"" (: command not found, EC - 127)
 // echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end) 
 // echo '' "" (print space)
