@@ -1,0 +1,44 @@
+==438803== Memcheck, a memory error detector
+==438803== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==438803== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==438803== Command: /home/apechkov/minishell/minishell
+==438803== Parent PID: 438802
+==438803== 
+==438803== 
+==438803== FILE DESCRIPTORS: 4 open (3 std) at exit.
+==438803== Open file descriptor 3: /tmp/tmp.Q6VL95iK6M/tmp_valgrind_out
+==438803==    <inherited from parent>
+==438803== 
+==438803== Open file descriptor 2: /dev/null
+==438803==    <inherited from parent>
+==438803== 
+==438803== Open file descriptor 1: /dev/null
+==438803==    <inherited from parent>
+==438803== 
+==438803== Open file descriptor 0:
+==438803==    <inherited from parent>
+==438803== 
+==438803== 
+==438803== HEAP SUMMARY:
+==438803==     in use at exit: 4,166 bytes in 9 blocks
+==438803==   total heap usage: 106 allocs, 97 frees, 30,158 bytes allocated
+==438803== 
+==438803== 56 bytes in 2 blocks are definitely lost in loss record 4 of 5
+==438803==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==438803==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==438803==    by 0x40299A: copy_env (initialization.c:96)
+==438803==    by 0x402858: init_data (initialization.c:113)
+==438803==    by 0x40136B: main (main.c:46)
+==438803== 
+==438803== LEAK SUMMARY:
+==438803==    definitely lost: 56 bytes in 2 blocks
+==438803==    indirectly lost: 0 bytes in 0 blocks
+==438803==      possibly lost: 0 bytes in 0 blocks
+==438803==    still reachable: 0 bytes in 0 blocks
+==438803==         suppressed: 4,110 bytes in 7 blocks
+==438803== 
+==438803== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 4 from 4)
+--438803-- 
+--438803-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,110 bytes in 7 blocks
+==438803== 
+==438803== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 4 from 4)

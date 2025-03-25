@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:26:29 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/25 22:39:41 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,12 +122,13 @@ void	handle_append_redirect(t_cmd *cmd) // >>
 	}
 }
 
-int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
+int	execute_redirection(t_cmd *cmd, t_data *data, char **env, t_token **tokens)
 {
 	pid_t	pid;
 	int		status;
 	int		i;
 
+	(void)tokens;
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 0);
@@ -147,7 +148,8 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 				handle_output_redirect(cmd);
 			i++;
 		}
-		execute_command(cmd->args[0], data, cmd->args, env);
+		execute_for_one(tokens, cmd, data, env);
+		//execute_command(cmd->args[0], data, cmd->args, env); // unset PATH builtind should work 
 		exit(data->exit_status);
 	}
 	waitpid(pid, &status, 0);
@@ -167,31 +169,10 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 	return (1);
 }
 
-// void	apply_redirections(t_cmd *cmd, t_data *data)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (data->input[i])
-// 	{
-// 		if (data->input[i] == '>' && data->input[i + 1] == '>')
-// 			handle_append_redirect(cmd);
-// 		else if (data->input[i] == '<' && data->input[i + 1] == '<')
-// 			handle_heredoc(cmd);
-// 		else if (data->input[i] == '<')
-// 			handle_input_redirect(cmd);
-// 		else if (data->input[i] == '>')
-// 			handle_output_redirect(cmd);
-// 		i++;
-// 	}
-// }
 void	apply_redirections(t_cmd *cmd, t_data *data)
 {
 	int	i;
 
-	/* Якщо here-doc був оброблений у батькові,
-	 * застосовуємо його дескриптор як STDIN.
-	 */
 	if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
 	{
 		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
@@ -206,7 +187,6 @@ void	apply_redirections(t_cmd *cmd, t_data *data)
 	{
 		if (data->input[i] == '>' && data->input[i + 1] == '>')
 			handle_append_redirect(cmd);
-		/* Пропускаємо here-doc, оскільки він вже оброблений */
 		else if (data->input[i] == '<' && data->input[i + 1] == '<')
 			;
 		else if (data->input[i] == '<')

@@ -1,0 +1,324 @@
+==399955== Memcheck, a memory error detector
+==399955== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==399955== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==399955== Command: /home/apechkov/minishell/minishell
+==399955== Parent PID: 399954
+==399955== 
+==399956== 
+==399956== FILE DESCRIPTORS: 3 open (2 std) at exit.
+==399956== Open file descriptor 3: /tmp/tmp.Q6VL95iK6M/tmp_valgrind_out
+==399956==    <inherited from parent>
+==399956== 
+==399956== Open file descriptor 2: /dev/null
+==399956==    <inherited from parent>
+==399956== 
+==399956== Open file descriptor 0:
+==399956==    <inherited from parent>
+==399956== 
+==399956== 
+==399956== HEAP SUMMARY:
+==399956==     in use at exit: 9,038 bytes in 85 blocks
+==399956==   total heap usage: 90 allocs, 5 frees, 13,224 bytes allocated
+==399956== 
+==399956== 2 bytes in 1 blocks are still reachable in loss record 1 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==399956==    by 0x406E34: create_token (tokenizer.c:47)
+==399956==    by 0x407934: is_pipe_operator (find_operator.c:47)
+==399956==    by 0x407185: tokenize_loop (tokenizer.c:119)
+==399956==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399956==    by 0x401423: main (main.c:62)
+==399956== 
+==399956== 8 bytes in 1 blocks are still reachable in loss record 2 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4083CC: ft_strjoin (ft_strjoin.c:23)
+==399956==    by 0x40276E: increment_shlvl (initialization.c:66)
+==399956==    by 0x402894: init_data (initialization.c:117)
+==399956==    by 0x40136B: main (main.c:46)
+==399956== 
+==399956== 8 bytes in 1 blocks are still reachable in loss record 3 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399956==    by 0x403664: execute_pipeline (pipe.c:212)
+==399956==    by 0x401C77: execute (execution.c:54)
+==399956==    by 0x401499: main (main.c:77)
+==399956== 
+==399956== 14 bytes in 3 blocks are still reachable in loss record 5 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==399956==    by 0x406E34: create_token (tokenizer.c:47)
+==399956==    by 0x40705B: flush_buffer_to_token (tokenizer.c:92)
+==399956==    by 0x407605: handle_token_word (utils_tokenizer.c:55)
+==399956==    by 0x40722F: tokenize_loop (tokenizer.c:133)
+==399956==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399956==    by 0x401423: main (main.c:62)
+==399956== 
+==399956== 14 bytes in 3 blocks are still reachable in loss record 6 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x497258E: strdup (strdup.c:42)
+==399956==    by 0x4022F0: append_to_args (parser.c:167)
+==399956==    by 0x404CE5: fill_cmd (utils_parser.c:47)
+==399956==    by 0x404DCC: build_command_list (utils_parser.c:72)
+==399956==    by 0x402386: parse_tokens (parser.c:182)
+==399956==    by 0x40145E: main (main.c:69)
+==399956== 
+==399956== 16 bytes in 1 blocks are still reachable in loss record 8 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399956==    by 0x406E00: create_token (tokenizer.c:41)
+==399956==    by 0x407934: is_pipe_operator (find_operator.c:47)
+==399956==    by 0x407185: tokenize_loop (tokenizer.c:119)
+==399956==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399956==    by 0x401423: main (main.c:62)
+==399956== 
+==399956== 40 bytes in 2 blocks are still reachable in loss record 10 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399956==    by 0x402283: append_to_args (parser.c:158)
+==399956==    by 0x404CE5: fill_cmd (utils_parser.c:47)
+==399956==    by 0x404DCC: build_command_list (utils_parser.c:72)
+==399956==    by 0x402386: parse_tokens (parser.c:182)
+==399956==    by 0x40145E: main (main.c:69)
+==399956== 
+==399956== 48 bytes in 3 blocks are still reachable in loss record 11 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399956==    by 0x406E00: create_token (tokenizer.c:41)
+==399956==    by 0x40705B: flush_buffer_to_token (tokenizer.c:92)
+==399956==    by 0x407605: handle_token_word (utils_tokenizer.c:55)
+==399956==    by 0x40722F: tokenize_loop (tokenizer.c:133)
+==399956==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399956==    by 0x401423: main (main.c:62)
+==399956== 
+==399956== 112 bytes in 2 blocks are still reachable in loss record 12 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399956==    by 0x402636: init_new_cmd (initialization.c:37)
+==399956==    by 0x404D72: build_command_list (utils_parser.c:65)
+==399956==    by 0x402386: parse_tokens (parser.c:182)
+==399956==    by 0x40145E: main (main.c:69)
+==399956== 
+==399956== 120 bytes in 1 blocks are still reachable in loss record 13 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x494A122: getdelim (iogetdelim.c:62)
+==399956==    by 0x485C410: readline (in /home/apechkov/42_minishell_tester/utils/libintercept/libintercept.so)
+==399956==    by 0x401394: main (main.c:51)
+==399956== 
+==399956== 128 bytes in 1 blocks are still reachable in loss record 14 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399956==    by 0x4072B4: split_to_tokens (tokenizer.c:146)
+==399956==    by 0x401423: main (main.c:62)
+==399956== 
+==399956== 504 bytes in 1 blocks are still reachable in loss record 15 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399956==    by 0x40294A: copy_env (initialization.c:89)
+==399956==    by 0x402858: init_data (initialization.c:113)
+==399956==    by 0x40136B: main (main.c:46)
+==399956== 
+==399956== 3,956 bytes in 61 blocks are still reachable in loss record 16 of 17
+==399956==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399956==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==399956==    by 0x40299A: copy_env (initialization.c:96)
+==399956==    by 0x402858: init_data (initialization.c:113)
+==399956==    by 0x40136B: main (main.c:46)
+==399956== 
+==399956== LEAK SUMMARY:
+==399956==    definitely lost: 0 bytes in 0 blocks
+==399956==    indirectly lost: 0 bytes in 0 blocks
+==399956==      possibly lost: 0 bytes in 0 blocks
+==399956==    still reachable: 4,970 bytes in 81 blocks
+==399956==         suppressed: 4,068 bytes in 4 blocks
+==399956== 
+==399956== ERROR SUMMARY: 13 errors from 13 contexts (suppressed: 4 from 4)
+--399956-- 
+--399956-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,068 bytes in 4 blocks
+==399956== 
+==399956== ERROR SUMMARY: 13 errors from 13 contexts (suppressed: 4 from 4)
+==399957== 
+==399957== FILE DESCRIPTORS: 3 open (2 std) at exit.
+==399957== Open file descriptor 3: /tmp/tmp.Q6VL95iK6M/tmp_valgrind_out
+==399957==    <inherited from parent>
+==399957== 
+==399957== Open file descriptor 2: /dev/null
+==399957==    <inherited from parent>
+==399957== 
+==399957== Open file descriptor 1: /dev/null
+==399957==    <inherited from parent>
+==399957== 
+==399957== 
+==399957== HEAP SUMMARY:
+==399957==     in use at exit: 9,038 bytes in 85 blocks
+==399957==   total heap usage: 109 allocs, 24 frees, 15,720 bytes allocated
+==399957== 
+==399957== 2 bytes in 1 blocks are still reachable in loss record 1 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==399957==    by 0x406E34: create_token (tokenizer.c:47)
+==399957==    by 0x407934: is_pipe_operator (find_operator.c:47)
+==399957==    by 0x407185: tokenize_loop (tokenizer.c:119)
+==399957==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399957==    by 0x401423: main (main.c:62)
+==399957== 
+==399957== 8 bytes in 1 blocks are still reachable in loss record 2 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4083CC: ft_strjoin (ft_strjoin.c:23)
+==399957==    by 0x40276E: increment_shlvl (initialization.c:66)
+==399957==    by 0x402894: init_data (initialization.c:117)
+==399957==    by 0x40136B: main (main.c:46)
+==399957== 
+==399957== 8 bytes in 1 blocks are still reachable in loss record 3 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399957==    by 0x403664: execute_pipeline (pipe.c:212)
+==399957==    by 0x401C77: execute (execution.c:54)
+==399957==    by 0x401499: main (main.c:77)
+==399957== 
+==399957== 14 bytes in 3 blocks are still reachable in loss record 5 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==399957==    by 0x406E34: create_token (tokenizer.c:47)
+==399957==    by 0x40705B: flush_buffer_to_token (tokenizer.c:92)
+==399957==    by 0x407605: handle_token_word (utils_tokenizer.c:55)
+==399957==    by 0x40722F: tokenize_loop (tokenizer.c:133)
+==399957==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399957==    by 0x401423: main (main.c:62)
+==399957== 
+==399957== 14 bytes in 3 blocks are still reachable in loss record 6 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x497258E: strdup (strdup.c:42)
+==399957==    by 0x4022F0: append_to_args (parser.c:167)
+==399957==    by 0x404CE5: fill_cmd (utils_parser.c:47)
+==399957==    by 0x404DCC: build_command_list (utils_parser.c:72)
+==399957==    by 0x402386: parse_tokens (parser.c:182)
+==399957==    by 0x40145E: main (main.c:69)
+==399957== 
+==399957== 16 bytes in 1 blocks are still reachable in loss record 8 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399957==    by 0x406E00: create_token (tokenizer.c:41)
+==399957==    by 0x407934: is_pipe_operator (find_operator.c:47)
+==399957==    by 0x407185: tokenize_loop (tokenizer.c:119)
+==399957==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399957==    by 0x401423: main (main.c:62)
+==399957== 
+==399957== 40 bytes in 2 blocks are still reachable in loss record 10 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399957==    by 0x402283: append_to_args (parser.c:158)
+==399957==    by 0x404CE5: fill_cmd (utils_parser.c:47)
+==399957==    by 0x404DCC: build_command_list (utils_parser.c:72)
+==399957==    by 0x402386: parse_tokens (parser.c:182)
+==399957==    by 0x40145E: main (main.c:69)
+==399957== 
+==399957== 48 bytes in 3 blocks are still reachable in loss record 11 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399957==    by 0x406E00: create_token (tokenizer.c:41)
+==399957==    by 0x40705B: flush_buffer_to_token (tokenizer.c:92)
+==399957==    by 0x407605: handle_token_word (utils_tokenizer.c:55)
+==399957==    by 0x40722F: tokenize_loop (tokenizer.c:133)
+==399957==    by 0x407320: split_to_tokens (tokenizer.c:154)
+==399957==    by 0x401423: main (main.c:62)
+==399957== 
+==399957== 112 bytes in 2 blocks are still reachable in loss record 12 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399957==    by 0x402636: init_new_cmd (initialization.c:37)
+==399957==    by 0x404D72: build_command_list (utils_parser.c:65)
+==399957==    by 0x402386: parse_tokens (parser.c:182)
+==399957==    by 0x40145E: main (main.c:69)
+==399957== 
+==399957== 120 bytes in 1 blocks are still reachable in loss record 13 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x494A122: getdelim (iogetdelim.c:62)
+==399957==    by 0x485C410: readline (in /home/apechkov/42_minishell_tester/utils/libintercept/libintercept.so)
+==399957==    by 0x401394: main (main.c:51)
+==399957== 
+==399957== 128 bytes in 1 blocks are still reachable in loss record 14 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399957==    by 0x4072B4: split_to_tokens (tokenizer.c:146)
+==399957==    by 0x401423: main (main.c:62)
+==399957== 
+==399957== 504 bytes in 1 blocks are still reachable in loss record 15 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399957==    by 0x40294A: copy_env (initialization.c:89)
+==399957==    by 0x402858: init_data (initialization.c:113)
+==399957==    by 0x40136B: main (main.c:46)
+==399957== 
+==399957== 3,956 bytes in 61 blocks are still reachable in loss record 16 of 17
+==399957==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399957==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==399957==    by 0x40299A: copy_env (initialization.c:96)
+==399957==    by 0x402858: init_data (initialization.c:113)
+==399957==    by 0x40136B: main (main.c:46)
+==399957== 
+==399957== LEAK SUMMARY:
+==399957==    definitely lost: 0 bytes in 0 blocks
+==399957==    indirectly lost: 0 bytes in 0 blocks
+==399957==      possibly lost: 0 bytes in 0 blocks
+==399957==    still reachable: 4,970 bytes in 81 blocks
+==399957==         suppressed: 4,068 bytes in 4 blocks
+==399957== 
+==399957== ERROR SUMMARY: 13 errors from 13 contexts (suppressed: 4 from 4)
+--399957-- 
+--399957-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,068 bytes in 4 blocks
+==399957== 
+==399957== ERROR SUMMARY: 13 errors from 13 contexts (suppressed: 4 from 4)
+==399955== 
+==399955== FILE DESCRIPTORS: 3 open (2 std) at exit.
+==399955== Open file descriptor 3: /tmp/tmp.Q6VL95iK6M/tmp_valgrind_out
+==399955==    <inherited from parent>
+==399955== 
+==399955== Open file descriptor 2: /dev/null
+==399955==    <inherited from parent>
+==399955== 
+==399955== Open file descriptor 0:
+==399955==    <inherited from parent>
+==399955== 
+==399955== 
+==399955== HEAP SUMMARY:
+==399955==     in use at exit: 4,158 bytes in 8 blocks
+==399955==   total heap usage: 92 allocs, 84 frees, 21,536 bytes allocated
+==399955== 
+==399955== 10 bytes in 2 blocks are indirectly lost in loss record 1 of 7
+==399955==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399955==    by 0x497258E: strdup (strdup.c:42)
+==399955==    by 0x4022F0: append_to_args (parser.c:167)
+==399955==    by 0x404CE5: fill_cmd (utils_parser.c:47)
+==399955==    by 0x404DCC: build_command_list (utils_parser.c:72)
+==399955==    by 0x402386: parse_tokens (parser.c:182)
+==399955==    by 0x40145E: main (main.c:69)
+==399955== 
+==399955== 24 bytes in 1 blocks are indirectly lost in loss record 5 of 7
+==399955==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399955==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399955==    by 0x402283: append_to_args (parser.c:158)
+==399955==    by 0x404CE5: fill_cmd (utils_parser.c:47)
+==399955==    by 0x404DCC: build_command_list (utils_parser.c:72)
+==399955==    by 0x402386: parse_tokens (parser.c:182)
+==399955==    by 0x40145E: main (main.c:69)
+==399955== 
+==399955== 90 (56 direct, 34 indirect) bytes in 1 blocks are definitely lost in loss record 6 of 7
+==399955==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==399955==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==399955==    by 0x402636: init_new_cmd (initialization.c:37)
+==399955==    by 0x404D72: build_command_list (utils_parser.c:65)
+==399955==    by 0x402386: parse_tokens (parser.c:182)
+==399955==    by 0x40145E: main (main.c:69)
+==399955== 
+==399955== LEAK SUMMARY:
+==399955==    definitely lost: 56 bytes in 1 blocks
+==399955==    indirectly lost: 34 bytes in 3 blocks
+==399955==      possibly lost: 0 bytes in 0 blocks
+==399955==    still reachable: 0 bytes in 0 blocks
+==399955==         suppressed: 4,068 bytes in 4 blocks
+==399955== 
+==399955== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 4 from 4)
+--399955-- 
+--399955-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,068 bytes in 4 blocks
+==399955== 
+==399955== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 4 from 4)

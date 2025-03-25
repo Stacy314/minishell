@@ -1,0 +1,11 @@
+42
+Token[0]: Type = 0, Value = "/bin/echo", Index = 0
+Token[1]: Type = 2, Value = "<", Index = 1
+Token[2]: Type = 0, Value = "123", Index = 2
+Token[3]: Type = 2, Value = "<", Index = 3
+Token[4]: Type = 0, Value = "456", Index = 4
+Token[5]: Type = 0, Value = "hi", Index = 5
+Token[6]: Type = 1, Value = "|", Index = 6
+Token[7]: Type = 0, Value = "/bin/echo", Index = 7
+Token[8]: Type = 0, Value = "42", Index = 8
+End of tokens (null)

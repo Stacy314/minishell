@@ -1,0 +1,59 @@
+==405160== Memcheck, a memory error detector
+==405160== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==405160== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==405160== Command: /home/apechkov/minishell/minishell
+==405160== Parent PID: 405159
+==405160== 
+==405160== 
+==405160== FILE DESCRIPTORS: 4 open (3 std) at exit.
+==405160== Open file descriptor 3: /tmp/tmp.Q6VL95iK6M/tmp_valgrind_out
+==405160==    <inherited from parent>
+==405160== 
+==405160== Open file descriptor 2: /dev/null
+==405160==    <inherited from parent>
+==405160== 
+==405160== Open file descriptor 1: /dev/null
+==405160==    <inherited from parent>
+==405160== 
+==405160== Open file descriptor 0:
+==405160==    <inherited from parent>
+==405160== 
+==405160== 
+==405160== HEAP SUMMARY:
+==405160==     in use at exit: 4,585 bytes in 6 blocks
+==405160==   total heap usage: 86 allocs, 80 frees, 17,827 bytes allocated
+==405160== 
+==405160== 7 bytes in 1 blocks are indirectly lost in loss record 1 of 6
+==405160==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==405160==    by 0x407EB8: ft_strdup (ft_strdup.c:25)
+==405160==    by 0x4068AB: append_to_str_array (export_single.c:76)
+==405160==    by 0x40667D: add_or_update_export (export_single.c:94)
+==405160==    by 0x405F37: export_env (export.c:104)
+==405160==    by 0x405EA8: builtin_export (export.c:120)
+==405160==    by 0x401AEE: execute_for_one (execution.c:37)
+==405160==    by 0x401D27: execute (execution.c:66)
+==405160==    by 0x401499: main (main.c:77)
+==405160== 
+==405160== 519 (512 direct, 7 indirect) bytes in 1 blocks are definitely lost in loss record 5 of 6
+==405160==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==405160==    by 0x4080F4: ft_calloc (ft_calloc.c:23)
+==405160==    by 0x40684A: append_to_str_array (export_single.c:68)
+==405160==    by 0x40667D: add_or_update_export (export_single.c:94)
+==405160==    by 0x405F37: export_env (export.c:104)
+==405160==    by 0x405EA8: builtin_export (export.c:120)
+==405160==    by 0x401AEE: execute_for_one (execution.c:37)
+==405160==    by 0x401D27: execute (execution.c:66)
+==405160==    by 0x401499: main (main.c:77)
+==405160== 
+==405160== LEAK SUMMARY:
+==405160==    definitely lost: 512 bytes in 1 blocks
+==405160==    indirectly lost: 7 bytes in 1 blocks
+==405160==      possibly lost: 0 bytes in 0 blocks
+==405160==    still reachable: 0 bytes in 0 blocks
+==405160==         suppressed: 4,066 bytes in 4 blocks
+==405160== 
+==405160== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 4 from 4)
+--405160-- 
+--405160-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,066 bytes in 4 blocks
+==405160== 
+==405160== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 4 from 4)
