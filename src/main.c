@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 23:27:38 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/25 22:50:24 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ int	main(int argc, char **argv, char **env)
 		//	free(line);
 		//}
 		///////////////
+		// fprintf(stderr, "[DEBUG] calling readline\n");
 		input = readline("minishell$ ");
+		// fprintf(stderr, "[DEBUG] got line: %s\n", input ? input : "(null)");
 		if (!input)
 			return (printf("exit\n")/*, free_env(data.env)*/, data.exit_status);
 		if (*input == '\0' || ft_str_only_spaces(input)) //need to check
@@ -66,16 +68,11 @@ int	main(int argc, char **argv, char **env)
 			free(input);
 			continue ;
 		}
-		// if (g_prompt_flag == 1)
-        // {
-        //     data.exit_status = 130;
-        //     g_prompt_flag = 0;
-        // }
-		// if (g_prompt_flag == 2)
-        // {
-        //     data.exit_status = 131;
-        //     g_prompt_flag = 0;
-        // }
+		if (g_signal_flag == SIGINT)
+		{
+			data.exit_status = 130;
+			g_signal_flag = 0;
+		}
 		data.input = input;
 		if (*input)
 			add_history(input);

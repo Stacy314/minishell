@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 23:27:32 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/25 17:30:40 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,8 @@ void							print_sorted_env(char **env);
 void							add_or_update_export(char *key, t_data *data);
 
 // execution
+void							parent_ignore_signals(void);
+void							parent_restore_signals(void);
 void							execute(t_token **tokens, t_cmd *cmd,
 									t_data *data, char **env);
 int								execute_command(char *cmd, t_data *data,

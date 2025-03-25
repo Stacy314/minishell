@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 23:45:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/25 17:28:47 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,34 @@
 
 // unset PATH
 // change to /bin/ - inside this directory the standard commands should work
+
+static struct sigaction g_old_int;
+static struct sigaction g_old_quit;
+
+// Функция, которая заставит parent (minishell) игнорировать SIGINT/SIGQUIT
+void parent_ignore_signals(void)
+{
+    struct sigaction sa_ignore;
+
+    sa_ignore.sa_handler = SIG_IGN;
+    sa_ignore.sa_flags = 0;
+    sigemptyset(&sa_ignore.sa_mask);
+
+    // Считываем старые обработчики, чтобы потом вернуть
+    sigaction(SIGINT, NULL, &g_old_int);
+    sigaction(SIGQUIT, NULL, &g_old_quit);
+
+    // Ставим SIG_IGN
+    sigaction(SIGINT, &sa_ignore, NULL);
+    sigaction(SIGQUIT, &sa_ignore, NULL);
+}
+
+// Восстановим родительские обработчики сигналов
+void parent_restore_signals(void)
+{
+    sigaction(SIGINT, &g_old_int, NULL);
+    sigaction(SIGQUIT, &g_old_quit, NULL);
+}
 
 int	check_permissions(char *cmd)
 {
@@ -49,51 +77,128 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-static int	fork_and_exec(const char *executable, char **args, char **env,
-		t_data *data)
-{
-	pid_t	pid;
-	int		status;
+// static int	fork_and_exec(const char *executable, char **args, char **env,
+// 		t_data *data)
+// {
+// 	pid_t	pid;
+// 	int		status;
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		return (data->exit_status = 1);
-	}
-	//signal(SIGINT, SIG_IGN);
-	if (pid == 0)
-	{
-		
-		
-		set_signals_child(); //
-		//signal(SIGINT, SIG_DFL); 
-		execve(executable, args, env);
-		// perror("execve");
-		exit(0); // 127 ?
-	}
-	else
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-		{
-			///* Katya */
-			//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
-			//{
-			//	if (WEXITSTATUS(status) == 131)
-			//		printf("Quit (core dumped)");
-			//	write (1, "\n", 1);
-			//}
-			///* End */
-			data->exit_status = WEXITSTATUS(status);
-		}
-		else
-			data->exit_status = 1;
-	}
-	//printf("\n"); // wrong 
-	//signal(SIGINT, handle_sigint); 
-	return (data->exit_status);
+// 	pid = fork();
+// 	if (pid == -1)
+// 	{
+// 		perror("fork");
+// 		return (data->exit_status = 1);
+// 	}
+// 	//signal(SIGINT, SIG_IGN);
+// 	if (pid == 0)
+// 	{
+
+
+// 		set_signals_child(); //
+// 		//signal(SIGINT, SIG_DFL);
+// 		execve(executable, args, env);
+// 		// perror("execve");
+// 		exit(0); // 127 ?
+// 	}
+// 	else
+// 	{
+// 		waitpid(pid, &status, 0);
+// 		if (WIFEXITED(status))
+// 		{
+// 			///* Katya */
+// 			//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
+// 			//{
+// 			//	if (WEXITSTATUS(status) == 131)
+// 			//		printf("Quit (core dumped)");
+// 			//	write (1, "\n", 1);
+// 			//}
+// 			///* End */
+// 			data->exit_status = WEXITSTATUS(status);
+// 		}
+// 		else
+// 			data->exit_status = 1;
+// 	}
+// 	//printf("\n"); // wrong
+// 	//signal(SIGINT, handle_sigint);
+// 	return (data->exit_status);
+// }
+
+static int fork_and_exec(const char *executable, char **args, char **env, t_data *data)
+{
+    pid_t pid;
+    int status;
+
+	parent_ignore_signals();
+
+    pid = fork();
+    if (pid < 0)
+    {
+        perror("fork");
+		parent_restore_signals();
+		data->exit_status = 1;
+        return (data->exit_status);
+    }
+    else if (pid == 0)
+    {
+        // -- Дочерний процесс --
+        // ВОССТАНАВЛИВАЕМ СИГНАЛЫ К УМОЛЧАНИЮ
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+
+        // Запускаем внешнюю программу
+        execve(executable, args, env);
+
+        // Если execve вернулся — значит была ошибка
+        perror("execve");
+        _exit(127); // bash-совместимый код ошибки
+    }
+    else
+    {
+        // -- Родительский процесс (minishell) --
+        waitpid(pid, &status, 0);
+		parent_restore_signals();
+
+		//fprintf(stderr, "[DEBUG] after waitpid, status = %d\n", status);
+
+        if (WIFSIGNALED(status))
+        {
+            // Процесс убит сигналом
+            int sig = WTERMSIG(status);
+            if (sig == SIGINT)
+            {
+                // Ctrl-C убил дочерний процесс
+                // Bash обычно при этом выводит просто \n
+                // и exit-код = 130
+                data->exit_status = 130;
+                write(STDOUT_FILENO, "\n", 1);
+            }
+            else if (sig == SIGQUIT)
+            {
+                // Ctrl-\ убил дочерний процесс
+                // Bash выводит "Quit (core dumped)\n" и exit-код = 131
+                data->exit_status = 131;
+                write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+            }
+            else
+            {
+                // Можно сделать общий случай 128 + sig
+                data->exit_status = 128 + sig;
+            }
+        }
+        else if (WIFEXITED(status))
+        {
+            // Процесс завершился обычным вызовом exit(...)
+            data->exit_status = WEXITSTATUS(status);
+        }
+        else
+        {
+            // На всякий случай, если какая-то другая причина
+            data->exit_status = 1;
+        }
+    }
+    return data->exit_status;
 }
+
 
 static int	execute_direct_path(char *cmd, t_data *data, char **args,
 		char **env)
@@ -117,7 +222,7 @@ static int	execute_via_path(char *cmd, t_data *data, char **args, char **env)
 	char	*executable;
 	int		i;
 
-	path = get_path_from_env(data->env);
+	path = get_path_from_env(env);
 	if (!path)
 		return (write_error("%s: command not found\n", cmd),
 			data->exit_status = 127);

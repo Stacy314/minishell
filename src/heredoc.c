@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 23:29:36 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/25 21:01:16 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,10 +212,12 @@ static int create_unique_tmpfile(char *out_filename, size_t size)
 void	handle_heredoc(t_cmd *cmd)
 {
 	char	*line;
+	int		current_line;
 	char	tmp_filename[128]; // Буфер для імені файлу
 	int		tmp_fd;
 	int		infile_fd;
 
+	current_line = 0;
 	// 1) Створюємо унікальне імʼя файлу і відкриваємо його
 	tmp_fd = create_unique_tmpfile(tmp_filename, sizeof(tmp_filename));
 	if (tmp_fd == -1)
@@ -227,16 +229,32 @@ void	handle_heredoc(t_cmd *cmd)
 	// 2) Зчитуємо рядки, допоки не зустрінемо delimiter або Ctrl+D
 	while (1)
 	{
+		// line = readline("> ");
+		// // Якщо Ctrl+D (line == NULL) або line == delimiter – break
+		// if (!line || (cmd->heredoc_delimiter
+		// 	&& ft_strcmp(line, *cmd->heredoc_delimiter) == 0))
+		// {
+		// 	free(line);
+		// 	break ;
+		// }
+		// dprintf(tmp_fd, "%s\n", line);  // need to change
+		// free(line);
 		line = readline("> ");
-		// Якщо Ctrl+D (line == NULL) або line == delimiter – break
-		if (!line || (cmd->heredoc_delimiter
-			&& ft_strcmp(line, *cmd->heredoc_delimiter) == 0))
+		if (!line)
+		{
+			fprintf(stderr,
+				"minishell: warning: here-document at line %d delimited by end-of-file (wanted `%s')\n",
+				current_line, *cmd->heredoc_delimiter);
+			break;
+		}
+		if (strcmp(line, *cmd->heredoc_delimiter) == 0)
 		{
 			free(line);
-			break ;
+			break;
 		}
-		dprintf(tmp_fd, "%s\n", line);  // need to change
+		dprintf(tmp_fd, "%s\n", line);
 		free(line);
+		current_line++;
 	}
 	close(tmp_fd);
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:26:29 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/25 21:34:28 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,43 +127,87 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env)
 	pid_t	pid;
 	int		status;
 	int		i;
+	int		len;
 
+	len = ft_strlen(data->input);
+	parent_ignore_signals();
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 0);
 	if (pid == 0)
 	{
 		//set_child_signals();
+		signal(SIGINT, SIG_DFL);
+    	signal(SIGQUIT, SIG_IGN);
 		i = 0;
 		while (data->input[i]) //need expan
 		{
-			if (data->input[i] == '>' && data->input[i + 1] == '>')
+			if (data->input[i] == '>' && i + 1 < len && data->input[i + 1] == '>')
+			{
 				handle_append_redirect(cmd);
-			else if (data->input[i] == '<' && data->input[i + 1] == '<')
+				i += 2;
+			}
+			else if (data->input[i] == '<' && i + 1 < len && data->input[i + 1] == '<')
+			{
 				handle_heredoc(cmd);
+				i += 2;
+			}
 			else if (data->input[i] == '<')
+			{
 				handle_input_redirect(cmd);
+				i++;
+			}
 			else if (data->input[i] == '>')
+			{
 				handle_output_redirect(cmd);
-			i++;
+				i++;
+			}
+			else
+				i++;
 		}
+		signal(SIGQUIT, SIG_DFL);
+		if (!cmd->args || !cmd->args[0])
+    		exit(0);
 		execute_command(cmd->args[0], data, cmd->args, env);
 		exit(data->exit_status);
 	}
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
+	else
 	{
-		///* Katya */
-		//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
-		//{
-		//	if (WEXITSTATUS(status) == 131)
-		//		printf("Quit (core dumped)");
-		//	write (1, "\n", 1);
-		//}
-		///* End */
-		// printf("exit status: %d\n", WEXITSTATUS(status));
-		data->exit_status = WEXITSTATUS(status);
+		waitpid(pid, &status, 0);
+		parent_restore_signals();
+		if (WIFSIGNALED(status))
+		{
+			int sig = WTERMSIG(status);
+			if (sig == SIGINT)
+			{
+				write(STDOUT_FILENO, "\n", 1);
+				data->exit_status = 130;
+			}
+				else if (sig == SIGQUIT)
+			{
+				write(STDERR_FILENO, "Quit (core dumped)\n", 19);
+				data->exit_status = 131;
+			}
+			else
+				data->exit_status = 128 + sig;
+		}
+		else if (WIFEXITED(status))
+			data->exit_status = WEXITSTATUS(status);
 	}
+	// waitpid(pid, &status, 0);
+	// if (WIFEXITED(status))
+	// {
+	// 	///* Katya */
+	// 	//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
+	// 	//{
+	// 	//	if (WEXITSTATUS(status) == 131)
+	// 	//		printf("Quit (core dumped)");
+	// 	//	write (1, "\n", 1);
+	// 	//}
+	// 	///* End */
+	// 	// printf("exit status: %d\n", WEXITSTATUS(status));
+	// 	data->exit_status = WEXITSTATUS(status);
+	// }
 	return (1);
 }
 

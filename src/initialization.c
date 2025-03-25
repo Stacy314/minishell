@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 22:24:48 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/25 21:44:40 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	increment_shlvl(t_data *data) //need to fix (should be 2 in the beginnig)
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
 			if (!new_shlvl)
 				return (free(shlvl_str), ERROR);
-			return (/*free(shlvl_str),*//* free(data->env[i]),*/
+			return (/*free(shlvl_str), free(data->env[i]),*/
 				data->env[i] = new_shlvl, SUCCESS);
 		}
 		i++;
@@ -72,7 +72,7 @@ int	increment_shlvl(t_data *data) //need to fix (should be 2 in the beginnig)
 int	init_data(t_data *data, char **env)
 {
 	int	shlvl;
-	
+
 
 	 data->env = env;
 	//data->env = copy_env(env);
@@ -89,6 +89,6 @@ int	init_data(t_data *data, char **env)
 	data->exit_status = 0;
 	data->input = NULL;
 	data->pwd_p = NULL;
-	
+
 	return (SUCCESS);
 }
