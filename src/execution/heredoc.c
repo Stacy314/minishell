@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:11:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:49:01 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,10 +247,10 @@ void	execute_heredoc(t_cmd *cmd)
 	close(infile_fd);
 }
 
-int	heredoc_with_pipe(t_cmd *cmd)
-{
-	int	infile_fd;
+//int	heredoc_with_pipe(t_cmd *cmd)
+//{
+//	int	infile_fd;
 
-	infile_fd = handle_heredoc(cmd, 128);
-	return (infile_fd);
-}
+//	infile_fd = handle_heredoc(cmd, 128);
+//	return (infile_fd);
+//}

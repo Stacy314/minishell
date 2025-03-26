@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:17:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:45:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ static int	execute_via_path(char *cmd, t_data *data, char **args, char **env)
 	char	*executable;
 	int		i;
 
-	//printf("");
 	path = get_path_from_env(data->env);
 	if (!path)
 		return (write_error("%s: command not found\n", cmd),

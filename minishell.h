@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 13:58:05 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:49:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ typedef struct s_data
 	int							exit_status;
 	char						*input;
 	char						*pwd_p;
+	int							shlvl;
 }								t_data;
 
 typedef struct s_cmd
@@ -223,7 +224,7 @@ void							execute_heredoc(t_cmd *cmd);
 void							handle_input_redirect(t_cmd *cmd);
 void							handle_output_redirect(t_cmd *cmd);
 void							handle_append_redirect(t_cmd *cmd);
-int								heredoc_with_pipe(t_cmd *cmd);
+int								handle_heredoc(t_cmd *cmd, size_t size);
 void							apply_redirections(t_cmd *cmd, t_data *data);
 
 // expantion

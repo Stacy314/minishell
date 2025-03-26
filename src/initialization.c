@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:23:08 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:43:01 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,14 +110,12 @@ static char	**copy_env(char **env)
 
 int	init_data(t_data *data, char **env)
 {
-	int	shlvl;
-
 	data->env = copy_env(env);
 	if (!data->env)
 		return (ERROR);
 	data->export_env = data->env;
-	shlvl = increment_shlvl(data);
-	if (!shlvl)
+	data->shlvl = increment_shlvl(data);
+	if (!data->shlvl)
 	{
 		perror("init");
 		return (free_env(data->env), ERROR);
