@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 22:29:36 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 13:58:05 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@
 //# define ERROR_CODE_AMBIGUOUS_REDIRECT 9
 //# define ERROR_CODE_INVALID_VAR_NAME 10
 //# define ERROR_CODE_NO_PATH 11
+
+# define HEREDOC_RAND_MIN 1000
+# define HEREDOC_RAND_MAX 999999
 
 extern volatile sig_atomic_t	g_signal_flag;
 typedef enum e_token_type
@@ -94,8 +97,7 @@ typedef struct s_cmd
 	int							heredoc_fd;
 }								t_cmd;
 
-int								prepare_heredoc(t_cmd *cmd);
-void							apply_redirections(t_cmd *cmd, t_data *data);
+// utils
 void							write_error(const char *format, ...);
 int								ft_strcmp(const char *s1, const char *s2);
 int								check_permissions(char *cmd);
@@ -188,7 +190,8 @@ int								builtin_pwd(t_cmd *cmd, t_data *data);
 int								builtin_export(t_cmd *cmd, t_data *data);
 int								builtin_unset(t_cmd *cmd, t_data *data);
 int								builtin_env(t_data *data, t_cmd *cmd);
-int								builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens);
+int								builtin_exit(t_cmd *cmd, t_data *data,
+									t_token **tokens);
 int								builtin_cd(t_cmd *cmd, t_data *data);
 char							**set_env_value(char **envp, const char *key,
 									const char *value);
@@ -216,11 +219,14 @@ void							execute_for_one(t_token **tokens, t_cmd *cmd,
 									t_data *data, char **env);
 int								execute_redirection(t_cmd *cmd, t_data *data,
 									char **env, t_token **tokens);
-void							handle_heredoc(t_cmd *cmd);
+void							execute_heredoc(t_cmd *cmd);
+void							handle_input_redirect(t_cmd *cmd);
+void							handle_output_redirect(t_cmd *cmd);
+void							handle_append_redirect(t_cmd *cmd);
+int								heredoc_with_pipe(t_cmd *cmd);
+void							apply_redirections(t_cmd *cmd, t_data *data);
 
 // expantion
 char							*expand_variable(const char *str, int *j,
 									t_data *data);
-void							handle_input_redirect(t_cmd *cmd);
-
 #endif

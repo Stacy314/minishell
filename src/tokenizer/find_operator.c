@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 22:45:41 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:48:04 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	skip_spaces(const char *str, t_tokenizer_state *state)
 {
-	while (str[state->j] && (str[state->j] == ' ' || str[state->j] == '\t'))
+	while (str[state->j] && (str[state->j] == ' ' || str[state->j] == '\t' || str[state->j] == '\n'))
 		state->j++;
 }
 

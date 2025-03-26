@@ -1,9 +1,0 @@
-bye
-Token[0]: Type = 0, Value = "/bin/echo", Index = 0
-Token[1]: Type = 0, Value = "hi", Index = 1
-Token[2]: Type = 3, Value = ">", Index = 2
-Token[3]: Type = 0, Value = "./outfiles/outfile01", Index = 3
-Token[4]: Type = 1, Value = "|", Index = 4
-Token[5]: Type = 0, Value = "/bin/echo", Index = 5
-Token[6]: Type = 0, Value = "bye", Index = 6
-End of tokens (null)

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 22:38:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 15:58:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,14 @@ int	main(int argc, char **argv, char **env)
 		if (*input)
 			add_history(input);
 		tokens = split_to_tokens(input, &data);
-		if (tokens == (t_token **)(-1) || !tokens)
+		if (!tokens)
 		{
 			free(input);
-			//free_tokens(tokens);
 			continue ;
 		}
 		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
-			//free(cmd);
 			free_tokens(tokens);
 			free(input);
 			continue ;
@@ -79,9 +77,7 @@ int	main(int argc, char **argv, char **env)
 		free_tokens(tokens);
 		free_cmd(cmd);
 	}
-	//free_env(data.export_env);
 	free_env(data.env);
-	//free_env(data.export_env);
 	//clear_history();
 	return (data.exit_status);
 }

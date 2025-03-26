@@ -6,11 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 16:44:05 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:23:08 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+//update SHLVL
 
 int	init_state(t_tokenizer_state *state, t_token **tokens)
 {
@@ -64,10 +66,10 @@ int	increment_shlvl(t_data *data)
 			if (!shlvl_str)
 				return (ERROR);
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
-			free(shlvl_str);
+			//free(shlvl_str);
 			if (!new_shlvl)
 				return (ERROR);
-			return (free(data->env[i]), data->env[i] = new_shlvl, SUCCESS);
+			return (/*free(data->env[i]), */data->env[i] = new_shlvl, SUCCESS);
 		}
 		i++;
 	}

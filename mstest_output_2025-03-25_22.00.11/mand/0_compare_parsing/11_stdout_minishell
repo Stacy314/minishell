@@ -1,4 +1,0 @@
-exit_code ->0 user ->apechkov home -> /home/apechkov
-Token[0]: Type = 0, Value = "/bin/echo", Index = 0
-Token[1]: Type = 0, Value = "exit_code ->0 user ->apechkov home -> /home/apechkov", Index = 1
-End of tokens (null)

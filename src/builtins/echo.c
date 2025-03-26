@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 22:44:00 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:54:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 // echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (75)
 	//- space in the end
 // echo '' "" (85)
-
-//echo $USER$TESTNOTFOUND$HOME$ (105)
-
-//echo $USER$TESTNOTFOUND$HOME$WTF$PWD (107)
 
 // echo $"" (should print \n) (go crazy)
 

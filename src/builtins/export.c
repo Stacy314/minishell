@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/20 17:19:21 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:18:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // _ value
 
-//export a (ignire in env)
+//export a (ignore in env)
 
 // export (19)
 
@@ -33,6 +33,8 @@
 //echo $? (126)
 //export $?=hallo
 //echo $?
+
+//export SHLVL=max_value
 
 static int	update_env_var(char *arg, t_data *data, int var_index)
 {
