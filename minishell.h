@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:03:09 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 22:28:42 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <unistd.h>
+#include <errno.h>
 
 # define SUCCESS 1
 # define ERROR 0
@@ -81,7 +81,7 @@ typedef struct s_tokenizer_state
 typedef struct s_data
 {
 	char						**env;
-	char						**export_env;
+	//char						**export_env;
 	int							exit_status;
 	char						*input;
 	char						*pwd_p;
@@ -99,8 +99,6 @@ typedef struct s_cmd
 	int							heredoc_fd;
 	pid_t						*pipe_pids;
 	int							pipe_fd[2];
-	// int							new_pipe_fd[2];
-	// int							temp_fd;
 }								t_cmd;
 
 // utils
@@ -131,6 +129,7 @@ void							set_signals_main(void);
 void							set_signals_heredoc(void);
 void							set_signals_child(void);
 void							parent_ignore_signals(void);
+void							parent_restore_signals(void);
 
 // tokenization
 int								handle_expansion(t_tokenizer_state *state,
@@ -216,23 +215,22 @@ void							print_sorted_env(char **env);
 void							add_or_update_export(char *key, t_data *data);
 
 // execution
-void							parent_ignore_signals(void);
-void							parent_restore_signals(void);
 void							execute(t_token **tokens, t_cmd *cmd,
-									t_data *data, char **env);
+									t_data *data);
 int								execute_command(char *cmd, t_data *data,
-									char **args, char **env);
+									char **args);
 void							execute_pipeline(t_token **tokens, t_cmd *cmd,
-									t_data *data, char **env);
+									t_data *data);
 void							execute_for_one(t_token **tokens, t_cmd *cmd,
-									t_data *data, char **env);
+									t_data *data);
 int								execute_redirection(t_cmd *cmd, t_data *data,
-									char **env, t_token **tokens);
+									 t_token **tokens);
 void							execute_heredoc(t_cmd *cmd);
 void							handle_input_redirect(t_cmd *cmd);
 void							handle_output_redirect(t_cmd *cmd);
 void							handle_append_redirect(t_cmd *cmd);
-int								handle_heredoc(t_cmd *cmd, size_t size);
+//int								handle_heredoc(t_cmd *cmd, size_t size);
+int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size);
 void							apply_redirections(t_cmd *cmd, t_data *data);
 
 // expantion

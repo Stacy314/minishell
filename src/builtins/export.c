@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:18:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 22:29:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,12 @@ static int	export_env(char *arg, t_data *data)
 		return (1);
 	}
 	equal_sign = ft_strchr(arg, '=');
-	if (!equal_sign)
-	{
-		add_or_update_export(arg, data); // need to check
-		data->exit_status = 0;
-		return (0);
-	}
+	//if (!equal_sign)
+	//{
+	//	add_or_update_export(arg, data); // need to check
+	//	data->exit_status = 0;
+	//	return (0);
+	//}
 	return (add_or_update_env(arg, data));
 }
 

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 21:51:52 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 16:28:00 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 22:25:32 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_strdup(const char *s)
 	i = 0;
 	while (s[i])
 		i++;
-	dup = (char *)malloc(i + 1);
+	dup = (char *)ft_calloc((i + 1), 1);
 	if (dup == NULL)
 		return (NULL);
 	while (i >= 0)

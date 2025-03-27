@@ -6,27 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:13:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 20:27:04 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// echo test |  <<lala
-
-// ls | cat << stop | grep "asd"
-// is this good
-// stop
-
-// cat <<HEREDOC
-// oi
-// HEREDOC
-
-// cat <<HERE <<DOC
-// oi
-// HERE
-// time
-// DOC
 
 // cat <<HERE | ls
 // oi
@@ -187,6 +171,7 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 	int	rand;
 
 	tries = 0;
+	fd = -1;
 	while (tries < 100)
 	{
 		rand = make_rand_numb();
@@ -203,24 +188,26 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 		tries++;
 	}
 	write_error("Failed to create unique heredoc tmp file\n");
-	return (-1);
+	return (fd);
 }
 
-int	handle_heredoc(t_cmd *cmd, size_t size)
+int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size)
 {
 	char	tmp_filename[128];
 	char	*line;
 	int		tmp_fd;
-	int		infile_fd;
 
+	(void)cmd;
+	if (!heredoc_delimiter)
+		return (ERROR);
 	tmp_fd = create_unique_tmpfile(tmp_filename, size);
 	if (tmp_fd == -1)
 		return (-1);
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || (cmd->heredoc_delimiter && ft_strcmp(line,
-					*cmd->heredoc_delimiter) == 0))
+		if (!line || (ft_strncmp(line, heredoc_delimiter,
+					ft_strlen(heredoc_delimiter)) == 0))
 		{
 			free(line);
 			break ;
@@ -229,19 +216,23 @@ int	handle_heredoc(t_cmd *cmd, size_t size)
 			free(line));
 	}
 	close(tmp_fd);
-	infile_fd = open(tmp_filename, O_RDONLY);
-	if (infile_fd == -1)
-		return (perror("open heredoc file"), unlink(tmp_filename), -1);
-	return (unlink(tmp_filename), infile_fd);
+	tmp_fd = open(tmp_filename, O_RDONLY);
+	return (unlink(tmp_filename), tmp_fd);
 }
 
 void	execute_heredoc(t_cmd *cmd)
 {
 	int	infile_fd;
+	int	i;
 
-	infile_fd = handle_heredoc(cmd, 128);
-	if (infile_fd == -1)
-		return ;
+	i = 0;
+	while (cmd->heredoc_delimiter[i])
+	{
+		infile_fd = handle_heredoc(cmd, cmd->heredoc_delimiter[i], 128);
+		if (infile_fd == -1)
+			return ;
+		i++;
+	}
 	if (dup2(infile_fd, STDIN_FILENO) == -1)
 		perror("dup2");
 	close(infile_fd);

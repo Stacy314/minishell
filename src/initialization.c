@@ -6,13 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 16:42:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 22:54:34 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-//update SHLVL
 
 int	init_state(t_tokenizer_state *state, t_token **tokens)
 {
@@ -69,17 +67,29 @@ int	increment_shlvl(t_data *data)
 			if (!shlvl_str)
 				return (ERROR);
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
-			//free(shlvl_str);
+			free(shlvl_str);
 			if (!new_shlvl)
 				return (ERROR);
-			return (/*free(data->env[i]), */data->env[i] = new_shlvl, SUCCESS);
+			return (free(data->env[i]), data->env[i] = new_shlvl, SUCCESS);
 		}
 		i++;
 	}
 	data->env[i] = ft_strdup("SHLVL=1");
 	if (!data->env[i])
-		return ( ERROR);
+		return (ERROR);
 	return (data->env[i + 1] = NULL, SUCCESS); // try to unset SHLVL
+}
+void	print_env(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (data->env[i])
+	{
+		printf("%s\n", data->env[i]);
+		i++;
+	}
+	printf("//////////////////%d//////////////////////\n", i);
 }
 
 static char	**copy_env(char **env)
@@ -87,6 +97,7 @@ static char	**copy_env(char **env)
 	int		i;
 	int		j;
 	char	**env_copy;
+	int		k;
 
 	i = 0;
 	while (env[i])
@@ -94,17 +105,28 @@ static char	**copy_env(char **env)
 	env_copy = ft_calloc(sizeof(char *) * (i + 1), 1);
 	if (!env_copy)
 		return (NULL);
-	env_copy[i] = NULL;
 	j = 0;
 	while (j < i)
 	{
 		env_copy[j] = ft_strdup(env[j]);
+		//if (j == 3)
+		//{
+		//	env_copy[j] = NULL;
+		//}
 		if (!env_copy[j])
 		{
-			while (--j >= 0)
-				free(env_copy[j]);
-			free(env_copy);
-			return (NULL);
+			 k = 0;
+			 while (k < j)
+			{
+				free(env_copy[k]);
+				k++;
+			}
+			 free(env_copy);
+			 return (NULL);
+			//while (j-- > 0)
+			//	free(env_copy[j]);
+			//free(env_copy);
+			//return (NULL);
 		}
 		j++;
 	}
@@ -113,15 +135,15 @@ static char	**copy_env(char **env)
 
 int	init_data(t_data *data, char **env)
 {
-	data->env = copy_env(env); // dont point on env
+	data->env = copy_env(env);
 	if (!data->env)
 		return (ERROR);
-	data->export_env = data->env;
+	// print_env(data);
 	data->shlvl = increment_shlvl(data);
 	if (!data->shlvl)
 	{
 		perror("init");
-		return (free_env(data->env), ERROR);
+		return (free_array(data->env), ERROR);
 	}
 	data->exit_status = 0;
 	data->input = NULL;

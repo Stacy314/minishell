@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 22:48:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 23:09:00 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,14 +114,8 @@ int	tokenize_loop(const char *str, t_tokenizer_state *state, t_token **tokens,
 		skip_spaces(str, state);
 		if (str[state->j] == '\0')
 			break ;
-		//if (is_logical_operator(str, state)) // mem
-		//	continue ;
 		if (is_pipe_operator(str, state)) // mem
 			continue ;
-		//if (is_pipe_operator(str, state) == -1) // mem
-		//{
-		//	return (/*cleanup_and_null(tokens, state),*/ -1);
-		//}
 		if (!state->inside_quotes && is_redirect(str[state->j]))
 		{
 			if (flush_buffer_to_token(state) == -1)           // mem

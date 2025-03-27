@@ -6,26 +6,16 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:10:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 18:35:52 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// ls | wc -l
-// unset path
-
-//"" (: command not found, EC - 127) (11)
+// "" (: command not found, EC - 127) (11) 
 // touch "" (touch: cannot touch '': No such file or directory) (13)
 
-// awk 'BEGIN{for(i=1;i<=10;i++){for(j=1;j<=10;j++){printf("%4d ",i*j)} printf("\n")}}'
-/// dev/null | tail -n 10 (36)
-// awk 'BEGIN{srand(42); for(i=1;i<=1000000;i++)print int(rand()*1000)}' | awk '{sum+=$1} END {print sum/NR}' (38)
-
 //"."
-
-// unset PATH
-// change to /bin/ - inside this directory the standard commands should work
 
 int	check_permissions(char *cmd)
 {
@@ -49,8 +39,7 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-static int	fork_and_exec(const char *executable, char **args, char **env,
-		t_data *data)
+static int	fork_and_exec(const char *executable, char **args, t_data *data)
 {
 	pid_t	pid;
 	int		status;
@@ -62,7 +51,7 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 		return (perror("fork"), data->exit_status = 1);
 	if (pid == 0)
 		(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL), execve(executable,
-				args, env), exit(0));
+				args, data->env), exit(0));
 	waitpid(pid, &status, 0);
 	parent_restore_signals();
 	if (WIFSIGNALED(status))
@@ -88,8 +77,7 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 	return (data->exit_status);
 }
 
-static int	execute_direct_path(char *cmd, t_data *data, char **args,
-		char **env)
+static int	execute_direct_path(char *cmd, t_data *data, char **args)
 {
 	int	error_code;
 
@@ -98,19 +86,19 @@ static int	execute_direct_path(char *cmd, t_data *data, char **args,
 		error_code = check_permissions(cmd);
 		if (error_code)
 			return (error_code);
-		return (fork_and_exec(cmd, args, env, data));
+		return (fork_and_exec(cmd, args, data));
 	}
 	return (-1);
 }
 
-static int	execute_via_path(char *cmd, t_data *data, char **args, char **env)
+static int	execute_via_path(char *cmd, t_data *data, char **args)
 {
 	char	*path;
 	char	**paths;
 	char	*executable;
 	int		i;
 
-	path = get_path_from_env(env);
+	path = get_path_from_env(data->env);
 	if (!path)
 		return (write_error("%s: command not found\n", cmd),
 			data->exit_status = 127);
@@ -125,19 +113,19 @@ static int	execute_via_path(char *cmd, t_data *data, char **args, char **env)
 		write_error("%s: command not found\n", cmd);
 		return (free_array(paths), data->exit_status = 127);
 	}
-	(fork_and_exec(executable, args, env, data), free(executable));
+	(fork_and_exec(executable, args, data), free(executable));
 	i = 0;
 	while (paths[i])
 		free(paths[i++]);
 	return (free(paths), data->exit_status);
 }
 
-int	execute_command(char *cmd, t_data *data, char **args, char **env)
+int	execute_command(char *cmd, t_data *data, char **args)
 {
 	int	result;
 
-	result = execute_direct_path(cmd, data, args, env);
+	result = execute_direct_path(cmd, data, args);
 	if (result >= 0)
 		return (result);
-	return (execute_via_path(cmd, data, args, env));
+	return (execute_via_path(cmd, data, args));
 }

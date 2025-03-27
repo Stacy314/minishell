@@ -6,19 +6,19 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 16:44:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 22:27:56 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//NEED TO FIX:
-//expot a
+// NEED TO FIX:
+// expot a
 //_ value
-//pwd (don't call getcwd every time)
-//signals
+// pwd (don't call getcwd every time)
+// signals
 
-//interactive/ non-int.
+// interactive/ non-int.
 
 // Wildcards * (print error)
 
@@ -31,7 +31,7 @@
 // aa==vv
 // echo $aa
 
-volatile sig_atomic_t g_signal_flag = 0;
+volatile sig_atomic_t	g_signal_flag = 0;
 
 int	main(int argc, char **argv, char **env)
 {
@@ -50,10 +50,13 @@ int	main(int argc, char **argv, char **env)
 	{
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), /*free_env(data.export_env),*/ free_env(data.env), data.exit_status); //need free all struct
-		if (*input == '\0' || ft_str_only_spaces(input)) //need to check
+			return (printf("exit\n"), free_array(data.env), data.exit_status);
+				// need free all struct
+		if (*input == '\0' || ft_str_only_spaces(input))                      
+			// need to check
 		{
 			free(input);
+			free_array(data.env);
 			continue ;
 		}
 		if (g_signal_flag == SIGINT)
@@ -77,12 +80,12 @@ int	main(int argc, char **argv, char **env)
 			free(input);
 			continue ;
 		}
-		execute(tokens, cmd, &data, env);	
+		execute(tokens, cmd, &data);
 		free(input);
 		free_tokens(tokens);
 		free_cmd(cmd);
 	}
-	free_env(data.env);
-	//clear_history();
+	free_array(data.env);
+	// clear_history();
 	return (data.exit_status);
 }

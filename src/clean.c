@@ -6,26 +6,26 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 15:09:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 20:44:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	free_env(char **env)
-{
-	int	i;
+//void	free_env(char **env)
+//{
+//	int	i;
 
-	i = 0;
-	if (!env)
-		return ;
-	while (env[i])
-	{
-		free(env[i]);
-		i++;
-	}
-	free(env);
-}
+//	i = 0;
+//	if (!env)
+//		return ;
+//	while (env[i])
+//	{
+//		free(env[i]);
+//		i++;
+//	}
+//	free(env);
+//}
 
 void	free_array(char **arr)
 {

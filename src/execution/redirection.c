@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:12:50 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 20:07:33 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,34 @@ static void	redir_loop(t_cmd *cmd, char *input)
 	while (input[i])
 	{
 		if (input[i] == '>' && input[i + 1] == '>')
+		{
 			handle_append_redirect(cmd);
+			i += 2;
+			break ;
+		}
 		else if (input[i] == '<' && input[i + 1] == '<')
+		{
 			execute_heredoc(cmd);
+			i += 2;
+			break ;
+		}
 		else if (input[i] == '<')
+		{
 			handle_input_redirect(cmd);
+			i++;
+			break ;
+		}
 		else if (input[i] == '>')
+		{
 			handle_output_redirect(cmd);
+			i++;
+			break ;
+		}
 		i++;
 	}
 }
 
-int	execute_redirection(t_cmd *cmd, t_data *data, char **env, t_token **tokens)
+int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 {
 	pid_t	pid;
 	int		status;
@@ -62,12 +78,12 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env, t_token **tokens)
 		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input);
 		signal(SIGQUIT, SIG_DFL);
-		(execute_for_one(tokens, cmd, data, env), exit(data->exit_status));
+		(execute_for_one(tokens, cmd, data), exit(data->exit_status));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 	{
-		parent_restore_signals(); //need to move to signals
+		parent_restore_signals(); // need to move to signals
 		if (WIFSIGNALED(status))
 		{
 			sig = WTERMSIG(status);
