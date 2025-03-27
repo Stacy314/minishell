@@ -6,11 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/17 19:41:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 23:13:53 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 static int	is_delim(char c, const char *delim)
 {
@@ -52,9 +52,7 @@ char	*get_path_from_env(char **env)
 	while (env[i] != NULL)
 	{
 		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-		{
 			return (env[i] + 5);
-		}
 		i++;
 	}
 	return (NULL);
@@ -67,19 +65,19 @@ char	**split_path(const char *path)
 	char	*path_copy;
 	char	*token;
 
-	paths = ft_calloc(128 * sizeof(char *), 1); // why 128?
+	paths = ft_calloc(128 * sizeof(char *), 1); //128?
 	if (!paths)
 	{
 		// free
 		return (NULL);
 	}
 	path_copy = ft_strdup(path);
-	token = ft_strtok(path_copy, ":"); // need to cange
+	token = ft_strtok(path_copy, ":");
 	i = 0;
 	while (token)
 	{
 		paths[i++] = ft_strdup(token);
-		token = ft_strtok(NULL, ":"); // need to cange
+		token = ft_strtok(NULL, ":");
 	}
 	paths[i] = NULL;
 	free(path_copy);
@@ -89,9 +87,10 @@ char	**split_path(const char *path)
 char	*find_executable(const char *cmd, char **paths)
 {
 	char	*full_path;
+	char	*path_with_slash;
 	int		i;
 
-	full_path = ft_calloc(1024, 1); // why 1024?
+	full_path = ft_calloc(1024, 1); //1024?
 	if (!full_path)
 	{
 		// free(void *ptr)
@@ -101,12 +100,20 @@ char	*find_executable(const char *cmd, char **paths)
 	i = 0;
 	while (paths[i] != NULL)
 	{
-		snprintf(full_path, 1024, "%s/%s", paths[i], cmd); // need to change
+		path_with_slash = ft_strjoin(paths[i], "/");
+		if (!path_with_slash)
+			return (NULL);
+		full_path = ft_strjoin(path_with_slash, cmd);
+		free(path_with_slash);
+		if (!full_path)
+			return (NULL);
+		//snprintf(full_path, 1024, "%s/%s", paths[i], cmd); // need to change
 		if (access(full_path, X_OK) == 0)
 		{
 			// printf("full_path = %s\n", full_path);
 			return (full_path);
 		}
+		//free(full_path);	
 		i++;
 	}
 	free(full_path);

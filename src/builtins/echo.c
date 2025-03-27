@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 16:45:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:54:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,6 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 	}
 	if (!n_flag)
 		ft_putstr_fd("\n", STDOUT_FILENO);
-	// data->exit_status = 0;
+	data->exit_status = 0;
 	return ;
 }

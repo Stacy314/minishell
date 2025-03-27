@@ -6,11 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/18 12:39:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:11:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 //"" (: command not found)  &   //echo '' ""
 // this should be fixed in execution part:
@@ -40,7 +40,7 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	else if (ft_strncmp(cmd->args[0], "env", ft_strlen(cmd->args[0])) == 0)
 		builtin_env(data, cmd);
 	else if (ft_strncmp(cmd->args[0], "exit", ft_strlen(cmd->args[0])) == 0)
-		builtin_exit(cmd, data);
+		builtin_exit(cmd, data, tokens);
 	else
 	{
 		data->exit_status = execute_command(cmd->args[0], data, cmd->args, env);
@@ -57,15 +57,11 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data, char **env)
 	if (cmd->heredoc_delimiter || (cmd->input_redirects
 			&& cmd->input_redirects[0]) || (cmd->output_redirects
 			&& cmd->output_redirects[0]) || (cmd->append_redirects
-			&& cmd->append_redirects[0])) // cmd->input_redirects[0]
+			&& cmd->append_redirects[0]))
 	{
-		if (execute_redirection(cmd, data, env) == 1)
+		if (execute_redirection(cmd, data, env, tokens) == 1)
 			return ;
 	}
 	else
 		execute_for_one(tokens, cmd, data, env);
-	//if (cmd)
-	//	free_cmd(cmd);
-	//if (tokens)
-	//	free_tokens(tokens);
 }

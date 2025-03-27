@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 22:50:24 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:44:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,21 +48,9 @@ int	main(int argc, char **argv, char **env)
 	set_signals_main();
 	while (1)
 	{
-		///////////////
-		// if (isatty(fileno(stdin)))
-		//	input = readline("minishell$ ");
-		// else
-		//{
-		//	char *line = get_next_line(fileno(stdin));
-		//	input = ft_strtrim(line, "\n");
-		//	free(line);
-		//}
-		///////////////
-		// fprintf(stderr, "[DEBUG] calling readline\n");
 		input = readline("minishell$ ");
-		// fprintf(stderr, "[DEBUG] got line: %s\n", input ? input : "(null)");
 		if (!input)
-			return (printf("exit\n")/*, free_env(data.env)*/, data.exit_status);
+			return (printf("exit\n"), /*free_env(data.export_env),*/ free_env(data.env), data.exit_status); //need free all struct
 		if (*input == '\0' || ft_str_only_spaces(input)) //need to check
 		{
 			free(input);
@@ -77,26 +65,24 @@ int	main(int argc, char **argv, char **env)
 		if (*input)
 			add_history(input);
 		tokens = split_to_tokens(input, &data);
-		if (tokens == (t_token **)(-1) || !tokens)
+		if (!tokens)
 		{
 			free(input);
-			//free_tokens(tokens);
 			continue ;
 		}
 		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
 			free_tokens(tokens);
-			free(cmd);
 			free(input);
 			continue ;
 		}
-		execute(tokens, cmd, &data, env);
+		execute(tokens, cmd, &data, env);	
 		free(input);
 		free_tokens(tokens);
 		free_cmd(cmd);
 	}
-	//free_env(data.env);
-	clear_history();
+	free_env(data.env);
+	//clear_history();
 	return (data.exit_status);
 }
