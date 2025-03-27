@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 22:17:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:44:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,11 @@ int	main(int argc, char **argv, char **env)
 		{
 			free(input);
 			continue ;
+		}
+		if (g_signal_flag == SIGINT)
+		{
+			data.exit_status = 130;
+			g_signal_flag = 0;
 		}
 		data.input = input;
 		if (*input)

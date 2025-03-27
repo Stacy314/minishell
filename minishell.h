@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 15:32:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:03:09 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,8 @@ typedef struct s_cmd
 	int							heredoc_fd;
 	pid_t						*pipe_pids;
 	int							pipe_fd[2];
-	//int							new_pipe_fd[2];
-	//int							temp_fd;
+	// int							new_pipe_fd[2];
+	// int							temp_fd;
 }								t_cmd;
 
 // utils
@@ -130,6 +130,7 @@ t_cmd							*init_new_cmd(void);
 void							set_signals_main(void);
 void							set_signals_heredoc(void);
 void							set_signals_child(void);
+void							parent_ignore_signals(void);
 
 // tokenization
 int								handle_expansion(t_tokenizer_state *state,
@@ -215,6 +216,8 @@ void							print_sorted_env(char **env);
 void							add_or_update_export(char *key, t_data *data);
 
 // execution
+void							parent_ignore_signals(void);
+void							parent_restore_signals(void);
 void							execute(t_token **tokens, t_cmd *cmd,
 									t_data *data, char **env);
 int								execute_command(char *cmd, t_data *data,

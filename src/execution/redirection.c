@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:11:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:51:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,43 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env, t_token **tokens)
 {
 	pid_t	pid;
 	int		status;
+	int		sig;
 
+	parent_ignore_signals();
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 0);
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input);
+		signal(SIGQUIT, SIG_DFL);
 		(execute_for_one(tokens, cmd, data, env), exit(data->exit_status));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-		data->exit_status = WEXITSTATUS(status);
+	{
+		parent_restore_signals();
+		if (WIFSIGNALED(status))
+		{
+			sig = WTERMSIG(status);
+			if (sig == SIGINT)
+			{
+				write(STDOUT_FILENO, "\n", 1);
+				data->exit_status = 130;
+			}
+			else if (sig == SIGQUIT)
+			{
+				write(STDERR_FILENO, "Quit (core dumped)\n", 19);
+				data->exit_status = 131;
+			}
+			else
+				data->exit_status = 128 + sig;
+		}
+		else if (WIFEXITED(status))
+			data->exit_status = WEXITSTATUS(status);
+	}
 	return (1);
 }
 
