@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 21:31:45 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/26 13:34:12 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,20 +58,14 @@ static int	print_err(char specifier, va_list ap)
 void	write_error(const char *format, ...)
 {
 	va_list	ap;
-	//int		i;
 
-	//i = 0;
 	va_start(ap, format);
 	while (*format != '\0')
 	{
 		if (*format == '%')
-		{
-			/* i +=  */print_err(*(++format), ap);
-		}
+			print_err(*(++format), ap);
 		else
-		{
-			/* i +=  */write(2, format, 1);
-		}
+			write(2, format, 1);
 		++format;
 	}
 	va_end(ap);

@@ -6,26 +6,26 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 17:39:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/25 15:09:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//void	free_env(char **env)
-//{
-//	int	i;
+void	free_env(char **env)
+{
+	int	i;
 
-//	i = 0;
-//	if (!env)
-//		return ;
-//	while (env[i])
-//	{
-//		free(env[i]);
-//		i++;
-//	}
-//	free(env);
-//}
+	i = 0;
+	if (!env)
+		return ;
+	while (env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
+}
 
 void	free_array(char **arr)
 {
@@ -95,4 +95,11 @@ void	free_tokens(t_token **tokens)
 		i++;
 	}
 	free(tokens);
+}
+
+void	*cleanup_and_null(t_token **tokens, t_tokenizer_state *state)
+{
+	free_tokens(tokens);
+	free(state->buffer);
+	return (NULL);
 }

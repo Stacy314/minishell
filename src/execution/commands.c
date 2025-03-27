@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/21 23:45:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/26 21:45:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 // ls | wc -l
 // unset path
@@ -57,19 +57,10 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("fork");
-		return (data->exit_status = 1);
-	}
-	//signal(SIGINT, SIG_IGN);
+		return (perror("fork"), data->exit_status = 1);
 	if (pid == 0)
 	{
-		
-		
-		set_signals_child(); //
-		//signal(SIGINT, SIG_DFL); 
 		execve(executable, args, env);
-		// perror("execve");
 		exit(0); // 127 ?
 	}
 	else
@@ -77,21 +68,11 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 		{
-			///* Katya */
-			//if (WEXITSTATUS(status) == 130 || WEXITSTATUS(status) == 131)
-			//{
-			//	if (WEXITSTATUS(status) == 131)
-			//		printf("Quit (core dumped)");
-			//	write (1, "\n", 1);
-			//}
-			///* End */
 			data->exit_status = WEXITSTATUS(status);
 		}
 		else
 			data->exit_status = 1;
 	}
-	//printf("\n"); // wrong 
-	//signal(SIGINT, handle_sigint); 
 	return (data->exit_status);
 }
 
