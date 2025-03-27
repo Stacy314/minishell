@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:46:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 23:13:53 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ char	**split_path(const char *path)
 	char	*path_copy;
 	char	*token;
 
-	paths = ft_calloc(128 * sizeof(char *), 1); // why 128?
+	paths = ft_calloc(128 * sizeof(char *), 1); //128?
 	if (!paths)
 	{
 		// free
@@ -90,7 +90,7 @@ char	*find_executable(const char *cmd, char **paths)
 	char	*path_with_slash;
 	int		i;
 
-	full_path = ft_calloc(1024, 1); // why 1024?
+	full_path = ft_calloc(1024, 1); //1024?
 	if (!full_path)
 	{
 		// free(void *ptr)

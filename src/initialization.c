@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:43:01 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:37:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ t_cmd	*init_new_cmd(void)
 	cmd->append_redirects = NULL;
 	cmd->heredoc_delimiter = NULL;
 	cmd->next = NULL;
+	cmd->pipe_pids = NULL;
+	cmd->pipe_fd[0] = -1;
+	cmd->pipe_fd[1] = -1;
 	return (cmd);
 }
 
@@ -110,7 +113,7 @@ static char	**copy_env(char **env)
 
 int	init_data(t_data *data, char **env)
 {
-	data->env = copy_env(env);
+	data->env = copy_env(env); // dont point on env
 	if (!data->env)
 		return (ERROR);
 	data->export_env = data->env;

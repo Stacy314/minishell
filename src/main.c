@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 15:58:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/26 22:17:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), /*free_env(data.export_env),*/ free_env(data.env), data.exit_status);
+			return (printf("exit\n"), /*free_env(data.export_env),*/ free_env(data.env), data.exit_status); //need free all struct
 		if (*input == '\0' || ft_str_only_spaces(input)) //need to check
 		{
 			free(input);

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:49:33 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:32:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <unistd.h>
 
 # define SUCCESS 1
 # define ERROR 0
@@ -96,6 +97,10 @@ typedef struct s_cmd
 	char						**append_redirects;
 	char						**heredoc_delimiter;
 	int							heredoc_fd;
+	pid_t						*pipe_pids;
+	int							pipe_fd[2];
+	//int							new_pipe_fd[2];
+	//int							temp_fd;
 }								t_cmd;
 
 // utils
