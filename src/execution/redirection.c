@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 16:51:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:12:50 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, char **env, t_token **tokens)
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 	{
-		parent_restore_signals();
+		parent_restore_signals(); //need to move to signals
 		if (WIFSIGNALED(status))
 		{
 			sig = WTERMSIG(status);

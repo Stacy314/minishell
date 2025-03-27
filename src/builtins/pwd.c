@@ -6,12 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:06:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:07:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-///
 
  int	builtin_pwd(t_cmd *cmd, t_data *data)
 {

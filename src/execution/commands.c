@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:01:28 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:10:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,49 +61,30 @@ static int	fork_and_exec(const char *executable, char **args, char **env,
 	if (pid == -1)
 		return (perror("fork"), data->exit_status = 1);
 	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		execve(executable, args, env);
-		exit(0); // 127 ?
-	}
+		(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL), execve(executable,
+				args, env), exit(0));
 	waitpid(pid, &status, 0);
 	parent_restore_signals();
 	if (WIFSIGNALED(status))
 	{
-		// Процесс убит сигналом
-		sig = WTERMSIG(status);
+		sig = WTERMSIG(status); // need to move to signals
 		if (sig == SIGINT)
 		{
-			// Ctrl-C убил дочерний процесс
-			// Bash обычно при этом выводит просто \n
-			// и exit-код = 130
 			data->exit_status = 130;
 			write(STDOUT_FILENO, "\n", 1);
 		}
 		else if (sig == SIGQUIT)
 		{
-			// Ctrl-\ убил дочерний процесс
-			// Bash выводит "Quit (core dumped)\n" и exit-код = 131
 			data->exit_status = 131;
 			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 		}
 		else
-		{
-			// Можно сделать общий случай 128 + sig
 			data->exit_status = 128 + sig;
-		}
 	}
 	else if (WIFEXITED(status))
-	{
-		// Процесс завершился обычным вызовом exit(...)
 		data->exit_status = WEXITSTATUS(status);
-	}
 	else
-	{
-		// На всякий случай, если какая-то другая причина
 		data->exit_status = 1;
-	}
 	return (data->exit_status);
 }
 

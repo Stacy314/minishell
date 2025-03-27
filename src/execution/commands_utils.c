@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 23:13:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:13:45 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,12 +107,8 @@ char	*find_executable(const char *cmd, char **paths)
 		free(path_with_slash);
 		if (!full_path)
 			return (NULL);
-		//snprintf(full_path, 1024, "%s/%s", paths[i], cmd); // need to change
 		if (access(full_path, X_OK) == 0)
-		{
-			// printf("full_path = %s\n", full_path);
 			return (full_path);
-		}
 		//free(full_path);	
 		i++;
 	}
