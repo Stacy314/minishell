@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 15:24:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 21:33:50 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	increment_shlvl(t_data *data)
 			if (!shlvl_str)
 				return (ERROR);
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
-			free(shlvl_str);
+			free(shlvl_str); 
 			if (!new_shlvl)
 				return (ERROR);
 			return (free(data->env[i]), data->env[i] = new_shlvl, SUCCESS);
@@ -77,18 +77,6 @@ int	increment_shlvl(t_data *data)
 	if (!data->env[i])
 		return (ERROR);
 	return (data->env[i + 1] = NULL, SUCCESS); // try to unset SHLVL
-}
-void	print_env(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (data->env[i])
-	{
-		printf("%s\n", data->env[i]);
-		i++;
-	}
-	printf("//////////////////%d//////////////////////\n", i);
 }
 
 static char	**copy_env(char **env)

@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 19:44:27 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/31 21:54:22 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,15 +71,18 @@ int	main(int argc, char **argv, char **env)
 		if (!tokens)
 		{
 			free_all(&data, tokens,cmd);
-			return (EXIT_FAILURE);
+			continue; //need to change
+			//return (EXIT_FAILURE); //for memory fail
 		}
 		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
+			
 			free_all(&data, tokens,cmd);
-			return (EXIT_FAILURE);
+			continue; //need to change
+			//return (EXIT_FAILURE); //for memory fail
 		}
-		execute(tokens, cmd, &data);
+		execute(tokens, cmd, &data); 
 		free_all(&data, tokens,cmd);
 	}
 	free_array(data.env);
