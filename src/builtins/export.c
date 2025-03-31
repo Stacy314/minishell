@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 22:29:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 18:37:20 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ static int	add_or_update_env(char *arg, t_data *data)
 
 static int	export_env(char *arg, t_data *data)
 {
-	char	*equal_sign;
+	// char	*equal_sign;
 
 	if (!is_valid_identifier(arg))
 	{
@@ -100,7 +100,7 @@ static int	export_env(char *arg, t_data *data)
 		data->exit_status = 1;
 		return (1);
 	}
-	equal_sign = ft_strchr(arg, '=');
+	// equal_sign = ft_strchr(arg, '=');
 	//if (!equal_sign)
 	//{
 	//	add_or_update_export(arg, data); // need to check

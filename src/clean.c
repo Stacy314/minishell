@@ -3,29 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 14:47:43 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:17:44 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// void	free_env(char **env)
-//{
-//	int	i;
-
-//	i = 0;
-//	if (!env)
-//		return ;
-//	while (env[i])
-//	{
-//		free(env[i]);
-//		i++;
-//	}
-//	free(env);
-//}
+#include <time.h>
 
 void	free_array(char **arr)
 {
@@ -46,6 +32,8 @@ void	free_cmd(t_cmd *cmd)
 {
 	t_cmd	*tmp;
 
+	if (!cmd)
+		return ;
 	while (cmd)
 	{
 		tmp = cmd->next;
@@ -66,7 +54,7 @@ void	free_tokens(t_token **tokens)
 	int	i;
 
 	i = 0;
-	if (!tokens)
+	if (!tokens && !tokens[i])
 		return ;
 	while (tokens[i])
 	{
@@ -89,4 +77,16 @@ void	*cleanup_and_null(/*t_token **tokens,*/ t_tokenizer_state *state)
 	//free_tokens(tokens);
 	//free(state->buffer);
 	return (NULL);
+}
+
+void free_all(t_data *data, t_token **tokens, t_cmd *cmd)
+{
+	if (data->input)
+		free(data->input);
+	// if (data->env)
+	// 	free_array(data->env);
+	if (tokens)
+		free_tokens(tokens);
+	if (cmd)
+		free_cmd(cmd);
 }

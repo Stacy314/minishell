@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 13:34:12 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:22:56 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ int	ft_str_only_spaces(const char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] != ' ' && str[i] != '\t')
+		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-static int	print_err(char specifier, va_list ap)
+static int	put_err(char specifier, va_list ap)
 {
 	if (specifier == 'c')
 		return (ft_putchar_fd(va_arg(ap, int), 2));
@@ -63,7 +63,7 @@ void	write_error(const char *format, ...)
 	while (*format != '\0')
 	{
 		if (*format == '%')
-			print_err(*(++format), ap);
+			put_err(*(++format), ap);
 		else
 			write(2, format, 1);
 		++format;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 15:35:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 18:50:24 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 {
 	(void)tokens;
-	if (!cmd->args || !cmd->args[0] /*|| cmd->args[0][0] == '\0'*/)
-		return /*((data->exit_status = 127,
-				write_error("minishell: '%s': command not found",
-					cmd->args[0])))*/;
+	if (!cmd->args || !cmd->args[0])
+		return ;
 	if (ft_strncmp(cmd->args[0], "echo", ft_strlen(cmd->args[0])) == 0)
 		builtin_echo(cmd, data);
 	else if (ft_strncmp(cmd->args[0], "cd", ft_strlen(cmd->args[0])) == 0)

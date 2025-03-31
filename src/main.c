@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 13:55:45 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:44:27 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,55 +51,37 @@ int	main(int argc, char **argv, char **env)
 	set_signals_main();
 	while (1)
 	{
-		input = readline("minishell$ ");
-		if (!input)
-			return (printf("exit\n"), free_array(data.env) /*,
-				free_tokens(tokens), free_cmd(cmd)*/, data.exit_status);
-		// need free all struct
-		if (*input == '\0' || ft_str_only_spaces(input))
-		// need to check
-		{
-			free(input);
-			free_tokens(tokens);  //
-			free_cmd(cmd);        //
-			free_array(data.env); //
-			return (EXIT_FAILURE);
-			//continue ;
-		}
-		if (g_signal_flag == SIGINT)
+		if (g_signal_flag == SIGINT) //move to sig
 		{
 			data.exit_status = 130;
 			g_signal_flag = 0;
 		}
-		data.input = input;
+		input = readline("minishell$ ");
+		if (!input)
+			return (printf("exit\n"), free_array(data.env), /* free_all(&data, tokens,cmd), */ data.exit_status);
+		if (*input == '\0' || ft_str_only_spaces(input))
+		{
+			//free_all(&data, tokens,cmd);
+			continue ;
+		}
 		if (*input)
 			add_history(input);
+		data.input = input;
 		tokens = split_to_tokens(input, &data);
 		if (!tokens)
 		{
-			free(input);
-			free_tokens(tokens);  //
-			free_cmd(cmd);        //
-			free_array(data.env); //
+			free_all(&data, tokens,cmd);
 			return (EXIT_FAILURE);
-			//continue ;
 		}
 		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
-			free(input);
-			free_tokens(tokens);
-			free_cmd(cmd);        //
-			free_array(data.env); //
+			free_all(&data, tokens,cmd);
 			return (EXIT_FAILURE);
-			//continue ;
 		}
 		execute(tokens, cmd, &data);
-		free(input);
-		free_tokens(tokens);
-		free_cmd(cmd);
+		free_all(&data, tokens,cmd);
 	}
-	free_tokens(tokens);
 	free_array(data.env);
 	// clear_history();
 	return (data.exit_status);

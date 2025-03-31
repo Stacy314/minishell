@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 15:35:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:12:34 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@
 
 # define SUCCESS 1
 # define ERROR 0
-
-# define PERMISSION_DENIED 126 // need to check all error codes
+# define SYNTAXIS_ERROR 2
+# define PERMISSION_DENIED 126 
 # define COMMAND_NOT_FOUND 127
+
+
 //# define ERROR_CODE_MALLOC 1
 //# define ERROR_CODE_GENERAL 7
 //# define ERROR_CODE_QUOTES 8
@@ -115,6 +117,8 @@ int								ft_str_only_spaces(const char *str);
 // free
 void							free_array(char **arr);
 void							free_env(char **env);
+void							free_all(t_data *data, t_token **tokens, t_cmd *cmd);
+void							*cleanup_and_null(t_tokenizer_state *state);
 
 // initialization
 t_cmd							*init_cmd(void);
@@ -156,11 +160,6 @@ int								is_pipe_operator(const char *str,
 									t_tokenizer_state *state);
 int								handle_token_word(t_tokenizer_state *state,
 									const char *str, t_data *data);
-void	*cleanup_and_null(/*t_token **tokens,*/
-						t_tokenizer_state *state);
-// int								tokenize_loop(const char *str,
-//									t_tokenizer_state *state, t_token **tokens,
-//									t_data *data);
 int								update_quote_state(t_tokenizer_state *state,
 									char c);
 int								flush_word_before_redirect(t_tokenizer_state *state);
@@ -228,7 +227,6 @@ void							execute_heredoc(t_cmd *cmd);
 void							handle_input_redirect(t_cmd *cmd);
 void							handle_output_redirect(t_cmd *cmd);
 void							handle_append_redirect(t_cmd *cmd);
-// int								handle_heredoc(t_cmd *cmd, size_t size);
 int								handle_heredoc(t_cmd *cmd,
 									char *heredoc_delimiter, size_t size);
 void							apply_redirections(t_cmd *cmd, t_data *data);

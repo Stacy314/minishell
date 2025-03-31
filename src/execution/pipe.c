@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 15:37:28 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:47:27 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		if (dup2(cmd->pipe_fd[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
-			free_tokens(tokens);
-			free_cmd(cmd);
-			free_array(data->env);
+			// free_tokens(tokens);
+			// free_cmd(cmd);
+			// free_array(data->env);
 			// close(STDOUT_FILENO);
 			exit(1);
 		}
@@ -59,9 +59,9 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		close(cmd->pipe_fd[1]);
 		apply_redirections(cmd, data);
 		execute_for_one(tokens, cmd, data);
-		free_tokens(tokens);
-		free_cmd(cmd);
-		free_array(data->env);
+		// free_tokens(tokens);
+		// free_cmd(cmd);
+		// free_array(data->env);
 		// close(STDOUT_FILENO);
 		exit(data->exit_status);
 	}
@@ -89,21 +89,21 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 	{
 		if (dup2(cmd->pipe_fd[0], STDIN_FILENO) == -1)
 		{
-			free_tokens(tokens);
-			free_cmd(cmd);
-			free_array(data->env);
+			// free_tokens(tokens);
+			// free_cmd(cmd);
+			// free_array(data->env);
 			return (perror("dup2 cmd->pipe_fd[0]"), exit(1), -1);
 		}
 		if (dup2(new_pipe_fd[1], STDOUT_FILENO) == -1)
 		{
-			free_tokens(tokens);
-			free_cmd(cmd);
-			free_array(data->env);			
+			// free_tokens(tokens);
+			// free_cmd(cmd);
+			// free_array(data->env);			
 			return (perror("dup2 new_pipe_fd[1]"), exit(1), -1);
 		}
-		free_tokens(tokens);
-		free_cmd(cmd);
-		free_array(data->env);
+		// free_tokens(tokens);
+		// free_cmd(cmd);
+		// free_array(data->env);
 		(close(cmd->pipe_fd[0]), close(new_pipe_fd[0]), close(new_pipe_fd[1]),
 			apply_redirections(cmd, data), execute_for_one(tokens, cmd, data),
 			exit(data->exit_status));
@@ -127,9 +127,9 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		{
 			if (dup2(cmd->pipe_fd[0], STDIN_FILENO) == -1)
 			{
-				free_tokens(tokens);
-				free_cmd(cmd);
-				free_array(data->env);			
+				// free_tokens(tokens);
+				// free_cmd(cmd);
+				// free_array(data->env);			
 				return (perror("dup2 cmd->pipe_fd[0]"), exit(1), -1);
 			}
 			close(cmd->pipe_fd[0]);
@@ -138,9 +138,9 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		apply_redirections(cmd, data);
 		execute_for_one(tokens, cmd, data);
 		close(0); //
-		free_tokens(tokens);
-		free_cmd(cmd);
-		free_array(data->env);
+		// free_tokens(tokens);
+		// free_cmd(cmd);
+		// free_array(data->env);
 		exit(data->exit_status);
 	}
 	if (cmd->pipe_fd[0] != -1)
