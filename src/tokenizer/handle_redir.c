@@ -6,11 +6,30 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 15:12:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 12:31:09 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
+	t_token_type type, int advance)
+{
+state->tokens[state->i] = create_token(symbol, type, (state->index)++);
+if (!state->tokens[state->i])
+{
+	while (state->tokens[state->i] > 0)
+	{
+		free(state->tokens[state->i]);
+		state->i--;
+	}
+	perror("failed create token");
+	return (-1);
+}
+state->j += advance;
+state->i++;
+return (0);
+}
 
 int	handle_redirection(t_tokenizer_state *state, const char *str)
 {

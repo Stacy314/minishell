@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 20:07:33 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 14:26:54 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input);
 		signal(SIGQUIT, SIG_DFL);
-		(execute_for_one(tokens, cmd, data), exit(data->exit_status));
+		(execute_for_one(tokens, cmd, data),free_tokens(tokens), free_cmd(cmd), free_array(data->env), exit(data->exit_status));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

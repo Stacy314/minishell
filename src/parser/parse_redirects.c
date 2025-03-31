@@ -6,11 +6,12 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/03/26 21:07:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:28:58 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
 
 char ***get_redirect_target(t_cmd *cmd, t_token_type type)
 {
@@ -76,4 +77,32 @@ int append_redirect_value(char ***redirects, const char *value)
 	free(*redirects);
 	*redirects = new_array;
 	return (SUCCESS);
+}
+
+int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
+{
+	char	***redirects;
+
+	redirects = get_redirect_target(cmd, type);
+	if (!redirects)
+		return (SUCCESS);
+	if (!*redirects)
+		return (initialize_redirect_array(redirects, token->value));
+	else
+		return (append_redirect_value(redirects, token->value));
+}
+
+int	handle_redirect(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
+{
+	if (!tokens[*i + 1] || tokens[*i + 1]->type != WORD)
+	{
+		write_error("minishell: syntax error near unexpected token `%s'\n",
+			tokens[*i + 1] ? tokens[*i + 1]->value : "newline");
+		data->exit_status = 2;
+		return (0);
+	}
+	if (!parse_redirects(cmd, tokens[*i + 1], tokens[*i]->type))
+		return (0);
+	(*i)++;
+	return (1);
 }

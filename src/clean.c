@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 20:44:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 14:47:43 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-//void	free_env(char **env)
+// void	free_env(char **env)
 //{
 //	int	i;
 
@@ -44,41 +44,21 @@ void	free_array(char **arr)
 
 void	free_cmd(t_cmd *cmd)
 {
-	int	i;
+	t_cmd	*tmp;
 
-	if (!cmd)
-		return ;
-	if (cmd->args)
+	while (cmd)
 	{
-		i = 0;
-		while (cmd->args[i])
-			free(cmd->args[i++]);
-		free(cmd->args);
+		tmp = cmd->next;
+		free_array(cmd->args);
+		free_array(cmd->input_redirects);
+		free_array(cmd->output_redirects);
+		free_array(cmd->append_redirects);
+		free_array(cmd->heredoc_delimiter);
+		//if (cmd->pipe_pids)
+		//	free(cmd->pipe_pids);
+		free(cmd);
+		cmd = tmp;
 	}
-	if (cmd->input_redirects)
-	{
-		i = 0;
-		while (cmd->input_redirects[i])
-			free(cmd->input_redirects[i++]);
-		free(cmd->input_redirects);
-	}
-	if (cmd->output_redirects)
-	{
-		i = 0;
-		while (cmd->output_redirects[i])
-			free(cmd->output_redirects[i++]);
-		free(cmd->output_redirects);
-	}
-	if (cmd->append_redirects)
-	{
-		i = 0;
-		while (cmd->append_redirects[i])
-			free(cmd->append_redirects[i++]);
-		free(cmd->append_redirects);
-	}
-	if (cmd->heredoc_delimiter)
-		free(cmd->heredoc_delimiter);
-	free(cmd);
 }
 
 void	free_tokens(t_token **tokens)
@@ -97,9 +77,16 @@ void	free_tokens(t_token **tokens)
 	free(tokens);
 }
 
-void	*cleanup_and_null(t_token **tokens, t_tokenizer_state *state)
+void	*cleanup_and_null(/*t_token **tokens,*/ t_tokenizer_state *state)
 {
-	free_tokens(tokens);
-	free(state->buffer);
+	if (!state)
+		return (NULL);
+	if (state->buffer)
+		free(state->buffer);
+	if (state->tokens)
+		free_tokens(state->tokens);
+	free(state);
+	//free_tokens(tokens);
+	//free(state->buffer);
 	return (NULL);
 }

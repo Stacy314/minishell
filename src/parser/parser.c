@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 19:00:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:40:42 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 // {
 // 	int	i;
 
+//////////////////////////////////////////////////////////////////////
 void	debug_print_cmd(t_cmd *cmd)
 {
 	int	i;
@@ -104,6 +105,7 @@ void	debug_print_cmd(t_cmd *cmd)
 		cmd = cmd->next;
 	}
 }
+//////////////////////////////////////////////////////////////////////
 
 int	check_initial_syntax_errors(t_token **tokens, t_data *data)
 {
@@ -128,19 +130,6 @@ int	check_initial_syntax_errors(t_token **tokens, t_data *data)
 		i++;
 	}
 	return (0);
-}
-
-int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
-{
-	char	***redirects;
-
-	redirects = get_redirect_target(cmd, type);
-	if (!redirects)
-		return (SUCCESS);
-	if (!*redirects)
-		return (initialize_redirect_array(redirects, token->value));
-	else
-		return (append_redirect_value(redirects, token->value));
 }
 
 char	**append_to_args(char **args, char *new_arg)
@@ -168,6 +157,52 @@ char	**append_to_args(char **args, char *new_arg)
 	new_args[len + 1] = NULL;
 	free(args);
 	return (new_args);
+}
+
+int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
+{
+	while (tokens[*i] && tokens[*i]->type != PIPE)
+	{
+		if (tokens[*i]->type == REDIRECT_IN || tokens[*i]->type == REDIRECT_OUT
+		|| tokens[*i]->type == APPEND || tokens[*i]->type == HEREDOC)
+		{
+			if (!handle_redirect(cmd, tokens, data, i))
+				return (0);
+		}
+		else
+		{
+			cmd->args = append_to_args(cmd->args, tokens[*i]->value);
+			if (!cmd->args)
+				return (0);
+		}
+		(*i)++;
+	}
+	return (1);
+}
+
+int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
+{
+	t_cmd	*prev;
+	t_cmd	*current;
+
+	prev = NULL;
+	current = NULL;
+	while (tokens[*i])
+	{
+		current = init_new_cmd();
+		if (!current)
+			return (0);
+		if (!*head)
+			*head = current;
+		else
+			prev->next = current;
+		if (!fill_cmd(current, tokens, data, i))
+			return (0);
+		prev = current;
+		if (tokens[*i] && tokens[*i]->type == PIPE)
+			(*i)++;
+	}
+	return (1);
 }
 
 t_cmd	*parse_tokens(t_token **tokens, t_data *data)

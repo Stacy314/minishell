@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 22:28:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:35:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
+# include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <readline/history.h>
@@ -27,7 +28,6 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-#include <errno.h>
 
 # define SUCCESS 1
 # define ERROR 0
@@ -81,7 +81,6 @@ typedef struct s_tokenizer_state
 typedef struct s_data
 {
 	char						**env;
-	//char						**export_env;
 	int							exit_status;
 	char						*input;
 	char						*pwd_p;
@@ -97,7 +96,7 @@ typedef struct s_cmd
 	char						**append_redirects;
 	char						**heredoc_delimiter;
 	int							heredoc_fd;
-	pid_t						*pipe_pids;
+	pid_t						pipe_pids[2];
 	int							pipe_fd[2];
 }								t_cmd;
 
@@ -157,11 +156,11 @@ int								is_pipe_operator(const char *str,
 									t_tokenizer_state *state);
 int								handle_token_word(t_tokenizer_state *state,
 									const char *str, t_data *data);
-void							*cleanup_and_null(t_token **tokens,
-									t_tokenizer_state *state);
-int								tokenize_loop(const char *str,
-									t_tokenizer_state *state, t_token **tokens,
-									t_data *data);
+void	*cleanup_and_null(/*t_token **tokens,*/
+						t_tokenizer_state *state);
+// int								tokenize_loop(const char *str,
+//									t_tokenizer_state *state, t_token **tokens,
+//									t_data *data);
 int								update_quote_state(t_tokenizer_state *state,
 									char c);
 int								flush_word_before_redirect(t_tokenizer_state *state);
@@ -219,18 +218,19 @@ void							execute(t_token **tokens, t_cmd *cmd,
 									t_data *data);
 int								execute_command(char *cmd, t_data *data,
 									char **args);
-void							execute_pipeline(t_token **tokens, t_cmd *cmd,
+void								execute_pipeline(t_token **tokens, t_cmd *cmd,
 									t_data *data);
 void							execute_for_one(t_token **tokens, t_cmd *cmd,
 									t_data *data);
 int								execute_redirection(t_cmd *cmd, t_data *data,
-									 t_token **tokens);
+									t_token **tokens);
 void							execute_heredoc(t_cmd *cmd);
 void							handle_input_redirect(t_cmd *cmd);
 void							handle_output_redirect(t_cmd *cmd);
 void							handle_append_redirect(t_cmd *cmd);
-//int								handle_heredoc(t_cmd *cmd, size_t size);
-int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size);
+// int								handle_heredoc(t_cmd *cmd, size_t size);
+int								handle_heredoc(t_cmd *cmd,
+									char *heredoc_delimiter, size_t size);
 void							apply_redirections(t_cmd *cmd, t_data *data);
 
 // expantion

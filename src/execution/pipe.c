@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 22:59:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:37:28 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,9 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		if (dup2(cmd->pipe_fd[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
+			free_tokens(tokens);
+			free_cmd(cmd);
+			free_array(data->env);
 			// close(STDOUT_FILENO);
 			exit(1);
 		}
@@ -56,6 +59,9 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		close(cmd->pipe_fd[1]);
 		apply_redirections(cmd, data);
 		execute_for_one(tokens, cmd, data);
+		free_tokens(tokens);
+		free_cmd(cmd);
+		free_array(data->env);
 		// close(STDOUT_FILENO);
 		exit(data->exit_status);
 	}
@@ -82,9 +88,22 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *cmd, t_data *data,
 	if (pid == 0)
 	{
 		if (dup2(cmd->pipe_fd[0], STDIN_FILENO) == -1)
+		{
+			free_tokens(tokens);
+			free_cmd(cmd);
+			free_array(data->env);
 			return (perror("dup2 cmd->pipe_fd[0]"), exit(1), -1);
+		}
 		if (dup2(new_pipe_fd[1], STDOUT_FILENO) == -1)
+		{
+			free_tokens(tokens);
+			free_cmd(cmd);
+			free_array(data->env);			
 			return (perror("dup2 new_pipe_fd[1]"), exit(1), -1);
+		}
+		free_tokens(tokens);
+		free_cmd(cmd);
+		free_array(data->env);
 		(close(cmd->pipe_fd[0]), close(new_pipe_fd[0]), close(new_pipe_fd[1]),
 			apply_redirections(cmd, data), execute_for_one(tokens, cmd, data),
 			exit(data->exit_status));
@@ -107,13 +126,21 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		if (cmd->pipe_fd[0] != -1)
 		{
 			if (dup2(cmd->pipe_fd[0], STDIN_FILENO) == -1)
+			{
+				free_tokens(tokens);
+				free_cmd(cmd);
+				free_array(data->env);			
 				return (perror("dup2 cmd->pipe_fd[0]"), exit(1), -1);
+			}
 			close(cmd->pipe_fd[0]);
 		}
 		close(cmd->pipe_fd[0]);
 		apply_redirections(cmd, data);
 		execute_for_one(tokens, cmd, data);
 		close(0); //
+		free_tokens(tokens);
+		free_cmd(cmd);
+		free_array(data->env);
 		exit(data->exit_status);
 	}
 	if (cmd->pipe_fd[0] != -1)
@@ -195,9 +222,6 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 		return ;
 	if (!handle_all_heredocs(cmd))
 		return ;
-	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1); // need to add free
-	if (!cmd->pipe_pids)
-		return (perror("calloc"));
 	process_count = launch_all_processes(tokens, cmd, data);
 	i = 0;
 	while (i < process_count)
@@ -207,5 +231,4 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 			data->exit_status = WEXITSTATUS(status);
 		i++;
 	}
-	free(cmd->pipe_pids);
 }

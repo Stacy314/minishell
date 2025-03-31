@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 22:27:56 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 13:55:45 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ int	main(int argc, char **argv, char **env)
 	t_token	**tokens;
 	t_cmd	*cmd;
 
+	input = NULL;
+	tokens = NULL;
+	cmd = NULL;
 	if (argv && argc > 1)
 		return (ft_putstr_fd("Minishell cannot accept arguments\n",
 				STDOUT_FILENO), EXIT_FAILURE);
@@ -50,14 +53,18 @@ int	main(int argc, char **argv, char **env)
 	{
 		input = readline("minishell$ ");
 		if (!input)
-			return (printf("exit\n"), free_array(data.env), data.exit_status);
-				// need free all struct
-		if (*input == '\0' || ft_str_only_spaces(input))                      
-			// need to check
+			return (printf("exit\n"), free_array(data.env) /*,
+				free_tokens(tokens), free_cmd(cmd)*/, data.exit_status);
+		// need free all struct
+		if (*input == '\0' || ft_str_only_spaces(input))
+		// need to check
 		{
 			free(input);
-			free_array(data.env);
-			continue ;
+			free_tokens(tokens);  //
+			free_cmd(cmd);        //
+			free_array(data.env); //
+			return (EXIT_FAILURE);
+			//continue ;
 		}
 		if (g_signal_flag == SIGINT)
 		{
@@ -71,20 +78,28 @@ int	main(int argc, char **argv, char **env)
 		if (!tokens)
 		{
 			free(input);
-			continue ;
+			free_tokens(tokens);  //
+			free_cmd(cmd);        //
+			free_array(data.env); //
+			return (EXIT_FAILURE);
+			//continue ;
 		}
 		cmd = parse_tokens(tokens, &data);
 		if (!cmd)
 		{
-			free_tokens(tokens);
 			free(input);
-			continue ;
+			free_tokens(tokens);
+			free_cmd(cmd);        //
+			free_array(data.env); //
+			return (EXIT_FAILURE);
+			//continue ;
 		}
 		execute(tokens, cmd, &data);
 		free(input);
 		free_tokens(tokens);
 		free_cmd(cmd);
 	}
+	free_tokens(tokens);
 	free_array(data.env);
 	// clear_history();
 	return (data.exit_status);

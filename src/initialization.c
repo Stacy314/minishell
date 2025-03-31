@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 22:54:34 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:24:04 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ t_cmd	*init_new_cmd(void)
 	cmd->append_redirects = NULL;
 	cmd->heredoc_delimiter = NULL;
 	cmd->next = NULL;
-	cmd->pipe_pids = NULL;
 	cmd->pipe_fd[0] = -1;
 	cmd->pipe_fd[1] = -1;
 	return (cmd);
@@ -97,7 +96,6 @@ static char	**copy_env(char **env)
 	int		i;
 	int		j;
 	char	**env_copy;
-	int		k;
 
 	i = 0;
 	while (env[i])
@@ -109,24 +107,15 @@ static char	**copy_env(char **env)
 	while (j < i)
 	{
 		env_copy[j] = ft_strdup(env[j]);
-		//if (j == 3)
-		//{
-		//	env_copy[j] = NULL;
-		//}
 		if (!env_copy[j])
 		{
-			 k = 0;
-			 while (k < j)
+			 while (j > 0)
 			{
-				free(env_copy[k]);
-				k++;
+				free(env_copy[j]);
+				j--;
 			}
 			 free(env_copy);
 			 return (NULL);
-			//while (j-- > 0)
-			//	free(env_copy[j]);
-			//free(env_copy);
-			//return (NULL);
 		}
 		j++;
 	}
@@ -135,6 +124,7 @@ static char	**copy_env(char **env)
 
 int	init_data(t_data *data, char **env)
 {
+	(void)env;
 	data->env = copy_env(env);
 	if (!data->env)
 		return (ERROR);

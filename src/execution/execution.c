@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 18:41:08 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 15:35:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data)
 	if (contains_special_char(tokens, PIPE))
 	{
 		execute_pipeline(tokens, cmd, data);
-		return ;
+			return ;
 	}
-	if (cmd->heredoc_delimiter || (cmd->input_redirects
+	else if (cmd->heredoc_delimiter || (cmd->input_redirects
 			&& cmd->input_redirects[0]) || (cmd->output_redirects
 			&& cmd->output_redirects[0]) || (cmd->append_redirects
 			&& cmd->append_redirects[0]))
