@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 20:07:47 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/31 23:32:33 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ int								handle_expansion(t_tokenizer_state *state,
 									const char *str, t_data *data);
 int								handle_quotes_and_redirects(t_tokenizer_state *state,
 									const char *str);
-int								flush_buffer_to_token(t_tokenizer_state *state);
+int								create_word_token(t_tokenizer_state *state);
 int								is_redirect(char c);
 int								is_quote(char c);
 int								expand_buffer(t_tokenizer_state *state);
@@ -231,7 +231,9 @@ void							handle_append_redirect(t_cmd *cmd);
 int								handle_heredoc(t_cmd *cmd,
 									char *heredoc_delimiter, size_t size);
 void							apply_redirections(t_cmd *cmd, t_data *data);
-
+void							update_underscore(t_data *data, char *value);
+char							*find_last_value(t_token **tokens);
+int								add_or_update_env(char *arg, t_data *data);
 // expantion
 char							*expand_variable(const char *str, int *j,
 									t_data *data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenizer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 12:30:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 22:21:04 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
 			return (-1);
 		state->buffer[state->k++] = str[state->j++];
 	}
-	return (flush_buffer_to_token(state));
+	return (create_word_token(state));
 }
 
 int	update_quote_state(t_tokenizer_state *state, char c)

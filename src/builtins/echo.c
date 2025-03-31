@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 16:54:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 22:31:12 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	builtin_echo(t_cmd *cmd, t_data *data)
 	int	i;
 	int	n_flag;
 
-	(void)data;
 	i = 1;
 	n_flag = 0;
 	while (cmd->args[i] != NULL && is_option(cmd->args[i]))

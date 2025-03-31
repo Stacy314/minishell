@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/19 18:35:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 22:31:04 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// cd '/////' >/dev/null (STD_ERR) (48)
-// cd "doesntexist" >/dev/null (bash: cd: doesntexist: No such file or
-// directory, EC - 1) (54)
-/// cd "wtf" >/dev/null (58)
 
 //apechkov@c3r4p2:~/projects/minishell$ cd 
 //apechkov@c3r4p2:~$ echo $_

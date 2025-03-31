@@ -6,25 +6,14 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 18:37:20 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/31 23:36:41 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// _ value
-
-//export a (ignore in env)
-
-// export (19)
-
 // export a="s -lsa"
 //		l$a
-
-// # Empty export isn't set on `env` but is set on `export`
-// export hello
-// env | grep hello
-// export | grep hello
 
 //echo $? (122)
 //export "?"=hallo
@@ -79,7 +68,7 @@ static int	append_env_var(char *arg, t_data *data)
 	return (0);
 }
 
-static int	add_or_update_env(char *arg, t_data *data)
+int	add_or_update_env(char *arg, t_data *data)
 {
 	int	var_index;
 
@@ -92,21 +81,12 @@ static int	add_or_update_env(char *arg, t_data *data)
 
 static int	export_env(char *arg, t_data *data)
 {
-	// char	*equal_sign;
-
 	if (!is_valid_identifier(arg))
 	{
 		write_error("minishell: export: `%s': not a valid identifier\n", arg);
 		data->exit_status = 1;
 		return (1);
 	}
-	// equal_sign = ft_strchr(arg, '=');
-	//if (!equal_sign)
-	//{
-	//	add_or_update_export(arg, data); // need to check
-	//	data->exit_status = 0;
-	//	return (0);
-	//}
 	return (add_or_update_env(arg, data));
 }
 
@@ -115,7 +95,6 @@ int	builtin_export(t_cmd *cmd, t_data *data)
 	if (!cmd->args[1])
 	{
 		print_sorted_env(data->env);
-		// print_sorted_env(data->export_env);
 		data->exit_status = 0;
 		return (0);
 	}

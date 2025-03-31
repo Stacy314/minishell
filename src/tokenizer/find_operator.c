@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_operator.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 23:00:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 22:21:33 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	is_pipe_operator(const char *str, t_tokenizer_state *state)
 {
 	if (str[state->j] == '|')
 	{
-		flush_buffer_to_token(state);
+		create_word_token(state);
 		state->tokens[state->i++] = create_token("|", PIPE, state->index++);
 		state->j++;
 		return (1);

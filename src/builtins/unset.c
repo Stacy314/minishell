@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 14:47:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:36:48 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int	find_env_var(char **env, const char *var)
 
 int	builtin_unset(t_cmd *cmd, t_data *data) 
 {
-	//could be a leak
 	int	i;
 	int	j;
 	int	var_index;

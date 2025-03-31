@@ -1,37 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   underscore.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:34:43 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/31 23:38:48 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	builtin_env(t_data *data, t_cmd *cmd)
+char	*find_last_value(t_token **tokens)
 {
-	int i;
+	int		i;
+	char	*last_value;
 
-	if (!data->env)
-		return (data->exit_status = 1);
-	if (cmd->args[1])
+	last_value = NULL;
+	i = 0;
+	while (tokens[i])
 	{
-		write_error("env: too many arguments\n");
-		return (data->exit_status = 1);
+		if (tokens[i]->value)
+			last_value = tokens[i]->value;
+		i++;
 	}
+	return (last_value);
+}
+
+void	update_underscore(t_data *data, char *value)
+{
+	int		i;
+	char	*new_val;
+
+	if (!value)
+		return ;
+	new_val = ft_strjoin("_=", value);
+	if (!new_val)
+		return ;
+
 	i = 0;
 	while (data->env[i])
 	{
-		if (ft_strchr(data->env[i], '='))
+		if (ft_strncmp(data->env[i], "_=", 2) == 0)
 		{
-			ft_putstr_fd(data->env[i], 1);
-			ft_putstr_fd("\n", 1);
+			free(data->env[i]);
+			data->env[i] = new_val;
+			return ;
 		}
 		i++;
 	}
-	return (data->exit_status = 0);
+	add_or_update_env(new_val, data);
 }

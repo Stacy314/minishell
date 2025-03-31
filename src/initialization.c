@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 21:33:50 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/31 23:32:55 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	increment_shlvl(t_data *data)
 	return (data->env[i + 1] = NULL, SUCCESS); // try to unset SHLVL
 }
 
-static char	**copy_env(char **env)
+static char	**init_env(char **env)
 {
 	int		i;
 	int		j;
@@ -112,8 +112,7 @@ static char	**copy_env(char **env)
 
 int	init_data(t_data *data, char **env)
 {
-	(void)env;
-	data->env = copy_env(env);
+	data->env = init_env(env);
 	if (!data->env)
 		return (ERROR);
 	// print_env(data);
