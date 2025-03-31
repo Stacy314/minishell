@@ -6,7 +6,7 @@
 /*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 19:47:27 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/03/31 20:07:35 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 	return (process_count);
 }
 
-void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
+void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data) //deleted env, changed handle_all_heredocs, del malloc for cmd->pipe_pids
 {
 	int	n_cmds;
 	int	process_count;
@@ -222,6 +222,9 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 		return ;
 	if (!handle_all_heredocs(cmd))
 		return ;
+	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1); // need to add free
+	if (!cmd->pipe_pids)
+		return (perror("calloc"));
 	process_count = launch_all_processes(tokens, cmd, data);
 	i = 0;
 	while (i < process_count)
