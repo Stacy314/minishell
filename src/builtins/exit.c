@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 16:07:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/01 19:19:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@ int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens)
 
 	error = 0;
 	if (!cmd->args[1])
-		return ((printf("exit\n"), free_cmd(cmd), free_tokens(tokens),
-				free_array(data->env), exit(data->exit_status), 1));
+		return ((printf("exit\n"), free_all(data, tokens, cmd),
+				exit(data->exit_status), 1));
 	exit_code = ft_atol(cmd->args[1], &error);
 	if (error)
 	{
@@ -110,7 +110,7 @@ int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens)
 			printf("exit\n");
 		write_error("minishell: exit: %s: numeric argument required\n",
 			cmd->args[1]);
-		(free_cmd(cmd), free_tokens(tokens), free_array(data->env), exit(2));
+		(free_all(data, tokens, cmd), exit(2));
 	}
 	if (cmd->args[2])
 	{
@@ -120,6 +120,6 @@ int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens)
 		data->exit_status = 1;
 		return (1);
 	}
-	return (printf("exit\n"), free_cmd(cmd), free_tokens(tokens),
-		free_array(data->env), exit(exit_code % 256), 1);
+	return (printf("exit\n"), free_all(data, tokens, cmd), exit(exit_code
+			% 256), 1);
 }

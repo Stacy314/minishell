@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 16:09:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/01 20:03:17 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ void	free_cmd(t_cmd *cmd)
 		free_array(cmd->output_redirects);
 		free_array(cmd->append_redirects);
 		free_array(cmd->heredoc_delimiter);
-		if (cmd->pipe_pids)
-			free(cmd->pipe_pids);
+		free(cmd->pipe_pids);
 		free(cmd);
 		cmd = tmp;
 	}
@@ -83,8 +82,18 @@ void free_all(t_data *data, t_token **tokens, t_cmd *cmd)
 {
 	if (data->input)
 		free(data->input);
-	// if (data->env)
-	// 	free_array(data->env);
+	if (data->env)
+	 	free_array(data->env);
+	if (tokens)
+		free_tokens(tokens);
+	if (cmd)
+		free_cmd(cmd);
+}
+
+void free_main(t_data *data, t_token **tokens, t_cmd *cmd)
+{
+	if (data->input)
+		free(data->input);
 	if (tokens)
 		free_tokens(tokens);
 	if (cmd)

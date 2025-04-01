@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:32:33 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/01 20:20:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,19 @@ typedef struct s_tokenizer_state
 	char						quote_type;
 	t_token						**tokens;
 }								t_tokenizer_state;
+typedef struct s_cmd
+{
+	char						**args;
+	struct s_cmd				*next;
+	//struct s_cmd				*prev; //
+	char						**input_redirects;
+	char						**output_redirects;
+	char						**append_redirects;
+	char						**heredoc_delimiter;
+	int							heredoc_fd;
+	pid_t						*pipe_pids;
+	int							pipe_fd[2];
+}								t_cmd;
 
 typedef struct s_data
 {
@@ -87,21 +100,10 @@ typedef struct s_data
 	char						*input;
 	char						*pwd_p;
 	int							shlvl;
+	t_token						**tokens;
+	t_cmd						*cmd;
 }								t_data;
 
-typedef struct s_cmd
-{
-	char						**args;
-	struct s_cmd				*next;
-	char						**input_redirects;
-	char						**output_redirects;
-	char						**append_redirects;
-	char						**heredoc_delimiter;
-	int							heredoc_fd;
-	// pid_t						pipe_pids[2];
-	pid_t						*pipe_pids;
-	int							pipe_fd[2];
-}								t_cmd;
 
 // utils
 void							write_error(const char *format, ...);
@@ -119,6 +121,7 @@ int								ft_str_only_spaces(const char *str);
 void							free_array(char **arr);
 void							free_env(char **env);
 void							free_all(t_data *data, t_token **tokens, t_cmd *cmd);
+void							free_main(t_data *data, t_token **tokens, t_cmd *cmd);
 void							*cleanup_and_null(t_tokenizer_state *state);
 
 // initialization

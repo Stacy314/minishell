@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:37:38 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/01 20:39:27 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,32 +86,24 @@ char	**split_path(const char *path)
 
 char	*find_executable(const char *cmd, char **paths)
 {
-	char	*full_path;
 	char	*path_with_slash;
+	char	*temp;
 	int		i;
 
-	full_path = ft_calloc(1024, 1); //1024?
-	if (!full_path)
-	{
-		// free(void *ptr)
-		perror("calloc");
-		return (NULL);
-	}
 	i = 0;
-	while (paths[i] != NULL)
+	while (paths[i])
 	{
 		path_with_slash = ft_strjoin(paths[i], "/");
 		if (!path_with_slash)
 			return (NULL);
-		full_path = ft_strjoin(path_with_slash, cmd);
+		temp = ft_strjoin(path_with_slash, cmd);
 		free(path_with_slash);
-		if (!full_path)
+		if (!temp)
 			return (NULL);
-		if (access(full_path, X_OK) == 0)
-			return (full_path);
-		//free(full_path);	
+		if (access(temp, X_OK) == 0)
+			return (temp);
+		free(temp);
 		i++;
 	}
-	free(full_path);
 	return (NULL);
 }

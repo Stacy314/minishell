@@ -6,11 +6,12 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/26 21:11:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/01 20:33:53 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <unistd.h>
 
 static int	check_error(const char *filename)
 {
@@ -45,10 +46,14 @@ void	handle_input_redirect(t_cmd *cmd) // <
 		{
 			ret = check_error(cmd->input_redirects[i]);
 			if (ret != 0)
+			{
+				close(fd);
 				exit(1);
+			}
 		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
+		close(STDIN_FILENO);
 		i++;
 	}
 	close(fd);
@@ -70,10 +75,14 @@ void	handle_output_redirect(t_cmd *cmd) // >
 		{
 			ret = check_error(cmd->output_redirects[i]);
 			if (ret != 0)
+			{
+				close(fd);
 				exit(1);
+			}
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
+		close(STDOUT_FILENO);
 		i++;
 	}
 }
@@ -95,10 +104,15 @@ void	handle_append_redirect(t_cmd *cmd) // >>
 		{
 			ret = check_error(cmd->append_redirects[i]);
 			if (ret != 0)
+			{
+				close(fd);	
 				exit(1);
+			}
+			close(fd);
 			exit(1);
 		}
 		dup2(fd, STDOUT_FILENO);
+		close(STDOUT_FILENO);
 		close(fd);
 		i++;
 	}

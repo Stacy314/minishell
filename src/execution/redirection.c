@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 22:56:33 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/01 19:45:46 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input);
 		signal(SIGQUIT, SIG_DFL);
-		(execute_for_one(tokens, cmd, data),free_tokens(tokens), free_cmd(cmd), free_array(data->env), exit(data->exit_status));
+		(execute_for_one(tokens, cmd, data), free_all(data, tokens, cmd), exit(data->exit_status));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

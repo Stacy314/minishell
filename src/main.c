@@ -6,16 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 15:38:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/01 20:23:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 // NEED TO FIX:
-// expot a
-//_ value
-// pwd (don't call getcwd every time)
 // signals
 
 // interactive/ non-int.
@@ -36,13 +33,13 @@ volatile sig_atomic_t	g_signal_flag = 0;
 int	main(int argc, char **argv, char **env)
 {
 	t_data	data;
-	t_token	**tokens;
-	t_cmd	*cmd;
-	//char	*last_value;
+	//t_token	**tokens;
+	//t_cmd	*cmd;
+	char	*last_value;
 
-	//last_value = NULL;
-	tokens = NULL;
-	cmd = NULL;
+	last_value = NULL;
+	//tokens = NULL;
+	//cmd = NULL;
 	if (argv && argc > 1)
 		return (ft_putstr_fd("Minishell cannot accept arguments\n",
 				STDOUT_FILENO), EXIT_FAILURE);
@@ -63,29 +60,29 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		if (*data.input)
 			add_history(data.input);
-		tokens = split_to_tokens(data.input, &data);
-		if (!tokens)
+		data.tokens = split_to_tokens(data.input, &data);
+		if (!data.tokens)
 		{
 			free(data.input);
 			if (data.exit_status != 2)
 				return (EXIT_FAILURE);
 			continue ;
 		}
-		cmd = parse_tokens(tokens, &data);
-		if (!cmd)
+		data.cmd = parse_tokens(data.tokens, &data);
+		if (!data.cmd)
 		{
-			free_all(&data, tokens, cmd); //del cmd
+			free_tokens(data.tokens);
+			free(data.input);
 			if (data.exit_status != 2)
 				return (EXIT_FAILURE);
 			continue ;
 		}
-		execute(tokens, cmd, &data);
-		//last_value = find_last_value(tokens);
-		//update_underscore(&data, last_value); // update only success exec
-		free_all(&data, tokens, cmd);
+		execute(data.tokens, data.cmd, &data);
+		last_value = find_last_value(data.tokens);
+		update_underscore(&data, last_value); // update only success exec
+		free_main(&data, data.tokens, data.cmd);
 	}
 	free_array(data.env);
-	// free(data.env);
 	// clear_history();
 	return (data.exit_status);
 }
