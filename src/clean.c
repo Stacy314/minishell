@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 19:17:44 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/01 16:09:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	free_cmd(t_cmd *cmd)
 		free_array(cmd->output_redirects);
 		free_array(cmd->append_redirects);
 		free_array(cmd->heredoc_delimiter);
-		//if (cmd->pipe_pids)
-		//	free(cmd->pipe_pids);
+		if (cmd->pipe_pids)
+			free(cmd->pipe_pids);
 		free(cmd);
 		cmd = tmp;
 	}

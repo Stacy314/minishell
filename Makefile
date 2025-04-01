@@ -9,7 +9,7 @@ SRC_FILES = main.c utils.c signals.c initialization.c clean.c \
 			execution/redirection.c execution/redir_handle.c execution/heredoc.c  execution/underscore.c\
 			parser/parser.c parser/parse_redirects.c  \
 			builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
-			builtins/export.c builtins/export_print.c builtins/export_single.c builtins/pwd.c builtins/unset.c \
+			builtins/export.c builtins/export_print.c builtins/pwd.c builtins/unset.c \
 			tokenizer/tokenizer.c tokenizer/utils_tokenizer.c tokenizer/find_operator.c tokenizer/handle_redir.c \
 			tokenizer/expansion.c 
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)

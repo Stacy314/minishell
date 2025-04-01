@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:32:55 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/01 15:04:23 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,6 @@ int	init_data(t_data *data, char **env)
 	data->env = init_env(env);
 	if (!data->env)
 		return (ERROR);
-	// print_env(data);
 	data->shlvl = increment_shlvl(data);
 	if (!data->shlvl)
 	{

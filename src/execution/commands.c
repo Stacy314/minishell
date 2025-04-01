@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 18:35:52 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/01 16:25:32 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-static int	fork_and_exec(const char *executable, char **args, t_data *data)
+static int	fork_and_exec(const char *executable, char **args, t_data *data) //write whithout child
 {
 	pid_t	pid;
 	int		status;
