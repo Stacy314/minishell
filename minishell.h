@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:03:09 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/01 15:22:38 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,9 @@ void							set_signals_main(void);
 void							set_signals_heredoc(void);
 void							set_signals_child(void);
 void							parent_ignore_signals(void);
+void							parent_restore_signals(void);
+void							handle_sigint_child(int sig);
+void							handle_sigquit_child(int sig);
 
 // tokenization
 int								handle_expansion(t_tokenizer_state *state,
@@ -216,8 +219,6 @@ void							print_sorted_env(char **env);
 void							add_or_update_export(char *key, t_data *data);
 
 // execution
-void							parent_ignore_signals(void);
-void							parent_restore_signals(void);
 void							execute(t_token **tokens, t_cmd *cmd,
 									t_data *data, char **env);
 int								execute_command(char *cmd, t_data *data,

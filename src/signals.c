@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 16:56:21 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/01 15:22:54 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,23 @@
 
 //CTRL+C
 //CTRL+D
-//CTRL+\
+//CTRL+backslash
 //CTRL+C, CTRL+C, CTRL+C, exit
 //CTRL+C, CTRL+C, CTRL+C, Ctrl+D
 
 //cat | ls # testar dando depois:
 //#- Enter
 //#- Ctrl+D
-//#- Ctrl+\
+//#- Ctrl+backslash
 //#- Ctrl+C
 
 //grep oi | ls # testar dando depois:
 //#- Enter + Ctrl+D
 //#- Ctrl+D
 //#- "oi" + Enter + Ctrl+D
-//#- Ctrl+\
+//#- Ctrl+
 //#- Ctrl+C
-//#- "oi" + Enter + Ctrl+\
+//#- "oi" + Enter + Ctrl+backslash
 
 //./test_files/loop.out # finalizar com:
 //#- Ctrl+C
@@ -40,13 +40,13 @@
 //./test_files/loop.out | ls
 //# finalizar com:
 //#- Ctrl+C
-//#- Ctrl+\
+//#- Ctrl+backslash
 //#- Ctrl+D
 
 //ls | ./test_files/loop.out
 //# finalizar com:
 //#- Ctrl+C
-//#- Ctrl+\
+//#- Ctrl+backslash
 //#- Ctrl+D
 
 //hello + Ctrl+C
@@ -61,33 +61,17 @@
 
 //bash: warning: here-document at line 7 delimited by end-of-file (heredoc ctrl+D)
 
-
-static struct sigaction g_old_int;
-static struct sigaction g_old_quit;
-
 // Функция, которая заставит parent (minishell) игнорировать SIGINT/SIGQUIT
-void parent_ignore_signals(void)
+void	parent_ignore_signals(void)
 {
-    struct sigaction sa_ignore;
-
-    sa_ignore.sa_handler = SIG_IGN;
-    sa_ignore.sa_flags = 0;
-    sigemptyset(&sa_ignore.sa_mask);
-
-    // Считываем старые обработчики, чтобы потом вернуть
-    sigaction(SIGINT, NULL, &g_old_int);
-    sigaction(SIGQUIT, NULL, &g_old_quit);
-
-    // Ставим SIG_IGN
-    sigaction(SIGINT, &sa_ignore, NULL);
-    sigaction(SIGQUIT, &sa_ignore, NULL);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
-// Восстановим родительские обработчики сигналов
-void parent_restore_signals(void)
+void	parent_restore_signals(void)
 {
-    sigaction(SIGINT, &g_old_int, NULL);
-    sigaction(SIGQUIT, &g_old_quit, NULL);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
 
 

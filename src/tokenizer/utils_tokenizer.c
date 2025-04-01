@@ -88,13 +88,20 @@ int	flush_word_before_redirect(t_tokenizer_state *state)
 int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
 		t_token_type type, int advance)
 {
+	int	j;
+
 	state->tokens[state->i] = create_token(symbol, type, (state->index)++);
 	if (!state->tokens[state->i])
 	{
-		while (state->tokens[state->i] > 0)
+		j = 0;
+		while (j >= 0)
 		{
-			free(state->tokens[state->i]);
-			state->i--;
+			if (state->tokens[j])
+			{
+				free(state->tokens[j]->value);
+				free(state->tokens[j]);
+			}
+			j--;
 		}
 		perror("failed create token");
 		return (-1);

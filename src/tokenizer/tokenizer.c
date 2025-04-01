@@ -86,17 +86,35 @@ int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 
 int	flush_buffer_to_token(t_tokenizer_state *state)
 {
+	int	j;
+
 	if (state->k == 0 || state->buffer[0] == '\0')
 		return (0);
 	state->buffer[state->k] = '\0';
 	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++);
+	// if (!state->tokens[state->i])
+	// {
+	// 	while (state->tokens[state->i] > 0)
+	// 	{
+	// 		free(state->tokens[state->i]);
+	// 		state->i--;
+	// 	}
+	// 	perror("create_token");
+	// 	return (-1);
+	// }
 	if (!state->tokens[state->i])
 	{
-		while (state->tokens[state->i] > 0)
+		j = 0;
+		while (j < state->i)
 		{
-			free(state->tokens[state->i]);
-			state->i--;
+			if (state->tokens[j])
+			{
+				free(state->tokens[j]->value);
+				free(state->tokens[j]);
+			}
+			j++;
 		}
+		free(state->tokens);
 		perror("create_token");
 		return (-1);
 	}
