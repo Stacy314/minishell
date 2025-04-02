@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 15:00:25 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/03/26 21:07:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:30:05 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,18 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 	}
 	return (1);
 }
+// marat - added
+static int	check_empty_command(t_cmd *cmd, t_data *data)
+{
+	if (!cmd->args || !cmd->args[0] || !cmd->args[0][0])
+	{
+		write_error("minishell: '%s': command not found\n",
+			(cmd->args && cmd->args[0]) ? cmd->args[0] : "");
+		data->exit_status = 127;
+		return (0);
+	}
+	return (1);
+}
 
 int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 {
@@ -70,6 +82,8 @@ int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 		else
 			prev->next = current;
 		if (!fill_cmd(current, tokens, data, i))
+			return (0);
+		if (!check_empty_command(current, data)) // marat
 			return (0);
 		prev = current;
 		if (tokens[*i] && tokens[*i]->type == PIPE)

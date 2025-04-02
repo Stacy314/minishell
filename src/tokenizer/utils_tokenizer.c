@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenizer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 16:00:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:27:54 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,14 @@ int	update_quote_state(t_tokenizer_state *state, char c)
 	{
 		state->inside_quotes = 1;
 		state->quote_type = c;
+		state->empty_quotes = 0; // marat
 	}
 	else if (state->inside_quotes && c == state->quote_type)
 	{
 		state->inside_quotes = 0;
 		state->quote_type = 0;
+		if (state->k == 0) // marat
+			state->empty_quotes = 1; //marat
 	}
 	state->j++;
 	return (1);

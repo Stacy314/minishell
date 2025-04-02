@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 16:42:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:38:58 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	init_state(t_tokenizer_state *state, t_token **tokens)
 	state->inside_quotes = 0;
 	state->quote_type = 0;
 	state->buffer_size = 64;
+	state->empty_quotes = 0;
 	state->buffer = ft_calloc(state->buffer_size, sizeof(char));
 	if (!state->buffer)
 	{

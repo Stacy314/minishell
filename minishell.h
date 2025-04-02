@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 15:22:38 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:38:15 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ typedef struct s_tokenizer_state
 	int							index;
 	int							inside_quotes;
 	int							buffer_size;
+	int							empty_quotes;
 	char						*buffer;
 	char						quote_type;
 	t_token						**tokens;

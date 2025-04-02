@@ -1,7 +1,0 @@
-SESSION_MANAGER=local/mgallyam-UX305FA:@/tmp/.ICE-unix/10618,unix/mgallyam-UX305FA:/tmp/.ICE-unix/10618
-LOGNAME=mgallyam
-LD_PRELOAD=/home/mgallyam/42_minishell_tester/utils/libintercept/libintercept.so
-HOME=/home/mgallyam
-USERNAME=mgallyam
-USER=mgallyam
-OLDPWD=/home/mgallyam/42-Vienna/Projects/minishell
