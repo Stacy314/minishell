@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 15:00:25 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/02 21:30:05 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/02 23:10:13 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,23 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 // marat - added
 static int	check_empty_command(t_cmd *cmd, t_data *data)
 {
-	if (!cmd->args || !cmd->args[0] || !cmd->args[0][0])
+	int	has_args;
+	int	has_any_redirect;
+
+	has_args = 0;
+	if (cmd->args && cmd->args[0] && cmd->args[0][0] != '\0')
+		has_args = 1;
+
+	has_any_redirect = 0;
+	if ((cmd->input_redirects && cmd->input_redirects[0])
+		|| (cmd->output_redirects && cmd->output_redirects[0])
+		|| (cmd->append_redirects && cmd->append_redirects[0])
+		|| (cmd->heredoc_delimiter && cmd->heredoc_delimiter[0]))
+	{
+		has_any_redirect = 1;
+	}
+
+	if (!has_args && !has_any_redirect)
 	{
 		write_error("minishell: '%s': command not found\n",
 			(cmd->args && cmd->args[0]) ? cmd->args[0] : "");

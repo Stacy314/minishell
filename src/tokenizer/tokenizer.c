@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 21:26:44 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/02 22:36:21 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ int	flush_buffer_to_token(t_tokenizer_state *state)
 		perror("create_token");
 		return (-1);
 	}
+	state->empty_quotes = 0; // marat
 	state->i++;
 	state->k = 0;
 	state->buffer[0] = '\0';
