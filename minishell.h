@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 20:38:15 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/03 23:49:56 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,9 @@ void							execute_heredoc(t_cmd *cmd);
 void							handle_input_redirect(t_cmd *cmd);
 void							handle_output_redirect(t_cmd *cmd);
 void							handle_append_redirect(t_cmd *cmd);
+bool							handle_all_heredocs(t_cmd *cmd, t_data *data);
 int								handle_heredoc(t_cmd *cmd, size_t size);
+int								handle_heredoc_pipe(t_cmd *cmd);
 void							apply_redirections(t_cmd *cmd, t_data *data);
 
 // expantion

@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 15:34:41 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/03 23:32:44 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ int	main(int argc, char **argv, char **env)
 			free(input);
 			continue ;
 		}
-		execute(tokens, cmd, &data, env);	
+		execute(tokens, cmd, &data, env);
+		if (data.exit_status == 130)
+    		continue;
 		free(input);
 		free_tokens(tokens);
 		free_cmd(cmd);
