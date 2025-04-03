@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:13:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 00:22:36 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,14 +219,21 @@ int	handle_heredoc(t_cmd *cmd, size_t size)
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || (cmd->heredoc_delimiter && ft_strcmp(line,
-					*cmd->heredoc_delimiter) == 0))
+		if (!line)//marat
+		{
+			fprintf(stderr,
+				"minishell: warning: heredoc delimited by EOF (wanted `%s')\n",
+				*cmd->heredoc_delimiter);
+			break;
+		}
+		if (ft_strcmp(line, *cmd->heredoc_delimiter) == 0)
 		{
 			free(line);
-			break ;
+			break;
 		}
-		(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1),
-			free(line));
+		write(tmp_fd, line, ft_strlen(line));
+		write(tmp_fd, "\n", 1);
+		free(line);
 	}
 	close(tmp_fd);
 	infile_fd = open(tmp_filename, O_RDONLY);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/25 22:48:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 22:36:21 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,11 @@ int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 		//	data->exit_status = 1;
 		//	return (free(expanded), -1);
 		//}
+		if (!expanded || !*expanded)
+		{
+			free(expanded);
+			return (1);
+		}
 		len = ft_strlen(expanded);
 		while (state->k + len >= (size_t)state->buffer_size)
 		{
@@ -86,20 +91,39 @@ int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 
 int	flush_buffer_to_token(t_tokenizer_state *state)
 {
-	if (state->k == 0 || state->buffer[0] == '\0')
-		return (0);
+	int	j;
+	
+	if (state->k == 0 && !state->empty_quotes) // marat
+		return (0); // marat
 	state->buffer[state->k] = '\0';
 	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++);
+	// if (!state->tokens[state->i])
+	// {
+	// 	while (state->tokens[state->i] > 0)
+	// 	{
+	// 		free(state->tokens[state->i]);
+	// 		state->i--;
+	// 	}
+	// 	perror("create_token");
+	// 	return (-1);
+	// }
 	if (!state->tokens[state->i])
 	{
-		while (state->tokens[state->i] > 0)
+		j = 0;
+		while (j < state->i)
 		{
-			free(state->tokens[state->i]);
-			state->i--;
+			if (state->tokens[j])
+			{
+				free(state->tokens[j]->value);
+				free(state->tokens[j]);
+			}
+			j++;
 		}
+		free(state->tokens);
 		perror("create_token");
 		return (-1);
 	}
+	state->empty_quotes = 0; // marat
 	state->i++;
 	state->k = 0;
 	state->buffer[0] = '\0';
@@ -156,10 +180,10 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	if (state.inside_quotes)
 	{
 		write_error("minishell: syntax error: unclosed quotes\n");
-		return (free_tokens(tokens), free(state.buffer), (t_token **)(-1));
+		return (free_tokens(tokens), free(state.buffer), data->exit_status = 2, NULL);
 	}
 	tokens[state.i] = NULL;
 	free(state.buffer);
-	//debug_print_tokens(tokens);
+	// debug_print_tokens(tokens);
 	return (tokens);
 }
