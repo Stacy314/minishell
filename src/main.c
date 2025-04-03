@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 20:23:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:23:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,9 @@ volatile sig_atomic_t	g_signal_flag = 0;
 int	main(int argc, char **argv, char **env)
 {
 	t_data	data;
-	//t_token	**tokens;
-	//t_cmd	*cmd;
 	char	*last_value;
 
 	last_value = NULL;
-	//tokens = NULL;
-	//cmd = NULL;
 	if (argv && argc > 1)
 		return (ft_putstr_fd("Minishell cannot accept arguments\n",
 				STDOUT_FILENO), EXIT_FAILURE);

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 20:27:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 17:14:34 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size)
 		(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1),
 			free(line));
 	}
-	close(tmp_fd);
+	//close(tmp_fd);
 	tmp_fd = open(tmp_filename, O_RDONLY);
 	return (unlink(tmp_filename), tmp_fd);
 }
@@ -236,4 +236,5 @@ void	execute_heredoc(t_cmd *cmd)
 	if (dup2(infile_fd, STDIN_FILENO) == -1)
 		perror("dup2");
 	close(infile_fd);
+	//close(STDIN_FILENO);
 }

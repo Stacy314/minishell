@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/09 16:40:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:57:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ static char	*join_key_value(const char *key, const char *value)
 	if (!tmp)
 		return (NULL);
 	res = ft_strjoin(tmp, value);
+	if (!res)
+	{
+		free(tmp);
+		return (NULL);
+	}
 	free(tmp);
 	return (res);
 }
@@ -71,6 +76,7 @@ char	**set_env_value(char **envp, const char *key, const char *value)
 	}
 	if (i >= 0)
 	{
+		free(envp[i]);
 		envp[i] = new_entry;
 		return (envp);
 	}

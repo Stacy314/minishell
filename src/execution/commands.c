@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 20:21:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:23:08 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// "" (: command not found, EC - 127) (11) 
+// "" (: command not found, EC - 127) (11)
 // touch "" (touch: cannot touch '': No such file or directory) (13)
 
 //"."
@@ -39,41 +39,60 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-static int	fork_and_exec(const char *executable, char **args, t_data *data) //write whithout child
+static int	fork_and_exec(const char *executable, char **args, t_data *data)
+// write whithout child
 {
-	pid_t	pid;
-	int		status;
-	int		sig;
+	pid_t pid;
+	int status;
+	int sig;
 
 	parent_ignore_signals();
-	pid = fork();
-	if (pid == -1)
-		return (perror("fork"), data->exit_status = 1);
-	if (pid == 0)
-		(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL), execve(executable,
-				args, data->env), free_all(data, data->tokens, data->cmd), exit(0));
-	waitpid(pid, &status, 0);
-	parent_restore_signals();
-	if (WIFSIGNALED(status))
+	// if (!executable || !args)
+	//	return (data->exit_status = 1);
+	if (data->is_child == false)
 	{
-		sig = WTERMSIG(status); // need to move to signals
-		if (sig == SIGINT)
+		// printf("im here\n");
+		pid = fork();
+		if (pid == -1)
+			return (perror("fork"), data->exit_status = 1);
+		if (pid == 0)
+			(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL),
+				execve(executable, args, data->env), free_all(data,
+					data->tokens, data->cmd), exit(0));
+		waitpid(pid, &status, 0);
+		parent_restore_signals();
+		if (WIFSIGNALED(status))
 		{
-			data->exit_status = 130;
-			write(STDOUT_FILENO, "\n", 1);
+			sig = WTERMSIG(status); // need to move to signals
+			if (sig == SIGINT)
+			{
+				data->exit_status = 130;
+				write(STDOUT_FILENO, "\n", 1);
+			}
+			else if (sig == SIGQUIT)
+			{
+				data->exit_status = 131;
+				write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+			}
+			else
+				data->exit_status = 128 + sig;
 		}
-		else if (sig == SIGQUIT)
-		{
-			data->exit_status = 131;
-			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-		}
+		else if (WIFEXITED(status))
+			data->exit_status = WEXITSTATUS(status);
 		else
-			data->exit_status = 128 + sig;
+			data->exit_status = 1;
 	}
-	else if (WIFEXITED(status))
-		data->exit_status = WEXITSTATUS(status);
 	else
-		data->exit_status = 1;
+	{
+		data->is_child = false; // maybe delete? becouse it is in child
+		// signal(SIGINT, SIG_DFL);
+		// signal(SIGQUIT, SIG_DFL);
+		// printf("im here\n");
+		execve(executable, args, data->env);
+		/// do we go there?
+		perror("execve");
+		free_all(data, data->tokens, data->cmd);
+	}
 	return (data->exit_status);
 }
 
@@ -85,7 +104,8 @@ static int	execute_direct_path(char *cmd, t_data *data, char **args)
 	{
 		error_code = check_permissions(cmd);
 		if (error_code)
-			return (error_code);
+			return (/*printf("im here\n"), free_all(data, data->tokens,
+					data->cmd),*/ data->exit_status = error_code);
 		return (fork_and_exec(cmd, args, data));
 	}
 	return (-1);
@@ -100,24 +120,27 @@ static int	execute_via_path(char *cmd, t_data *data, char **args)
 
 	path = get_path_from_env(data->env);
 	if (!path)
-		return (write_error("%s: command not found\n", cmd),
-			data->exit_status = 127);
+		return (write_error("%s: command not found\n", cmd),/* free_all(data,
+				data->tokens, data->cmd),*/ data->exit_status = 127);
 	paths = split_path(path);
 	if (!paths)
 	{
-		return (data->exit_status = 1);
+		return (free_all(data,
+			data->tokens, data->cmd),data->exit_status = 1);
 	}
 	executable = find_executable(cmd, paths);
 	if (!executable)
 	{
 		write_error("%s: command not found\n", cmd);
-		return (free_array(paths), data->exit_status = 127);
+		return (free_array(paths),/* free_all(data,
+			data->tokens, data->cmd),*/ data->exit_status = 127);
 	}
 	(fork_and_exec(executable, args, data), free(executable));
 	i = 0;
 	while (paths[i])
 		free(paths[i++]);
-	return (free(paths), data->exit_status);
+	return (free(paths), /*free_all(data,
+		data->tokens, data->cmd),*/ data->exit_status);
 }
 
 int	execute_command(char *cmd, t_data *data, char **args)

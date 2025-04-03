@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 22:31:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/03 13:50:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static char	*handle_minus(t_data *data)
 		data->exit_status = 1;
 		return (NULL);
 	}
+	
 	printf("%s\n", oldpwd);
 	return (oldpwd);
 }
@@ -106,7 +107,8 @@ int	builtin_cd(t_cmd *cmd, t_data *data)
 {
 	char	*dest_path;
 
-	if (cmd->args[2])
+
+	if (cmd->args[1] && cmd->args[2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", 2);
 		data->exit_status = 1;

@@ -6,14 +6,17 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 20:33:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 22:17:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-#include <unistd.h>
 
-static int	check_error(const char *filename)
+//cd '/////' >/dev/null (=cd /)
+//cd "doesntexist" >/dev/null
+//cd "wtf" >/dev/null
+
+int	check_error(const char *filename)
 {
 	struct stat	st;
 
@@ -30,7 +33,7 @@ static int	check_error(const char *filename)
 	return (0);
 }
 
-void	handle_input_redirect(t_cmd *cmd) // <
+void	handle_input_redirect(t_data *data, t_cmd *cmd) // <
 {
 	int fd;
 	int i;
@@ -47,19 +50,22 @@ void	handle_input_redirect(t_cmd *cmd) // <
 			ret = check_error(cmd->input_redirects[i]);
 			if (ret != 0)
 			{
-				close(fd);
+				//				close(fd);
+				close(STDOUT_FILENO);
+				close(STDIN_FILENO);
+				free_all(data, data->tokens, data->cmd);
 				exit(1);
 			}
 		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
-		close(STDIN_FILENO);
+		// close(STDIN_FILENO);
 		i++;
 	}
 	close(fd);
 }
 
-void	handle_output_redirect(t_cmd *cmd) // >
+void	handle_output_redirect(t_data *data, t_cmd *cmd) // >
 {
 	int fd;
 	int i;
@@ -76,23 +82,29 @@ void	handle_output_redirect(t_cmd *cmd) // >
 			ret = check_error(cmd->output_redirects[i]);
 			if (ret != 0)
 			{
-				close(fd);
+				//				close(fd);
+				close(STDOUT_FILENO); //
+				close(STDIN_FILENO);  //
+				//
+				// 			close(STDERR_FILENO);
+				free_all(data, data->tokens, data->cmd);
 				exit(1);
 			}
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
-		close(STDOUT_FILENO);
+		//close(STDOUT_FILENO); //
 		i++;
 	}
 }
 
-void	handle_append_redirect(t_cmd *cmd) // >>
+void	handle_append_redirect(t_data *data, t_cmd *cmd) // >>
 {
 	int fd;
 	int i;
 	int ret;
 
+	(void)data;
 	if (!cmd->append_redirects)
 		return ;
 	i = 0;
@@ -105,15 +117,23 @@ void	handle_append_redirect(t_cmd *cmd) // >>
 			ret = check_error(cmd->append_redirects[i]);
 			if (ret != 0)
 			{
-				close(fd);	
+				//				close(fd);
+				close(STDOUT_FILENO);
+				close(STDIN_FILENO);
+				close(STDERR_FILENO);
+				free_all(data, data->tokens, data->cmd);
 				exit(1);
 			}
-			close(fd);
+			//			close(fd);
+			close(STDOUT_FILENO);
+			close(STDIN_FILENO);
+			close(STDERR_FILENO);
+			free_all(data, data->tokens, data->cmd);
 			exit(1);
 		}
 		dup2(fd, STDOUT_FILENO);
-		close(STDOUT_FILENO);
 		close(fd);
+		close(STDOUT_FILENO); //
 		i++;
 	}
 }

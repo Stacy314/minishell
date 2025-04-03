@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 20:20:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 14:36:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,5 +126,6 @@ int	init_data(t_data *data, char **env)
 	data->pwd_p = NULL;
 	data->tokens = NULL;
 	data->cmd = NULL;
+	data->is_child = false;
 	return (SUCCESS);
 }

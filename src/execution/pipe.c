@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 20:07:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:58:23 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,12 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		return (perror("fork"), -1);
 	if (pid == 0)
 	{
+		data->is_child = true;
 		if (dup2(cmd->pipe_fd[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
 			free_all(data, tokens, cmd);
-			// close(STDOUT_FILENO);
+			//close(STDOUT_FILENO);
 			exit(1);
 		}
 		close(cmd->pipe_fd[0]);
@@ -84,6 +85,7 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_dat
 	}
 	if (pid == 0)
 	{
+		data->is_child = true;
 		if (dup2(current->pipe_fd[0], STDIN_FILENO) == -1)
 		{
 			free_all(data, tokens, current);
@@ -121,6 +123,9 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_data 
 	}
 	if (pid == 0)
 	{
+		data->is_child = true;
+		//signal(SIGINT, SIG_DFL);
+		//signal(SIGQUIT, SIG_DFL);
 		if (current->pipe_fd[0] != -1)
 		{
 			if (dup2(current->pipe_fd[0], STDIN_FILENO) == -1)
@@ -130,7 +135,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_data 
 			}
 			close(current->pipe_fd[0]);
 		}
-		close(current->pipe_fd[0]);
+		//close(current->pipe_fd[0]);
 		apply_redirections(current, data);
 		execute_for_one(tokens, current, data);
 		close(STDIN_FILENO);
