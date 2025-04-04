@@ -6,22 +6,48 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 20:59:30 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:52:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
+//int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
+//	t_token_type type, int advance)
+//{
+//state->tokens[state->i] = create_token(symbol, type, (state->index)++);
+//if (!state->tokens[state->i])
+//{
+//	while (state->tokens[state->i] > 0)
+//	{
+//		free(state->tokens[state->i]);
+//		state->i--;
+//	}
+//	perror("failed create token");
+//	return (-1);
+//}
+//state->j += advance;
+//state->i++;
+//return (0);
+//}
+
 int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
-	t_token_type type, int advance)
+	t_token_type type, int advance) //marat
 {
+int	j;
+
 state->tokens[state->i] = create_token(symbol, type, (state->index)++);
 if (!state->tokens[state->i])
 {
-	while (state->tokens[state->i] > 0)
+	j = 0;
+	while (j >= 0)
 	{
-		free(state->tokens[state->i]);
-		state->i--;
+		if (state->tokens[j])
+		{
+			free(state->tokens[j]->value);
+			free(state->tokens[j]);
+		}
+		j--;
 	}
 	perror("failed create token");
 	return (-1);
@@ -30,6 +56,7 @@ state->j += advance;
 state->i++;
 return (0);
 }
+
 
 int	handle_redirection_tok(t_tokenizer_state *state, const char *str)
 {
