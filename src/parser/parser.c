@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 23:05:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:35:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,35 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 	}
 	return (1);
 }
+// marat - added
+static int	check_empty_command(t_cmd *cmd, t_data *data)
+{
+	int	has_args;
+	int	has_any_redirect;
 
+	has_args = 0;
+	if (cmd->args && cmd->args[0] && cmd->args[0][0] != '\0')
+		has_args = 1;
+
+	has_any_redirect = 0;
+	if ((cmd->input_redirects && cmd->input_redirects[0])
+		|| (cmd->output_redirects && cmd->output_redirects[0])
+		|| (cmd->append_redirects && cmd->append_redirects[0])
+		|| (cmd->heredoc_delimiter && cmd->heredoc_delimiter[0]))
+	{
+		has_any_redirect = 1;
+	}
+
+	if (!has_args && !has_any_redirect)
+	{
+		write_error("minishell: '%s': command not found\n",
+			(cmd->args && cmd->args[0]) ? cmd->args[0] : "");
+		data->exit_status = 127;
+		return (0);
+	}
+	return (1);
+}
+////////
 int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 {
 	t_cmd	*prev;
@@ -190,12 +218,15 @@ int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 			prev->next = current;
 		if (!fill_cmd(current, tokens, data, i))
 			return (0);
+		if (!check_empty_command(current, data)) // marat
+			return (0);
 		prev = current;
 		if (tokens[*i] && tokens[*i]->type == PIPE)
 			(*i)++;
 	}
 	return (1);
 }
+
 
 t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 {

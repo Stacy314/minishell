@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 22:53:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:22:05 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,19 @@ int	main(int argc, char **argv, char **env)
 	set_signals_main();
 	while (1)
 	{
+		data.input = readline("minishell$ ");
+		if (!data.input)
+			return (printf("exit\n"), free_array(data.env), data.exit_status);
+		if (*data.input == '\0' || ft_str_only_spaces(data.input))
+		{
+			//free(dara.input);
+			continue ;
+		}
 		if (g_signal_flag == SIGINT) // move to sig
 		{
 			data.exit_status = 130;
 			g_signal_flag = 0;
 		}
-		data.input = readline("minishell$ ");
-		if (!data.input)
-			return (printf("exit\n"), free_array(data.env), data.exit_status);
-		if (*data.input == '\0' || ft_str_only_spaces(data.input))
-			continue ;
 		if (*data.input)
 			add_history(data.input);
 		data.tokens = split_to_tokens(data.input, &data);
@@ -57,10 +60,12 @@ int	main(int argc, char **argv, char **env)
 				return (EXIT_FAILURE);
 			continue ;
 		}
-		last_value = find_last_value(data.tokens);
-		update_underscore(&data, last_value);
 		execute(data.tokens, data.cmd, &data);
-		free_main(&data, data.tokens, data.cmd);
+		if (data.exit_status == 130)
+			continue;	
+		free(data.input);
+		free_tokens(data.tokens);
+		free_cmd(data.cmd);
 	}
 	free_array(data.env);
 	return (data.exit_status);

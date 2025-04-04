@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 13:43:52 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:24:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,8 +180,10 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 		if (!line || ft_strncmp(line, heredoc_delimiter,
 				ft_strlen(heredoc_delimiter)) == 0)
 		{
-			free(line);
-			break ;
+			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
+				*cmd->heredoc_delimiter);
+			//free(line);
+			break;
 		}
 		expand = is_quoted(line);
 		if (!expand)

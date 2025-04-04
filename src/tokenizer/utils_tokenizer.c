@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 23:14:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:40:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,32 +123,80 @@ int	create_nothing_token(const char *str, t_tokenizer_state *state)
 }
 
 int	update_quote_state(t_tokenizer_state *state, char c)
-		{
-			if (!state->inside_quotes)
-			{
-				state->inside_quotes = 1;
-				state->quote_type = c;
-			}
-			else if (state->inside_quotes && c == state->quote_type)
-			{
-				state->inside_quotes = 0;
-				state->quote_type = 0;
-			}
-			state->j++;
-			return (1);
-		}
+{
+	if (!state->inside_quotes)
+	{
+		state->inside_quotes = 1;
+		state->quote_type = c;
+		state->empty_quotes = 0; // marat
+	}
+	else if (state->inside_quotes && c == state->quote_type)
+	{
+		state->inside_quotes = 0;
+		state->quote_type = 0;
+		if (state->k == 0) // marat
+			state->empty_quotes = 1; //marat
+	}
+	state->j++;
+	return (1);
+}
 
-		int flush_word_before_redirect(t_tokenizer_state *state)
+int	flush_word_before_redirect(t_tokenizer_state *state)
+{
+	state->buffer[state->k] = '\0';
+	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++);
+	if (!state->tokens[state->i])
+	{
+		perror("failed create token");
+		return (-1);
+	}
+	state->i++;
+	state->k = 0;
+	return (0);
+}
+
+//int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
+//		t_token_type type, int advance)
+//{
+	
+//	state->tokens[state->i] = create_token(symbol, type, (state->index)++);
+//	if (!state->tokens[state->i])
+//	{
+//		while (state->tokens[state->i] > 0)
+//		{
+//			free(state->tokens[state->i]);
+//			state->i--;
+//		}
+//		perror("failed create token");
+//		return (-1);
+//	}
+//	state->j += advance;
+//	state->i++;
+//	return (0);
+//}
+
+int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
+	t_token_type type, int advance) //mara
+{
+int	j;
+
+state->tokens[state->i] = create_token(symbol, type, (state->index)++);
+if (!state->tokens[state->i])
+{
+	j = 0;
+	while (j >= 0)
+	{
+		if (state->tokens[j])
 		{
-			state->buffer[state->k] = '\0';
-			state->tokens[state->i] = create_token(state->buffer, WORD,
-					state->index++);
-			if (!state->tokens[state->i])
-			{
-				perror("failed create token");
-				return (-1);
-			}
-			state->i++;
-			state->k = 0;
-			return (0);
+			free(state->tokens[j]->value);
+			free(state->tokens[j]);
 		}
+		j--;
+	}
+	perror("failed create token");
+	return (-1);
+}
+state->j += advance;
+state->i++;
+return (0);
+}

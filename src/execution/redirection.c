@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 21:10:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:30:02 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,20 +73,20 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 	int		sig;
 
 	(void)tokens;
-	//	parent_ignore_signals();
+	parent_ignore_signals();
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 0);
 	if (pid == 0)
 	{
 		// data->is_child = true;
-		//	signal(SIGINT, SIG_DFL);
-		//		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input, data);
 		execute_for_one(tokens, cmd, data);
+		//del below
 		(close(STDIN_FILENO), close(STDOUT_FILENO));
 		(free_all(data, tokens, cmd), exit(data->exit_status));
-		printf("im here\n");
 		exit(data->exit_status);
 	}
 	waitpid(pid, &status, 0);

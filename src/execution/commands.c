@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 21:50:30 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:10:08 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 	int status;
 	int sig;
 
-	parent_ignore_signals();
+	parent_ignore_signals(); // move?
 	if (data->is_child == false)
 	{
 		pid = fork();

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 23:04:50 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:15:43 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-# include <errno.h>
+# include <errno.h> //
 # include <fcntl.h>
 # include <limits.h>
 # include <readline/history.h>
@@ -46,24 +46,6 @@
 # define HEREDOC_RAND_MAX 999999
 
 extern volatile sig_atomic_t	g_signal_flag;
-///////////////////////////////////////////////
-//typedef enum e_redirect_type
-//{
-//	REDIRECT_INPUT,  // <
-//	REDIRECT_OUTPUT, // >
-//	REDIRECT_APPEND, // >>
-//	REDIRECT_HEREDOC // <<
-//}								t_redirect_type;
-
-//typedef struct s_redirect
-//{
-//	t_redirect_type				type;
-//	char *filename; // Target filename or heredoc delimiter
-//	int fd;         // File descriptor if opened
-//	struct s_redirect			*next;
-//}								t_redirect;
-///////////////////////////////////////////////////
-
 
 typedef enum e_token_type
 {
@@ -82,6 +64,7 @@ typedef enum e_token_type
 typedef struct s_token
 {
 	char						*value;
+	//char						*var_name;
 	t_token_type				type;
 	int							index;
 }								t_token;
@@ -94,6 +77,7 @@ typedef struct s_tokenizer_state
 	int							index;
 	int							inside_quotes;
 	int							buffer_size;
+	int							empty_quotes;
 	char						*buffer;
 	char						quote_type;
 	t_token						**tokens;
@@ -163,6 +147,8 @@ void							set_signals_heredoc(void);
 void							set_signals_child(void);
 void							parent_ignore_signals(void);
 void							parent_restore_signals(void);
+void							handle_sigint_child(int sig);
+void							handle_sigquit_child(int sig);
 
 // tokenization
 int								handle_expansion(t_tokenizer_state *state,
@@ -253,18 +239,17 @@ void							execute_pipeline(t_token **tokens, t_cmd *cmd,
 void							execute_for_one(t_token **tokens, t_cmd *cmd,
 									t_data *data);
 int								execute_redirection(t_cmd *cmd, t_data *data,
-									t_token **tokens);
-void							execute_heredoc(t_cmd *cmd, t_data *data);
-void							handle_input_redirect(t_data *data,t_cmd *cmd);
-void							handle_output_redirect(t_data *data, t_cmd *cmd);;
-void							handle_append_redirect(t_data *data, t_cmd *cmd);;
-int								handle_heredoc(t_cmd *cmd,
-									char *heredoc_delimiter, size_t size, t_data *data);
- void							apply_redirections(t_cmd *cmd, t_data *data);
-//int								apply_redirections(t_cmd *cmd, t_data *data);
-void							update_underscore(t_data *data, char *value);
-char							*find_last_value(t_token **tokens);
-int								add_or_update_env(char *arg, t_data *data);
+									char **env, t_token **tokens);
+void							execute_heredoc(t_cmd *cmd);
+void							handle_input_redirect(t_cmd *cmd);
+void							handle_output_redirect(t_cmd *cmd);
+void							handle_append_redirect(t_cmd *cmd);
+int								handle_heredoc(t_cmd *cmd, size_t size);
+void							apply_redirections(t_cmd *cmd, t_data *data);
+
+
+int								handle_heredoc_pipe(t_cmd *cmd);
+bool							handle_all_heredocs(t_cmd *cmd, t_data *data);
 // expantion
 char							*expand_variable(const char *str, int *j,
 									t_data *data);
