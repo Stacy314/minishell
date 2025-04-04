@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgallyam <mgallyam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 00:22:36 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:55:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,8 +221,7 @@ int	handle_heredoc(t_cmd *cmd, size_t size)
 		line = readline("> ");
 		if (!line)//marat
 		{
-			fprintf(stderr,
-				"minishell: warning: heredoc delimited by EOF (wanted `%s')\n",
+			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
 				*cmd->heredoc_delimiter);
 			break;
 		}
