@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 22:13:56 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 23:05:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,10 @@
 // echo '' "" (print space)
 // exit "" (bash: exit: : numeric argument required, EC - 2)
 
-// cat <minishell.h|ls
-
 // export a="s -lsa"
 //		l$a
 
 // echo hi | echo hi | (should open input)
-
-//$notexists | ls | $notexists
 
 //> $notexists echo "haha" (bash: $notexists: ambiguous redirect)
 
@@ -35,10 +31,6 @@
 
 // export A='"echo hi"'
 //$A  ("echo: command not found)
-
-// void	debug_print_cmd(t_cmd *cmd)
-// {
-// 	int	i;
 
 //////////////////////////////////////////////////////////////////////
 void	debug_print_cmd(t_cmd *cmd)
@@ -166,7 +158,7 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 		if (tokens[*i]->type == REDIRECT_IN || tokens[*i]->type == REDIRECT_OUT
 		|| tokens[*i]->type == APPEND || tokens[*i]->type == HEREDOC)
 		{
-			if (!handle_redirect(cmd, tokens, data, i))
+			if (!handle_redirection_parser(cmd, tokens, data, i))
 				return (0);
 		}
 		else
@@ -217,7 +209,7 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 	if (!build_command_list(&head, tokens, data, &i))
 	{
 		free_cmd(head);
-		return (NULL);
+		return (NULL); //need fix
 	}
 	//debug_print_cmd(head);
 	return (head);

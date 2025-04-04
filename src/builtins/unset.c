@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:36:48 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/03 22:13:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,17 @@ int	find_env_var(char **env, const char *var)
 	return (free(arg_name), -1);
 }
 
-int	builtin_unset(t_cmd *cmd, t_data *data) 
+int	builtin_unset(t_cmd *cmd, t_data *data, int token_index) 
 {
-	int	i;
 	int	j;
 	int	var_index;
 
-	if (!cmd->args[1])
+	if (!cmd->args[token_index])
 		return (1);
-	i = 1;
-	while (cmd->args[i])
+	token_index++;
+	while (cmd->args[token_index])
 	{
-		var_index = find_env_var(data->env, cmd->args[i]);
+		var_index = find_env_var(data->env, cmd->args[token_index]);
 		if (var_index != -1)
 		{
 			free(data->env[var_index]);
@@ -75,7 +74,7 @@ int	builtin_unset(t_cmd *cmd, t_data *data)
 				j++;
 			}
 		}
-		i++;
+		token_index++;
 	}
 	return (data->exit_status = 0);
 }

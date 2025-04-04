@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_print.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:16:26 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/03 19:22:28 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ int	is_valid_identifier(const char *arg)
 	i = 0;
 	if (!arg || !arg[0])
 		return (0);
-	if (!isalpha(arg[0]) && arg[0] != '_')
+	if (!ft_isalpha(arg[0]) && arg[0] != '_')
 		return (0);
 	while (arg[i] && arg[i] != '=')
 	{
-		if (!isalnum(arg[i]) && arg[i] != '_')
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 			return (0);
 		i++;
 	}

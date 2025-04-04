@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:36:41 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/03 22:14:39 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// export a="s -lsa"
+// export a="s -l"
 //		l$a
 
 //echo $? (122)
@@ -90,13 +90,13 @@ static int	export_env(char *arg, t_data *data)
 	return (add_or_update_env(arg, data));
 }
 
-int	builtin_export(t_cmd *cmd, t_data *data)
+int	builtin_export(t_cmd *cmd, t_data *data, int token_index)
 {
-	if (!cmd->args[1])
+	if (!cmd->args[token_index + 1])
 	{
 		print_sorted_env(data->env);
 		data->exit_status = 0;
 		return (0);
 	}
-	return (export_env(cmd->args[1], data));
+	return (export_env(cmd->args[token_index + 1], data));
 }

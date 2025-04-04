@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 22:13:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:42:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,34 +56,6 @@ t_token	*create_token(const char *value, t_token_type type, int index)
 	return (new);
 }
 
-int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
-{
-	char	*expanded;
-	size_t	len;
-	
-	if (str[state->j] == '$' && state->quote_type != '\'')
-	{
-		expanded = expand_variable(str, &state->j, data);
-		//if (!expanded || !*expanded)
-		//{
-		//	data->exit_status = 1;
-		//	return (free(expanded), -1);
-		//}
-		len = ft_strlen(expanded);
-		while (state->k + len >= (size_t)state->buffer_size)
-		{
-			if (expand_buffer(state) == -1)
-				return (free(expanded), -1);
-		}
-		ft_strlcpy(&state->buffer[state->k], expanded, state->buffer_size
-			- state->k);
-		state->k += len;
-		free(expanded);
-		return (1);
-	}
-	return (0);
-}
-
 int	create_word_token(t_tokenizer_state *state)
 {
 	if (state->k == 0 || state->buffer[0] == '\0')
@@ -106,7 +78,50 @@ int	create_word_token(t_tokenizer_state *state)
 	return (1);
 }
 
-static int	tokenize_loop(const char *str, t_tokenizer_state *state, /*t_token **tokens,*/
+// static int	tokenize_loop(const char *str, t_tokenizer_state *state,
+//		t_data *data)
+//{
+//	while (str[state->j])
+//	{
+//		skip_spaces(str, state);
+//		if (str[state->j] == '\0')
+//			break ;
+//		if (create_pipe_operator(str, state)) // mem leak
+//			continue ;
+//		// if (!state->inside_quotes && is_redirect(str[state->j]))
+//		//{
+//		//	if (create_word_token(state) == -1) // mem
+//		//		return (cleanup_and_null(state), -1);
+//		//	if (handle_redirection_tok(state, str) == -1) // mem  leak
+//		//		return (cleanup_and_null(state), -1);
+//		//	continue ;
+//		//}
+//		if (!state->inside_quotes && (is_pipe(str[state->j])
+//				|| is_redirect(str[state->j])))
+//		{
+//			if (create_word_token(state) == -1)
+//				return (cleanup_and_null(state), -1);
+//			if (str[state->j] == '|')
+//			{
+//				if (create_pipe_operator(str, state) == -1)
+//					return (cleanup_and_null(state), -1);
+//				state->j++;
+//				continue ;
+//			}
+//			else
+//			{
+//				if (handle_redirection_tok(state, str) == -1)
+//					return (cleanup_and_null(state), -1);
+//				continue ;
+//			}
+//		}
+//		if (handle_token_word(state, str, data) == -1) // mem
+//			return (-1);
+//	}
+//	return (0);
+//}
+
+static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		t_data *data)
 {
 	while (str[state->j])
@@ -114,17 +129,25 @@ static int	tokenize_loop(const char *str, t_tokenizer_state *state, /*t_token **
 		skip_spaces(str, state);
 		if (str[state->j] == '\0')
 			break ;
-		if (is_pipe_operator(str, state)) // mem leak
-			continue ;
-		if (!state->inside_quotes && is_redirect(str[state->j]))
+		if (!state->inside_quotes && (is_pipe(str[state->j])
+				|| is_redirect(str[state->j])))
 		{
-			if (create_word_token(state) == -1)           // mem
+			if (create_word_token(state) == -1)
 				return (cleanup_and_null(state), -1);
-			if (handle_redirection(state, str) == -1)         // mem  leak
-				return (cleanup_and_null(state), -1);
+			if (str[state->j] == '|')
+			{
+				if (create_pipe_operator(str, state) == -1)
+					return (cleanup_and_null(state), -1);
+				state->j++;
+			}
+			else
+			{
+				if (handle_redirection_tok(state, str) == -1)
+					return (cleanup_and_null(state), -1);
+			}
 			continue ;
 		}
-		if (handle_token_word(state, str, data) == -1) // mem
+		if (handle_token_word(state, str, data) == -1)
 			return (-1);
 	}
 	return (0);
@@ -142,12 +165,12 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 		return (perror("calloc"), NULL);
 	if (!init_state(&state, tokens)) // mem
 		return (free(tokens), NULL);
-	if (tokenize_loop(str, &state,/* tokens,*/ data) == -1) // mem
-		return (/* cleanup_and_null(&state),  */NULL);
+	if (tokenize_loop(str, &state, /* tokens,*/ data) == -1) // mem
+		return (/* cleanup_and_null(&state),  */ NULL);
 	if (state.inside_quotes)
 	{
-		write_error("minishell: syntax error: unclosed quotes\n");  //exit code? 
-		return (/* cleanup_and_null(&state),  */data->exit_status = 2, NULL);
+		write_error("minishell: syntax error: unclosed quotes\n");
+		return (/* cleanup_and_null(&state),  */ data->exit_status = 2, NULL);
 	}
 	tokens[state.i] = NULL;
 	free(state.buffer);

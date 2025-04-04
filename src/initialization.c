@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 14:36:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 17:45:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	increment_shlvl(t_data *data)
 	data->env[i] = ft_strdup("SHLVL=1");
 	if (!data->env[i])
 		return (ERROR);
-	return (data->env[i + 1] = NULL, SUCCESS); // try to unset SHLVL
+	return (data->env[i + 1] = NULL, SUCCESS);
 }
 
 static char	**init_env(char **env)

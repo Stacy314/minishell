@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 20:46:01 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 22:01:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,24 +32,24 @@ int	is_option(const char *arg)
 	return (arg[i] == '\0');
 }
 
-void	builtin_echo(t_cmd *cmd, t_data *data)
+void	builtin_echo(t_cmd *cmd, t_data *data, int token_index)
 {
-	int	i;
+
 	int	n_flag;
 
-	i = 1;
+	token_index++;
 	n_flag = 0;
-	while (cmd->args[i] != NULL && is_option(cmd->args[i]))
+	while (cmd->args[token_index] != NULL && is_option(cmd->args[token_index]))
 	{
 		n_flag = 1;
-		i++;
+		token_index++;
 	}
-	while (cmd->args[i] != NULL)
+	while (cmd->args[token_index] != NULL)
 	{
-		ft_putstr_fd(cmd->args[i], STDOUT_FILENO);
-		if (cmd->args[i + 1] != NULL)
+		ft_putstr_fd(cmd->args[token_index], STDOUT_FILENO);
+		if (cmd->args[token_index + 1] != NULL)
 			ft_putstr_fd(" ", STDOUT_FILENO);
-		i++;
+		token_index++;
 	}
 	if (!n_flag)
 		ft_putstr_fd("\n", STDOUT_FILENO);

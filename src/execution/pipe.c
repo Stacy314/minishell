@@ -6,21 +6,17 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 20:58:23 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:11:58 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// need check all fd
-
 // exit | exit | exit (shouldn't exit and shouldn't print anything)
 
-/// bin/env | grep "_=" (32)
-
-/// bin/env | grep "SHLVL" (34)
-
 // echo hi | echo hi | (should open input)
+
+// echo test |  <<lala (should open herdoc input)
 
 int	count_commands(t_cmd *cmd)
 {
@@ -51,7 +47,7 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		{
 			perror("dup2");
 			free_all(data, tokens, cmd);
-			//close(STDOUT_FILENO);
+			// close(STDOUT_FILENO);
 			exit(1);
 		}
 		close(cmd->pipe_fd[0]);
@@ -67,8 +63,8 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 	return (pid);
 }
 
-pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_data *data,
-		int new_pipe_fd[2])
+pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
+		t_data *data, int new_pipe_fd[2])
 {
 	pid_t	pid;
 
@@ -93,25 +89,26 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_dat
 		}
 		if (dup2(new_pipe_fd[1], STDOUT_FILENO) == -1)
 		{
-			free_all(data, tokens, current);			
+			free_all(data, tokens, current);
 			return (perror("dup2 new_pipe_fd[1]"), exit(1), -1);
 		}
 		close(current->pipe_fd[0]);
-        close(current->pipe_fd[1]);
-        close(new_pipe_fd[0]);
-        close(new_pipe_fd[1]);
-        apply_redirections(current, data);
-        execute_for_one(tokens, current, data);
-        close(STDIN_FILENO);
-        close(STDOUT_FILENO);
+		close(current->pipe_fd[1]);
+		close(new_pipe_fd[0]);
+		close(new_pipe_fd[1]);
+		apply_redirections(current, data);
+		execute_for_one(tokens, current, data);
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
 		free_all(data, tokens, cmd);
-        exit(data->exit_status);
+		exit(data->exit_status);
 	}
 	close(current->pipe_fd[0]);
 	return (close(new_pipe_fd[1]), (pid));
 }
 
-pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_data *data)
+pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
+		t_data *data)
 {
 	pid_t	pid;
 
@@ -124,18 +121,18 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_data 
 	if (pid == 0)
 	{
 		data->is_child = true;
-		//signal(SIGINT, SIG_DFL);
-		//signal(SIGQUIT, SIG_DFL);
+		// signal(SIGINT, SIG_DFL);
+		// signal(SIGQUIT, SIG_DFL);
 		if (current->pipe_fd[0] != -1)
 		{
 			if (dup2(current->pipe_fd[0], STDIN_FILENO) == -1)
 			{
-				free_all(data, tokens, current);		
+				free_all(data, tokens, current);
 				return (perror("dup2 current->pipe_fd[0]"), exit(1), -1);
 			}
 			close(current->pipe_fd[0]);
 		}
-		//close(current->pipe_fd[0]);
+		// close(current->pipe_fd[0]);
 		apply_redirections(current, data);
 		execute_for_one(tokens, current, data);
 		close(STDIN_FILENO);
@@ -148,7 +145,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd, t_data 
 	return (pid);
 }
 
-static int	handle_all_heredocs(t_cmd *cmd)
+static int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 {
 	t_cmd	*tmp;
 	int		i;
@@ -159,19 +156,22 @@ static int	handle_all_heredocs(t_cmd *cmd)
 	while (tmp)
 	{
 		i = 0;
-		while (tmp->heredoc_delimiter[i])
+		if (tmp->heredoc_delimiter)
 		{
-			if (tmp->heredoc_delimiter[i])
+			while (tmp->heredoc_delimiter[i])
 			{
-				tmp->heredoc_fd = handle_heredoc(tmp, tmp->heredoc_delimiter[i],
-						128);
-				if (tmp->heredoc_fd == -1)
+				if (tmp->heredoc_delimiter[i])
 				{
-					perror("heredoc");
-					return (ERROR);
+					tmp->heredoc_fd = handle_heredoc(tmp,
+							tmp->heredoc_delimiter[i], 128, data);
+					if (tmp->heredoc_fd == -1)
+					{
+						perror("heredoc");
+						return (ERROR);
+					}
 				}
+				i++;
 			}
-			i++;
 		}
 		tmp = tmp->next;
 	}
@@ -200,15 +200,15 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 				current, cmd, data, new_pipe_fd);
 		temp_fd[0] = new_pipe_fd[0];
 		temp_fd[1] = new_pipe_fd[1];
-		//free_all(data, tokens, current);
+		// free_all(data, tokens, current);
 		current = current->next;
 	}
 	if (current)
 	{
 		current->pipe_fd[0] = temp_fd[0];
 		current->pipe_fd[1] = temp_fd[1];
-		cmd->pipe_pids[process_count++] = execute_last_command(tokens, current, cmd,
-				data);
+		cmd->pipe_pids[process_count++] = execute_last_command(tokens, current,
+				cmd, data);
 	}
 	else
 	{
@@ -218,19 +218,21 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 	return (process_count);
 }
 
-void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data) //deleted env, changed handle_all_heredocs, del malloc for cmd->pipe_pids
+void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
+		// deleted env, changed handle_all_heredocs,
+		//del malloc for cmd->pipe_pids
 {
-	int	n_cmds;
-	int	process_count;
-	int	status;
-	int	i;
+	int n_cmds;
+	int process_count;
+	int status;
+	int i;
 
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
 		return ;
-	if (!handle_all_heredocs(cmd))
+	if (!handle_all_heredocs(cmd, data))
 		return ;
-	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1); //move to init 
+	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1); // move to init
 	if (!cmd->pipe_pids)
 		return (perror("calloc"));
 	process_count = launch_all_processes(tokens, cmd, data);
@@ -243,4 +245,3 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data) //deleted env,
 		i++;
 	}
 }
-

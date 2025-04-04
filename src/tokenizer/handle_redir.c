@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 12:31:09 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 20:59:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ state->i++;
 return (0);
 }
 
-int	handle_redirection(t_tokenizer_state *state, const char *str)
+int	handle_redirection_tok(t_tokenizer_state *state, const char *str)
 {
 	if (str[state->j] == '>' && str[state->j + 1] == '>')
 		return (add_redirect_token(state, ">>", APPEND, 2));
@@ -53,9 +53,11 @@ int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str)
 	{
 		if (state->k > 0 && flush_word_before_redirect(state) == -1)
 			return (-1);
-		if (handle_redirection(state, str) == -1)
+		if (handle_redirection_tok(state, str) == -1)
 			return (-1);
 		return (1);
 	}
 	return (0);
 }
+
+

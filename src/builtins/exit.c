@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 19:19:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 22:03:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,13 @@ long	ft_atol(const char *str, int *error)
 	return (res);
 }
 
-int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens)
+int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens, int token_index)
 {
 	long	exit_code;
 	int		error;
 
 	error = 0;
-	if (!cmd->args[1])
+	if (!cmd->args[token_index + 1])
 		return ((printf("exit\n"), free_all(data, tokens, cmd),
 				exit(data->exit_status), 1));
 	exit_code = ft_atol(cmd->args[1], &error);
@@ -112,7 +112,7 @@ int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens)
 			cmd->args[1]);
 		(free_all(data, tokens, cmd), exit(2));
 	}
-	if (cmd->args[2])
+	if (cmd->args[token_index + 2])
 	{
 		if (isatty(0) || isatty(1))
 			printf("exit\n");

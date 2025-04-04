@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenizer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 22:21:04 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/03 23:14:19 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,56 +25,11 @@ int	expand_buffer(t_tokenizer_state *state)
 	state->buffer = new_buffer;
 	return (0);
 }
-
-int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
-{
-	int	result;
-
-	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
-			|| state->inside_quotes))
-	{
-		if (state->inside_quotes && str[state->j] == '|')
-		{
-			state->buffer[state->k++] = str[state->j++];
-			continue ;
-		}
-		result = handle_quotes_and_redirects(state, str);
-		if (result == -1)
-			return (-1);
-		if (result == 1)
-			continue ;
-		result = handle_expansion(state, str, data);
-		if (result == -1)
-			return (-1);
-		if (result == 1)
-			continue ;
-		if (state->k >= state->buffer_size - 1 && expand_buffer(state) == -1)
-			return (-1);
-		state->buffer[state->k++] = str[state->j++];
-	}
-	return (create_word_token(state));
-}
-
-int	update_quote_state(t_tokenizer_state *state, char c)
-{
-	if (!state->inside_quotes)
-	{
-		state->inside_quotes = 1;
-		state->quote_type = c;
-	}
-	else if (state->inside_quotes && c == state->quote_type)
-	{
-		state->inside_quotes = 0;
-		state->quote_type = 0;
-	}
-	state->j++;
-	return (1);
-}
-
-int	flush_word_before_redirect(t_tokenizer_state *state)
+int	create_nothing_token(const char *str, t_tokenizer_state *state)
 {
 	state->buffer[state->k] = '\0';
-	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++);
+	state->tokens[state->i] = create_token(state->buffer, NOTHING,
+			state->index++);
 	if (!state->tokens[state->i])
 	{
 		perror("failed create token");
@@ -82,6 +37,118 @@ int	flush_word_before_redirect(t_tokenizer_state *state)
 	}
 	state->i++;
 	state->k = 0;
+	skip_spaces(str, state);
 	return (0);
 }
 
+//int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
+//{
+//	int	result;
+
+//	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
+//			|| state->inside_quotes))
+//	{
+//		//if (state->inside_quotes)
+//		//{
+			
+//		//}
+//		//printf("%c\n", str[state->j]);
+//		if (!state->inside_quotes && (str[state->j] == '|'
+//				|| is_redirect(str[state->j])))
+//		{
+//			if (create_word_token(state) == -1)
+//				return (-1);
+//			if (str[state->j] == '|')
+//			{
+//				if (create_pipe_operator(str, state) == -1)
+//					return (-1);
+//				else if (handle_redirection_tok(state, str) == -1)
+//					return (-1);
+//			}
+//			return (0);
+//		}
+//		result = handle_quotes_and_redirects(state, str);
+//		if (result == -1)
+//			return (-1);
+//		if (result == 1)
+//			continue ;
+//		result = handle_expansion(state, str, data);
+//		if (result == -1)
+//			return (-1);
+//		if (result == 1)
+//			continue ;
+//		if (result == 2)
+//			if (create_nothing_token(str, state) == -1)
+//				return (-1);
+//		if (state->k >= state->buffer_size - 1 && expand_buffer(state) == -1)
+//			return (-1);
+//		state->buffer[state->k++] = str[state->j++];
+//	}
+//	return (create_word_token(state));
+//}
+
+ int	handle_token_word(t_tokenizer_state *state, const char *str,
+		t_data *data)
+{
+	int	result;
+
+	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
+			|| state->inside_quotes))
+	{
+		result = handle_quotes_and_redirects(state, str);
+		if (result == -1)
+			return (-1);
+		if (result == 1)
+			continue ;
+
+		result = handle_expansion(state, str, data);
+		if (result == -1)
+			return (-1);
+		if (result == 1)
+			continue ;
+		if (result == 2)
+		{
+			if (create_nothing_token(str, state) == -1)
+				return (-1);
+			continue ;
+		}
+
+		if (state->k >= state->buffer_size - 1)
+			if (expand_buffer(state) == -1)
+				return (-1);
+
+		state->buffer[state->k++] = str[state->j++];
+	}
+	return (create_word_token(state));
+}
+
+int	update_quote_state(t_tokenizer_state *state, char c)
+		{
+			if (!state->inside_quotes)
+			{
+				state->inside_quotes = 1;
+				state->quote_type = c;
+			}
+			else if (state->inside_quotes && c == state->quote_type)
+			{
+				state->inside_quotes = 0;
+				state->quote_type = 0;
+			}
+			state->j++;
+			return (1);
+		}
+
+		int flush_word_before_redirect(t_tokenizer_state *state)
+		{
+			state->buffer[state->k] = '\0';
+			state->tokens[state->i] = create_token(state->buffer, WORD,
+					state->index++);
+			if (!state->tokens[state->i])
+			{
+				perror("failed create token");
+				return (-1);
+			}
+			state->i++;
+			state->k = 0;
+			return (0);
+		}

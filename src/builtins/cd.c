@@ -6,23 +6,22 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 13:50:25 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 23:35:53 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-//apechkov@c3r4p2:~/projects/minishell$ cd 
-//apechkov@c3r4p2:~$ echo $_
-//cd
-//apechkov@c3r4p2:~$ env | echo $_
-//cd
-//apechkov@c3r4p2:~$ env | grep "_=" | echo $_
-//cd
-//apechkov@c3r4p2:~$ env | grep "_=" 
+// apechkov@c3r4p2:~/projects/minishell$ cd
+// apechkov@c3r4p2:~$ echo $_
+// cd
+// apechkov@c3r4p2:~$ env | echo $_
+// cd
+// apechkov@c3r4p2:~$ env | grep "_=" | echo $_
+// cd
+// apechkov@c3r4p2:~$ env | grep "_="
 //_=/usr/bin/env
-//apechkov@c3r4p2:~$ 
-
+// apechkov@c3r4p2:~$
 
 static void	perform_cd(const char *dest_path, t_data *data)
 {
@@ -64,7 +63,6 @@ static char	*handle_minus(t_data *data)
 		data->exit_status = 1;
 		return (NULL);
 	}
-	
 	printf("%s\n", oldpwd);
 	return (oldpwd);
 }
@@ -103,12 +101,15 @@ static char	*get_cd_destination(t_cmd *cmd, t_data *data)
 	return (cmd->args[1]);
 }
 
-int	builtin_cd(t_cmd *cmd, t_data *data)
+int	builtin_cd(t_cmd *cmd, t_data *data, int token_index)
 {
 	char	*dest_path;
 
-
-	if (cmd->args[1] && cmd->args[2])
+	//while (cmd->args[token_index + 1] && data->tokens[token_index + 1]
+	//	&& data->tokens[token_index + 1]->type == NOTHING)
+	//	token_index++;
+	if (cmd->args[token_index] && cmd->args[token_index + 1]
+		&& cmd->args[token_index + 2])
 	{
 		ft_putendl_fd("minishell: cd: too many arguments", 2);
 		data->exit_status = 1;

@@ -6,27 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 21:23:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 22:53:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// NEED TO FIX:
-// signals
-
-// interactive/ non-int.
-
-// Wildcards * (print error)
-
-// #invalid command, followed by empty variable, should clear the exit code
-// doesntexist
-// $EMPTY
-// echo $?
-
-// # Local variables are options
-// aa==vv
-// echo $aa
 
 volatile sig_atomic_t	g_signal_flag = 0;
 
@@ -73,12 +57,11 @@ int	main(int argc, char **argv, char **env)
 				return (EXIT_FAILURE);
 			continue ;
 		}
-		execute(data.tokens, data.cmd, &data);
 		last_value = find_last_value(data.tokens);
-		update_underscore(&data, last_value); // update only success exec
+		update_underscore(&data, last_value);
+		execute(data.tokens, data.cmd, &data);
 		free_main(&data, data.tokens, data.cmd);
 	}
 	free_array(data.env);
-	// clear_history();
 	return (data.exit_status);
 }

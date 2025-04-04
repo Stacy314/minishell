@@ -3,35 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:34:43 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/03 22:02:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	builtin_env(t_data *data, t_cmd *cmd)
+int	builtin_env(t_data *data, t_cmd *cmd, int token_index)
 {
-	int i;
 
 	if (!data->env)
 		return (data->exit_status = 1);
-	if (cmd->args[1])
+	if (cmd->args[token_index + 1])
 	{
 		write_error("env: too many arguments\n");
 		return (data->exit_status = 1);
 	}
-	i = 0;
-	while (data->env[i])
+	while (data->env[token_index])
 	{
-		if (ft_strchr(data->env[i], '='))
+		if (ft_strchr(data->env[token_index], '='))
 		{
-			ft_putstr_fd(data->env[i], 1);
+			ft_putstr_fd(data->env[token_index], 1);
 			ft_putstr_fd("\n", 1);
 		}
-		i++;
+		token_index++;
 	}
 	return (data->exit_status = 0);
 }

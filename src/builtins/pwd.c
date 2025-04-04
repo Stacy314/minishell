@@ -6,19 +6,21 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 17:07:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 22:13:05 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
- int	builtin_pwd(t_cmd *cmd, t_data *data)
+int	builtin_pwd(t_cmd *cmd, t_data *data, int token_index)
 {
-	char *buf;
+	char	*buf;
 
-	if (cmd->args[1] && ft_strchr(cmd->args[1], '-'))
+	if (cmd->args[token_index] && cmd->args[token_index + 1]
+		&& ft_strchr(cmd->args[token_index + 1], '-'))
 	{
-		write_error("minishell: pwd: -%c: invalid option\n", cmd->args[1][1]);
+		write_error("minishell: pwd: -%c: invalid option\n",
+			cmd->args[token_index + 1][1]);
 		return (data->exit_status = 1);
 	}
 	buf = getcwd(NULL, 0);

@@ -6,29 +6,30 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 21:27:48 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:09:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-//> $notexists echo "haha" (bash: $notexists: ambiguous redirect, exit code 1)
+// > $notexists echo "haha" (bash: $notexists: ambiguous redirect, exit code 1)
 
-//$NOVAR (\n)
+// cat <<HERE
+// $USER
+// oi
+// HERE
 
-//echo hi >> "out" 
 
-// echo hi >>">" out (write in > hi out)
+// delimiter should be $USER
+// 	cat << $USER
 
 char	*expand_variable(const char *str, int *j, t_data *data)
 {
-	char	var_name[256];
+	char	var_name[256]; 
 	int		k;
 	char	**env;
 	int		i;
 
-	if (!str || !*str) // need to check
-		return (NULL);
 	k = 0;
 	(*j)++;
 	if (str[*j] == '?')
@@ -54,4 +55,32 @@ char	*expand_variable(const char *str, int *j, t_data *data)
 		i++;
 	}
 	return (ft_strdup(""));
+}
+
+int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
+{
+	char	*expanded;
+	size_t	len;
+
+	if (str[state->j] == '$' && state->quote_type != '\'')
+	{
+		expanded = expand_variable(str, &state->j, data);
+		if (!expanded || !*expanded)
+			return (2);
+		len = ft_strlen(expanded);
+		while (state->k + len >= (size_t)state->buffer_size)
+		{
+			if (expand_buffer(state) == -1)
+			{
+				printf("expand_buffer failed\n");
+				return (free(expanded), -1);
+			}
+		}
+		ft_strlcpy(&state->buffer[state->k], expanded, state->buffer_size
+			- state->k);
+		state->k += len;
+		free(expanded);
+		return (1);
+	}
+	return (0);
 }

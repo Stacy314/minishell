@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_operator.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 22:21:33 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/03 20:13:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	skip_spaces(const char *str, t_tokenizer_state *state)
 		state->j++;
 }
 
-int	is_pipe_operator(const char *str, t_tokenizer_state *state)
+int	create_pipe_operator(const char *str, t_tokenizer_state *state)
 {
 	if (str[state->j] == '|')
 	{
@@ -38,4 +38,9 @@ int	is_redirect(char c)
 int	is_quote(char c)
 {
 	return (c == '\'' || c == '\"');
+}
+
+int is_pipe(char c)
+{
+	return (c == '|');
 }

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 20:55:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 23:04:50 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef enum e_token_type
 	HEREDOC,
 	LOGICAL_AND,
 	LOGICAL_OR,
+	NOTHING,
 	END
 }								t_token_type;
 
@@ -101,7 +102,6 @@ typedef struct s_cmd
 {
 	char						**args;
 	struct s_cmd				*next;
-	//t_redirect					*redirections;
 	char						**input_redirects;
 	char						**output_redirects;
 	char						**append_redirects;
@@ -123,6 +123,12 @@ typedef struct s_data
 	bool						is_child;
 }								t_data;
 
+
+
+
+bool	is_quoted(const char *str);
+char	*unquote_delimiter(char *quoted);
+char	*expand_heredoc(const char *line, t_data *data);
 // utils
 void							write_error(const char *format, ...);
 int								ft_strcmp(const char *s1, const char *s2);
@@ -166,6 +172,7 @@ int								handle_quotes_and_redirects(t_tokenizer_state *state,
 int								create_word_token(t_tokenizer_state *state);
 int								is_redirect(char c);
 int								is_quote(char c);
+int								is_pipe(char c);
 int								expand_buffer(t_tokenizer_state *state);
 void							*append_char_to_buffer(t_tokenizer_state *state,
 									char c);
@@ -174,13 +181,13 @@ t_token							*create_token(const char *value,
 t_token							**split_to_tokens(const char *str,
 									t_data *data);
 void							free_tokens(t_token **tokens);
-int								handle_redirection(t_tokenizer_state *state,
+int								handle_redirection_tok(t_tokenizer_state *state,
 									const char *str);
 void							skip_spaces(const char *str,
 									t_tokenizer_state *state);
 int								is_logical_operator(const char *str,
 									t_tokenizer_state *state);
-int								is_pipe_operator(const char *str,
+int								create_pipe_operator(const char *str,
 									t_tokenizer_state *state);
 int								handle_token_word(t_tokenizer_state *state,
 									const char *str, t_data *data);
@@ -199,7 +206,7 @@ int								build_command_list(t_cmd **head,
 									t_token **tokens, t_data *data, int *i);
 int								fill_cmd(t_cmd *cmd, t_token **tokens,
 									t_data *data, int *i);
-int								handle_redirect(t_cmd *cmd, t_token **tokens,
+int								handle_redirection_parser(t_cmd *cmd, t_token **tokens,
 									t_data *data, int *i);
 int								is_redirect_token(t_token *token);
 int								check_initial_syntax_errors(t_token **tokens,
@@ -213,14 +220,14 @@ int								append_redirect_value(char ***redirects,
 t_cmd							*parse_tokens(t_token **tokens, t_data *data);
 
 // builtins
-void							builtin_echo(t_cmd *cmd, t_data *data);
-int								builtin_pwd(t_cmd *cmd, t_data *data);
-int								builtin_export(t_cmd *cmd, t_data *data);
-int								builtin_unset(t_cmd *cmd, t_data *data);
-int								builtin_env(t_data *data, t_cmd *cmd);
+void							builtin_echo(t_cmd *cmd, t_data *data, int token_index);
+int								builtin_pwd(t_cmd *cmd, t_data *data, int token_index);
+int								builtin_export(t_cmd *cmd, t_data *data, int token_index);
+int								builtin_unset(t_cmd *cmd, t_data *data, int token_index);
+int								builtin_env(t_data *data, t_cmd *cmd, int token_index);
 int								builtin_exit(t_cmd *cmd, t_data *data,
-									t_token **tokens);
-int								builtin_cd(t_cmd *cmd, t_data *data);
+									t_token **tokens, int token_index);
+int								builtin_cd(t_cmd *cmd, t_data *data, int token_index);
 char							**set_env_value(char **envp, const char *key,
 									const char *value);
 char							*get_env_value(char **env, const char *key);
@@ -247,12 +254,12 @@ void							execute_for_one(t_token **tokens, t_cmd *cmd,
 									t_data *data);
 int								execute_redirection(t_cmd *cmd, t_data *data,
 									t_token **tokens);
-void							execute_heredoc(t_cmd *cmd);
+void							execute_heredoc(t_cmd *cmd, t_data *data);
 void							handle_input_redirect(t_data *data,t_cmd *cmd);
 void							handle_output_redirect(t_data *data, t_cmd *cmd);;
 void							handle_append_redirect(t_data *data, t_cmd *cmd);;
 int								handle_heredoc(t_cmd *cmd,
-									char *heredoc_delimiter, size_t size);
+									char *heredoc_delimiter, size_t size, t_data *data);
  void							apply_redirections(t_cmd *cmd, t_data *data);
 //int								apply_redirections(t_cmd *cmd, t_data *data);
 void							update_underscore(t_data *data, char *value);

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 20:03:17 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 17:46:27 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	free_tokens(t_token **tokens)
 	free(tokens);
 }
 
-void	*cleanup_and_null(/*t_token **tokens,*/ t_tokenizer_state *state)
+void	*cleanup_and_null(t_tokenizer_state *state)
 {
 	if (!state)
 		return (NULL);
@@ -73,8 +73,6 @@ void	*cleanup_and_null(/*t_token **tokens,*/ t_tokenizer_state *state)
 	if (state->tokens)
 		free_tokens(state->tokens);
 	free(state);
-	//free_tokens(tokens);
-	//free(state->buffer);
 	return (NULL);
 }
 

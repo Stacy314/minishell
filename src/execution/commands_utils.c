@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/01 20:39:27 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:44:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,16 @@ static int	is_delim(char c, const char *delim)
 {
 	return (ft_strchr(delim, c) != NULL);
 }
+static size_t	count_colons(const char *path)
+{
+	size_t	count;
 
+	count = 1;
+	while (*path)
+		if (*path++ == ':')
+			count++;
+	return (count);
+}
 char	*ft_strtok(char *str, const char *delim)
 {
 	static char	*saved = NULL;
@@ -64,13 +73,12 @@ char	**split_path(const char *path)
 	int		i;
 	char	*path_copy;
 	char	*token;
+	int		count;
 
-	paths = ft_calloc(128 * sizeof(char *), 1); //128?
+	count = count_colons(path);
+	paths = ft_calloc((count + 1), sizeof(char *));
 	if (!paths)
-	{
-		// free
 		return (NULL);
-	}
 	path_copy = ft_strdup(path);
 	token = ft_strtok(path_copy, ":");
 	i = 0;
