@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:37:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:02:50 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,86 +59,30 @@ t_token	*create_token(const char *value, t_token_type type, int index)
 int	create_word_token(t_tokenizer_state *state)
 {
 	int	j;
-	
-	if (state->k == 0 && !state->empty_quotes) // marat
-		return (0); // marat
+
+	if (state->k == 0 && !state->empty_quotes)
+		return (0);
 	state->buffer[state->k] = '\0';
 	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++);
-	// if (!state->tokens[state->i])
-	// {
-	// 	while (state->tokens[state->i] > 0)
-	// 	{
-	// 		free(state->tokens[state->i]);
-	// 		state->i--;
-	// 	}
-	// 	perror("create_token");
-	// 	return (-1);
-	// }
 	if (!state->tokens[state->i])
 	{
 		j = 0;
 		while (j < state->i)
 		{
 			if (state->tokens[j])
-			{
-				free(state->tokens[j]->value);
-				free(state->tokens[j]);
-			}
+				(free(state->tokens[j]->value), free(state->tokens[j]));
 			j++;
 		}
 		free(state->tokens);
 		perror("create_token");
 		return (-1);
 	}
-	state->empty_quotes = 0; // marat
+	state->empty_quotes = 0;
 	state->i++;
 	state->k = 0;
 	state->buffer[0] = '\0';
 	return (1);
 }
-
-// static int	tokenize_loop(const char *str, t_tokenizer_state *state,
-//		t_data *data)
-//{
-//	while (str[state->j])
-//	{
-//		skip_spaces(str, state);
-//		if (str[state->j] == '\0')
-//			break ;
-//		if (create_pipe_operator(str, state)) // mem leak
-//			continue ;
-//		// if (!state->inside_quotes && is_redirect(str[state->j]))
-//		//{
-//		//	if (create_word_token(state) == -1) // mem
-//		//		return (cleanup_and_null(state), -1);
-//		//	if (handle_redirection_tok(state, str) == -1) // mem  leak
-//		//		return (cleanup_and_null(state), -1);
-//		//	continue ;
-//		//}
-//		if (!state->inside_quotes && (is_pipe(str[state->j])
-//				|| is_redirect(str[state->j])))
-//		{
-//			if (create_word_token(state) == -1)
-//				return (cleanup_and_null(state), -1);
-//			if (str[state->j] == '|')
-//			{
-//				if (create_pipe_operator(str, state) == -1)
-//					return (cleanup_and_null(state), -1);
-//				state->j++;
-//				continue ;
-//			}
-//			else
-//			{
-//				if (handle_redirection_tok(state, str) == -1)
-//					return (cleanup_and_null(state), -1);
-//				continue ;
-//			}
-//		}
-//		if (handle_token_word(state, str, data) == -1) // mem
-//			return (-1);
-//	}
-//	return (0);
-//}
 
 static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		t_data *data)
@@ -148,22 +92,14 @@ static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		skip_spaces(str, state);
 		if (str[state->j] == '\0')
 			break ;
-		if (!state->inside_quotes && (is_pipe(str[state->j])
-				|| is_redirect(str[state->j])))
+		if (create_pipe_operator(str, state))
+			continue ;
+		if (!state->inside_quotes && (is_redirect(str[state->j])))
 		{
 			if (create_word_token(state) == -1)
 				return (cleanup_and_null(state), -1);
-			if (str[state->j] == '|')
-			{
-				if (create_pipe_operator(str, state) == -1)
-					return (cleanup_and_null(state), -1);
-				state->j++;
-			}
-			else
-			{
-				if (handle_redirection_tok(state, str) == -1)
-					return (cleanup_and_null(state), -1);
-			}
+			if (handle_redirection_tok(state, str) == -1)
+				return (cleanup_and_null(state), -1);
 			continue ;
 		}
 		if (handle_token_word(state, str, data) == -1)
@@ -179,17 +115,17 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 
 	if (!str)
 		return (NULL);
-	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *)); // mem
+	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
 	if (!tokens)
 		return (perror("calloc"), NULL);
-	if (!init_state(&state, tokens)) // mem
+	if (!init_state(&state, tokens))
 		return (free(tokens), NULL);
-	if (tokenize_loop(str, &state, /* tokens,*/ data) == -1) // mem
-		return (/* cleanup_and_null(&state),  */ NULL);
+	if (tokenize_loop(str, &state, data) == -1)
+		return (NULL);
 	if (state.inside_quotes)
 	{
 		write_error("minishell: syntax error: unclosed quotes\n");
-		return (/* cleanup_and_null(&state),  */ data->exit_status = 2, NULL);
+		return (data->exit_status = 2, NULL);
 	}
 	tokens[state.i] = NULL;
 	free(state.buffer);

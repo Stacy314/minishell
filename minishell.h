@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:50:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:13:54 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ typedef struct s_data
 	t_cmd						*cmd;
 	bool						is_child;
 }								t_data;
+char	*find_last_value(t_token **tokens);
+void	update_underscore(t_data *data, char *value);
 int	add_or_update_env(char *arg, t_data *data);
 bool							is_quoted(const char *str);
 char							*unquote_delimiter(char *quoted);
@@ -144,8 +146,8 @@ void							set_signals_heredoc(void);
 void							set_signals_child(void);
 void							parent_ignore_signals(void);
 void							parent_restore_signals(void);
-void							handle_sigint_child(int sig);
-void							handle_sigquit_child(int sig);
+//void							handle_sigint_child(int sig);
+//void							handle_sigquit_child(int sig);
 
 // tokenization
 int								handle_expansion(t_tokenizer_state *state,

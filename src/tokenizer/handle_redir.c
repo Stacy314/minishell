@@ -6,38 +6,37 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:55:34 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:28:58 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
-	t_token_type type, int advance) //marat
+		t_token_type type, int advance) // marat
 {
-int	j;
+	int j;
 
-state->tokens[state->i] = create_token(symbol, type, (state->index)++);
-if (!state->tokens[state->i])
-{
-	j = 0;
-	while (j >= 0)
+	state->tokens[state->i] = create_token(symbol, type, (state->index)++);
+	if (!state->tokens[state->i])
 	{
-		if (state->tokens[j])
+		j = 0;
+		while (j >= 0)
 		{
-			free(state->tokens[j]->value);
-			free(state->tokens[j]);
+			if (state->tokens[j])
+			{
+				free(state->tokens[j]->value);
+				free(state->tokens[j]);
+			}
+			j--;
 		}
-		j--;
+		perror("failed create token");
+		return (-1);
 	}
-	perror("failed create token");
-	return (-1);
+	state->j += advance;
+	state->i++;
+	return (0);
 }
-state->j += advance;
-state->i++;
-return (0);
-}
-
 
 int	handle_redirection_tok(t_tokenizer_state *state, const char *str)
 {
@@ -57,7 +56,14 @@ int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str)
 	if (is_quote(str[state->j]) && (!state->inside_quotes
 			|| str[state->j] == state->quote_type))
 		return (update_quote_state(state, str[state->j]));
-	if (!state->inside_quotes && is_redirect(str[state->j]))
+	if (!state->inside_quotes && is_pipe(str[state->j]))
+	{
+		if (state->k > 0 && flush_word_before_redirect(state) == -1)
+			return (-1);
+		if (create_pipe_operator(str, state) == -1)
+			return (-1);
+	}
+	else if (!state->inside_quotes && is_redirect(str[state->j]))
 	{
 		if (state->k > 0 && flush_word_before_redirect(state) == -1)
 			return (-1);
@@ -67,5 +73,3 @@ int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str)
 	}
 	return (0);
 }
-
-

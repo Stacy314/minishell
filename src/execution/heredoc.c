@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:48:59 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 18:00:01 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,8 @@ static int	write_name(size_t size, int rand, char *out_filename)
 	char	*prefix;
 	char	*suffix;
 
-	prefix = "/tmp/heredoc_";
-	suffix = ".tmp";
+	prefix = "/tmp/heredoc_";  //. (hide file)
+	suffix = "tmp";
 	num = ft_itoa(rand);
 	if (!num)
 		return (-1);
@@ -174,8 +174,16 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 	tmp_fd = create_unique_tmpfile(tmp_filename, size);
 	if (tmp_fd == -1)
 		return (-1);
+	set_signals_heredoc(); //need to fix ctrl + c
 	while (1)
 	{
+		if (g_signal_flag == SIGINT)
+		{
+			//g_signal_flag = 0;
+			data->exit_status = 130;
+			//printf("1%d\n", data->exit_status);
+			break ;
+		}
 		line = readline("> ");
 		if (!line || ft_strncmp(line, heredoc_delimiter,
 				ft_strlen(heredoc_delimiter)) == 0)
@@ -196,8 +204,11 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1));
 		free(line);
 	}
+	
 	close(tmp_fd);
+	//set-signal to default
 	tmp_fd = open(tmp_filename, O_RDONLY);
+	//printf("2%d\n", data->exit_status);
 	return (unlink(tmp_filename), tmp_fd);
 }
 
