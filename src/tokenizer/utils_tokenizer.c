@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenizer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 22:46:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 23:50:56 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,38 @@ int	skip_spaces(const char *str, t_tokenizer_state *state)
 	if (str[state->j] == '\0')
 		return (0);
 	return (1);
+}
+
+void	skip_quotes_and_spaces(const char *str, t_tokenizer_state *state)
+{
+	while (str[state->j] && (str[state->j] == ' ' || str[state->j] == '\t'
+			|| str[state->j] == '\n' || is_quote(str[state->j])))
+	{
+		if (str[state->j] == ' ' || str[state->j] == '\t' || str[state->j] == '\n')
+			state->j++;
+		if (is_quote(str[state->j]))
+		{
+			if (str[state->j] == '\'' || str[state->j] == '\"')
+			{
+				if (state->inside_quotes)
+					state->inside_quotes = 0;
+				else
+					state->inside_quotes = 1;
+				state->quote_type = str[state->j];
+				state->j++;
+			}
+			if ((str[state->j] == '\'' || str[state->j] == '\"')
+					&& state->inside_quotes)
+			{
+				create_nothing_token(str, state);
+					//return (-1);
+				state->inside_quotes = 0;
+			}
+			//return (0);
+		}
+
+		
+			
+	}
+
 }

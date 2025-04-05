@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 22:50:48 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 23:45:29 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	debug_print_tokens(t_token **tokens)
 static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		t_data *data)
 {
-	(void)data;
+	if(!str[state->j])
+		return (0);
 	while (str[state->j])
 	{
 		if (quote_checker(str, state) == -1)
@@ -88,6 +89,7 @@ t_token	**split_to_tokens(const char *input, t_data *data)
 		return (perror("calloc"), NULL);
 	if (!init_state(&state, tokens))
 		return (free(tokens), NULL);
+	skip_quotes_and_spaces(input, &state);
 	if (tokenize_loop(input, &state, data) == -1)
 		return (NULL);
 	if (state.inside_quotes)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 22:45:41 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 23:45:39 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,9 @@ char							*unquote_delimiter(const char *str);
 char							*expand_heredoc(const char *line, t_data *data);
 int								create_nothing_token(const char *str,
 									t_tokenizer_state *state);
-int							quote_checker(const char *str,
+int								quote_checker(const char *str,
 									t_tokenizer_state *state);
+void							skip_quotes_and_spaces(const char *input, t_tokenizer_state *state);
 // utils
 void							write_error(const char *format, ...);
 int								ft_strcmp(const char *s1, const char *s2);

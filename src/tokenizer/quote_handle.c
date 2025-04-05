@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handle.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 21:53:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 23:42:10 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	handle_quote_word(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	int result;
 
+	if(!str[state->j])
+		return (0);
 	if (state->inside_quotes && str[state->j] == state->quote_type)
 	{
 		if (state->k > 0 && flush_word_before_redirect(state) == -1)
