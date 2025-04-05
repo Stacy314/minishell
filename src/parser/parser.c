@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 18:02:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 22:32:09 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,13 +106,13 @@ int	check_initial_syntax_errors(t_token **tokens, t_data *data)
 	i = 0;
 	while (tokens[i])
 	{
-		if (tokens[i]->type == LOGICAL_AND || tokens[i]->type == LOGICAL_OR)
-		{
-			write_error("minishell: syntax error near unexpected token `%s'\n",
-				tokens[i]->value);
-			data->exit_status = 2;
-			return (1);
-		}
+		//if (tokens[i]->type == LOGICAL_AND || tokens[i]->type == LOGICAL_OR)
+		//{
+		//	write_error("minishell: syntax error near unexpected token `%s'\n",
+		//		tokens[i]->value);
+		//	data->exit_status = 2;
+		//	return (1);
+		//}
 		if (tokens[i]->type == PIPE && (i == 0 || !tokens[i + 1]))
 		{
 			write_error("minishell: syntax error near unexpected token `|'\n");

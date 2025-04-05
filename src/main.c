@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 18:00:43 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 16:29:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,7 @@ int	main(int argc, char **argv, char **env)
 			data.exit_status = 130;
 			g_signal_flag = 0;
 		}
-		if (*data.input)
-			add_history(data.input);
+		add_history(data.input);
 		data.tokens = split_to_tokens(data.input, &data);
 		if (!data.tokens)
 		{

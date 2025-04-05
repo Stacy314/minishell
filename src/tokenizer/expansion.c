@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:36:31 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 20:13:28 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,12 @@
 // oi
 // HERE
 
-
 // delimiter should be $USER
 // 	cat << $USER
 
 char	*expand_variable(const char *str, int *j, t_data *data)
 {
-	char	var_name[256]; 
+	char	var_name[256];
 	int		k;
 	char	**env;
 	int		i;
@@ -55,6 +54,20 @@ char	*expand_variable(const char *str, int *j, t_data *data)
 		i++;
 	}
 	return (ft_strdup(""));
+}
+
+int	expand_buffer(t_tokenizer_state *state)
+{
+	char	*new_buffer;
+
+	state->buffer_size *= 2;
+	new_buffer = ft_calloc(state->buffer_size, sizeof(char));
+	if (!new_buffer)
+		return (-1);
+	ft_strlcpy(new_buffer, state->buffer, state->buffer_size);
+	free(state->buffer);
+	state->buffer = new_buffer;
+	return (0);
 }
 
 int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)

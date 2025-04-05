@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:22:30 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 22:36:19 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 {
 	int	i;
 
-	//if (!cmd->args)
-	//	return ;
 	i = 0;
-	while (cmd->args[i] && tokens[i] && tokens[i]->type == NOTHING)
+	while (cmd->args[i] && tokens[i] && tokens[i]->type == EMPTY)
 		i++;
 	if (tokens[i])
 	{
@@ -38,7 +36,7 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 		else if (ft_strncmp(cmd->args[i], "exit", 5) == 0)
 			builtin_exit(cmd, data, tokens, i);
 		else
-			data->exit_status = execute_command(cmd->args[0], data, cmd->args);
+			data->exit_status = execute_command(cmd->args[i], data, cmd->args);
 	}
 }
 

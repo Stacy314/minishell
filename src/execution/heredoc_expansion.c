@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 21:42:10 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 16:23:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,26 @@
 
 bool	is_quoted(const char *str)
 {
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' || str[i] == '"')
+			return (true);
+		i++;
+	}
+	return (false);
+}
+char	*unquote_delimiter(const char *str)
+{
 	size_t	len;
 
-	if (!str)
-		return (false);
 	len = ft_strlen(str);
 	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"'
 				&& str[len - 1] == '"')))
-		return (true);
-	return (false);
+		return (ft_substr(str, 1, len - 2));
+	return (ft_strdup(str));
 }
 
 static char	*get_env(const char *var, t_data *data)

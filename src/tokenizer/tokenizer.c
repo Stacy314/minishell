@@ -6,11 +6,12 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 18:02:50 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 22:50:48 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <readline/chardefs.h>
 
 ////////////////////////////////////////////////////////////////////////////
 void	debug_print_tokens(t_token **tokens)
@@ -34,101 +35,68 @@ void	debug_print_tokens(t_token **tokens)
 
 ////////////////////////////////////////////////////////////////////////////
 
-t_token	*create_token(const char *value, t_token_type type, int index)
-{
-	t_token	*new;
-
-	new = ft_calloc(sizeof(t_token), 1);
-	if (!new)
-	{
-		perror("calloc");
-		return (NULL);
-	}
-	new->value = ft_strdup(value);
-	if (!new->value)
-	{
-		perror("strdup");
-		free(new);
-		return (NULL);
-	}
-	new->type = type;
-	new->index = index;
-	return (new);
-}
-
-int	create_word_token(t_tokenizer_state *state)
-{
-	int	j;
-
-	if (state->k == 0 && !state->empty_quotes)
-		return (0);
-	state->buffer[state->k] = '\0';
-	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++);
-	if (!state->tokens[state->i])
-	{
-		j = 0;
-		while (j < state->i)
-		{
-			if (state->tokens[j])
-				(free(state->tokens[j]->value), free(state->tokens[j]));
-			j++;
-		}
-		free(state->tokens);
-		perror("create_token");
-		return (-1);
-	}
-	state->empty_quotes = 0;
-	state->i++;
-	state->k = 0;
-	state->buffer[0] = '\0';
-	return (1);
-}
-
 static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		t_data *data)
 {
+	(void)data;
 	while (str[state->j])
 	{
-		skip_spaces(str, state);
-		if (str[state->j] == '\0')
-			break ;
-		if (create_pipe_operator(str, state))
-			continue ;
-		if (!state->inside_quotes && (is_redirect(str[state->j])))
-		{
-			if (create_word_token(state) == -1)
-				return (cleanup_and_null(state), -1);
-			if (handle_redirection_tok(state, str) == -1)
-				return (cleanup_and_null(state), -1);
-			continue ;
-		}
-		if (handle_token_word(state, str, data) == -1)
+		if (quote_checker(str, state) == -1)
 			return (-1);
+		if (!state->inside_quotes)
+		{
+			if (!skip_spaces(str, state))
+				return (0); //
+			if (is_pipe(str[state->j]))
+			{
+				if (create_pipe_token(state) == -1)
+					return (-1);
+				//continue ;
+			}
+			if (is_redirect(str[state->j]))
+			{
+				if (handle_redirection_tok(state, str) == -1)
+					return (-1);
+				//continue ;
+			}
+			else
+			{
+				if (create_word_token(state, str) == -1)
+					return (-1);
+				//continue ;
+			}
+		}
+		else
+		{
+			if (handle_quote_word(state, str, data) == -1)
+				return (-1);
+		}
+		state->j++;
 	}
 	return (0);
 }
 
-t_token	**split_to_tokens(const char *str, t_data *data)
+t_token	**split_to_tokens(const char *input, t_data *data)
 {
 	t_tokenizer_state	state;
 	t_token				**tokens;
 
-	if (!str)
+	if (!input)
 		return (NULL);
-	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
+	tokens = ft_calloc(ft_strlen(input) + 1, sizeof(t_token *));
 	if (!tokens)
 		return (perror("calloc"), NULL);
 	if (!init_state(&state, tokens))
 		return (free(tokens), NULL);
-	if (tokenize_loop(str, &state, data) == -1)
+	if (tokenize_loop(input, &state, data) == -1)
 		return (NULL);
 	if (state.inside_quotes)
 	{
 		write_error("minishell: syntax error: unclosed quotes\n");
 		return (data->exit_status = 2, NULL);
 	}
-	tokens[state.i] = NULL;
+	// tokens[state.i] = NULL;
 	free(state.buffer);
-	// debug_print_tokens(tokens);
+	debug_print_tokens(tokens);
 	return (tokens);
 }

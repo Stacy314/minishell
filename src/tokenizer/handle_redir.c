@@ -6,14 +6,14 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 15:28:58 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 22:28:12 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
-		t_token_type type, int advance) // marat
+		t_token_type type, int advance)
 {
 	int j;
 
@@ -51,25 +51,3 @@ int	handle_redirection_tok(t_tokenizer_state *state, const char *str)
 	return (0);
 }
 
-int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str)
-{
-	if (is_quote(str[state->j]) && (!state->inside_quotes
-			|| str[state->j] == state->quote_type))
-		return (update_quote_state(state, str[state->j]));
-	if (!state->inside_quotes && is_pipe(str[state->j]))
-	{
-		if (state->k > 0 && flush_word_before_redirect(state) == -1)
-			return (-1);
-		if (create_pipe_operator(str, state) == -1)
-			return (-1);
-	}
-	else if (!state->inside_quotes && is_redirect(str[state->j]))
-	{
-		if (state->k > 0 && flush_word_before_redirect(state) == -1)
-			return (-1);
-		if (handle_redirection_tok(state, str) == -1)
-			return (-1);
-		return (1);
-	}
-	return (0);
-}

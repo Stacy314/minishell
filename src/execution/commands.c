@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 18:04:01 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 22:20:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,8 +163,13 @@ int	execute_command(char *cmd, t_data *data, char **args)
 {
 	int	result;
 	
+	//if (data->tokens[0]->type == NOTHING)
+	//{
+	//	write_error("minishell: command '' not found\n");
+	//	return (data->exit_status = 127);
+	//}
 	if (!cmd || !args)
-		return (data->exit_status = 1);
+		return (data->exit_status = 0);
 	result = execute_direct_path(cmd, data, args);
 	if (result >= 0)
 		return (result);

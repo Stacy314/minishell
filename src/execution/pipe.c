@@ -6,15 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:27:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 15:35:40 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 // exit | exit | exit (shouldn't exit and shouldn't print anything)
-
-// echo hi | echo hi | (should open input)
 
 // echo test |  <<lala (should open herdoc input)
 

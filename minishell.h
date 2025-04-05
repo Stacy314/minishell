@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 15:13:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/05 22:45:41 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@
 # define HEREDOC_RAND_MIN 1000
 # define HEREDOC_RAND_MAX 999999
 
+# define SINGLE_QUOTES 0
+# define DOUBLE_QUOTES 1
+# define NO_QUOTES 2
+
 extern volatile sig_atomic_t	g_signal_flag;
 
 typedef enum e_token_type
@@ -55,18 +59,17 @@ typedef enum e_token_type
 	REDIRECT_OUT,
 	APPEND,
 	HEREDOC,
-	LOGICAL_AND,
-	LOGICAL_OR,
-	NOTHING,
-	END
+	EMPTY
 }								t_token_type;
 
 typedef struct s_token
 {
 	char						*value;
-	// char						*var_name;
+	char						*orig_name;
 	t_token_type				type;
 	int							index;
+	int							quotes;
+	int 						spaces;
 }								t_token;
 
 typedef struct s_tokenizer_state
@@ -81,6 +84,7 @@ typedef struct s_tokenizer_state
 	char						*buffer;
 	char						quote_type;
 	t_token						**tokens;
+	char						**splited_input;
 }								t_tokenizer_state;
 typedef struct s_cmd
 {
@@ -106,12 +110,19 @@ typedef struct s_data
 	t_cmd						*cmd;
 	bool						is_child;
 }								t_data;
-char	*find_last_value(t_token **tokens);
-void	update_underscore(t_data *data, char *value);
-int	add_or_update_env(char *arg, t_data *data);
+
+int								handle_quote_word(t_tokenizer_state *state,
+									const char *str, t_data *data);
+char							*find_last_value(t_token **tokens);
+void							update_underscore(t_data *data, char *value);
+int								add_or_update_env(char *arg, t_data *data);
 bool							is_quoted(const char *str);
-char							*unquote_delimiter(char *quoted);
+char							*unquote_delimiter(const char *str);
 char							*expand_heredoc(const char *line, t_data *data);
+int								create_nothing_token(const char *str,
+									t_tokenizer_state *state);
+int							quote_checker(const char *str,
+									t_tokenizer_state *state);
 // utils
 void							write_error(const char *format, ...);
 int								ft_strcmp(const char *s1, const char *s2);
@@ -146,15 +157,14 @@ void							set_signals_heredoc(void);
 void							set_signals_child(void);
 void							parent_ignore_signals(void);
 void							parent_restore_signals(void);
-//void							handle_sigint_child(int sig);
-//void							handle_sigquit_child(int sig);
 
 // tokenization
 int								handle_expansion(t_tokenizer_state *state,
 									const char *str, t_data *data);
 int								handle_quotes_and_redirects(t_tokenizer_state *state,
 									const char *str);
-int								create_word_token(t_tokenizer_state *state);
+int								create_word_token(t_tokenizer_state *state,
+									const char *str);
 int								is_redirect(char c);
 int								is_quote(char c);
 int								is_pipe(char c);
@@ -168,12 +178,11 @@ t_token							**split_to_tokens(const char *str,
 void							free_tokens(t_token **tokens);
 int								handle_redirection_tok(t_tokenizer_state *state,
 									const char *str);
-void							skip_spaces(const char *str,
+int								skip_spaces(const char *str,
 									t_tokenizer_state *state);
 int								is_logical_operator(const char *str,
 									t_tokenizer_state *state);
-int								create_pipe_operator(const char *str,
-									t_tokenizer_state *state);
+int								create_pipe_token(t_tokenizer_state *state);
 int								handle_token_word(t_tokenizer_state *state,
 									const char *str, t_data *data);
 int								update_quote_state(t_tokenizer_state *state,
@@ -182,6 +191,7 @@ int								flush_word_before_redirect(t_tokenizer_state *state);
 int								add_redirect_token(t_tokenizer_state *state,
 									const char *symbol, t_token_type type,
 									int advance);
+char							*ft_strtok(char *str, const char *delim);
 
 // parsing
 int								parse_redirects(t_cmd *cmd, t_token *token,
