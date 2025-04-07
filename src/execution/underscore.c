@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   underscore.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:38:48 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/07 16:22:27 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	update_underscore(t_data *data, char *value)
 	new_val = ft_strjoin("_=", value);
 	if (!new_val)
 		return ;
-
 	i = 0;
 	while (data->env[i])
 	{

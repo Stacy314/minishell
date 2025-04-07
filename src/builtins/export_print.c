@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_print.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 19:22:28 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 16:23:07 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,9 @@ static void	print_env_line(const char *env_line)
 
 void	print_sorted_env(char **env)
 {
-	int size;
-	char **copy;
-	int i;
+	int		size;
+	char	**copy;
+	int		i;
 
 	size = 0;
 	while (env[size])

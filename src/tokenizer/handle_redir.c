@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:48:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:16:13 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
-		t_token_type type, int advance) // marat
+		t_token_type type, int advance)
 {
-	int j;
+	int	j;
 
 	state->tokens[state->i] = create_token(symbol, type, (state->index)++,
 			false);
@@ -51,11 +51,16 @@ static int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
 	k = 0;
 	skip_spaces(str, state);
 	if (str[state->j] == '\0')
-		return (write_error("minishell: syntax error near unexpected token `newline'\n"),
-			-1);
+	{
+		write_error("minishell: syntax error near unexpected token `newline'\n");
+		return (-1);
+	}
 	if (str[state->j] == '|' || is_redirect(str[state->j]))
-		return (write_error("minishell: syntax error near unexpected token `%c'\n",
-				str[state->j]), -1);
+	{
+		write_error("minishell: syntax error near unexpected token `%c'\n",
+			str[state->j]);
+		return (-1);
+	}
 	while (str[state->j] && !ft_isspace(str[state->j]) && str[state->j] != '<'
 		&& str[state->j] != '>' && str[state->j] != '|')
 	{

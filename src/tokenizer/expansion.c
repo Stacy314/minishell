@@ -3,29 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:36:31 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:17:21 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// > $notexists echo "haha" (bash: $notexists: ambiguous redirect, exit code 1)
-
-// cat <<HERE
-// $USER
-// oi
-// HERE
-
-
-// delimiter should be $USER
-// 	cat << $USER
-
 char	*expand_variable(const char *str, int *j, t_data *data)
 {
-	char	var_name[256]; 
+	char	var_name[256];
 	int		k;
 	char	**env;
 	int		i;

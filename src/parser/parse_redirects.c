@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_redirects.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/03 18:13:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:22:20 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,14 +91,15 @@ int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
 		return (append_redirect_value(redirects, token->value));
 }
 
-int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
+int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
+		int *i)
 {
 	char	*unexpected_token;
 
 	if (tokens[*i + 1] && tokens[*i + 1]->type == NOTHING)
 	{
 		data->exit_status = 1;
-		write_error("minishell: ambiguous redirect\n"); // need add name on var
+		write_error("minishell: ambiguous redirect\n");
 		return (0);
 	}
 	if (!tokens[*i + 1] || tokens[*i + 1]->type != WORD)

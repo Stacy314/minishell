@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 21:44:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:13:27 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int	is_delim(char c, const char *delim)
 {
 	return (ft_strchr(delim, c) != NULL);
 }
+
 static size_t	count_colons(const char *path)
 {
 	size_t	count;
@@ -26,7 +27,8 @@ static size_t	count_colons(const char *path)
 			count++;
 	return (count);
 }
-char	*ft_strtok(char *str, const char *delim)
+
+static char	*ft_strtok(char *str, const char *delim)
 {
 	static char	*saved = NULL;
 	char		*token_start;

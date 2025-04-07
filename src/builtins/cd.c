@@ -3,25 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 23:35:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:37:04 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// apechkov@c3r4p2:~/projects/minishell$ cd
-// apechkov@c3r4p2:~$ echo $_
-// cd
-// apechkov@c3r4p2:~$ env | echo $_
-// cd
-// apechkov@c3r4p2:~$ env | grep "_=" | echo $_
-// cd
-// apechkov@c3r4p2:~$ env | grep "_="
-//_=/usr/bin/env
-// apechkov@c3r4p2:~$
 
 static void	perform_cd(const char *dest_path, t_data *data)
 {
@@ -105,9 +94,6 @@ int	builtin_cd(t_cmd *cmd, t_data *data, int token_index)
 {
 	char	*dest_path;
 
-	//while (cmd->args[token_index + 1] && data->tokens[token_index + 1]
-	//	&& data->tokens[token_index + 1]->type == NOTHING)
-	//	token_index++;
 	if (cmd->args[token_index] && cmd->args[token_index + 1]
 		&& cmd->args[token_index + 2])
 	{

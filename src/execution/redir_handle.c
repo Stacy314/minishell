@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   redir_handle.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 13:46:01 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:26:45 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	check_error(const char *filename) //need to check exit code
+int	check_error(const char *filename)
 {
-	//struct stat	st;
-	char *error;
+	char	*error;
 
 	error = ft_strjoin("minishell: ", filename);
 	if (!error)
@@ -25,25 +24,14 @@ int	check_error(const char *filename) //need to check exit code
 	}
 	perror(error);
 	free(error);
-
-	//if (stat(filename, &st) == -1)
-	//{
-	//	write_error("minishell: %s: No such file or directory\n", filename);
-	//	return (1);
-	//}
-	//if (access(filename, R_OK) == -1)
-	//{
-	//	write_error("minishell: %s: Permission denied\n", filename);
-	//	return (1);
-	//}
 	return (0);
 }
 
-void	handle_input_redirect(t_data *data, t_cmd *cmd) // <
+void	handle_input_redirect(t_data *data, t_cmd *cmd)
 {
-	int fd;
-	int i;
-	int ret;
+	int	fd;
+	int	i;
+	int	ret;
 
 	if (!cmd->input_redirects)
 		return ;
@@ -56,7 +44,7 @@ void	handle_input_redirect(t_data *data, t_cmd *cmd) // <
 			ret = check_error(cmd->input_redirects[i]);
 			if (ret != 0)
 			{
-				close(fd);//
+				close(fd);
 				close(STDOUT_FILENO);
 				close(STDIN_FILENO);
 				free_all(data, data->tokens, data->cmd);
@@ -65,17 +53,16 @@ void	handle_input_redirect(t_data *data, t_cmd *cmd) // <
 		}
 		dup2(fd, STDIN_FILENO);
 		close(fd);
-		// close(STDIN_FILENO);
 		i++;
 	}
 	close(fd);
 }
 
-void	handle_output_redirect(t_data *data, t_cmd *cmd) // >
+void	handle_output_redirect(t_data *data, t_cmd *cmd)
 {
-	int fd;
-	int i;
-	int ret;
+	int	fd;
+	int	i;
+	int	ret;
 
 	if (!cmd->output_redirects)
 		return ;
@@ -88,25 +75,24 @@ void	handle_output_redirect(t_data *data, t_cmd *cmd) // >
 			ret = check_error(cmd->output_redirects[i]);
 			if (ret != 0)
 			{
-				close(fd);//
-				close(STDOUT_FILENO); //
-				close(STDIN_FILENO);  //
+				close(fd);
+				close(STDOUT_FILENO);
+				close(STDIN_FILENO);
 				free_all(data, data->tokens, data->cmd);
 				exit(1);
 			}
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
-		//close(STDOUT_FILENO); //need to close
 		i++;
 	}
 }
 
-void	handle_append_redirect(t_data *data, t_cmd *cmd) // >>
+void	handle_append_redirect(t_data *data, t_cmd *cmd)
 {
-	int fd;
-	int i;
-	int ret;
+	int	fd;
+	int	i;
+	int	ret;
 
 	(void)data;
 	if (!cmd->append_redirects)
@@ -121,13 +107,13 @@ void	handle_append_redirect(t_data *data, t_cmd *cmd) // >>
 			ret = check_error(cmd->append_redirects[i]);
 			if (ret != 0)
 			{
-				close(fd);//
+				close(fd);
 				close(STDOUT_FILENO);
 				close(STDIN_FILENO);
 				free_all(data, data->tokens, data->cmd);
 				exit(1);
 			}
-			close(fd);//
+			close(fd);
 			close(STDOUT_FILENO);
 			close(STDIN_FILENO);
 			free_all(data, data->tokens, data->cmd);
@@ -135,7 +121,6 @@ void	handle_append_redirect(t_data *data, t_cmd *cmd) // >>
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
-		//close(STDOUT_FILENO); //need to close
 		i++;
 	}
 }

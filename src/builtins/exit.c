@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 22:03:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:36:02 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// exit "" (bash: exit: : numeric argument required, EC - 2)
 
 int	ft_isspace(int c)
 {
@@ -117,8 +115,7 @@ int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens, int token_index)
 		if (isatty(0) || isatty(1))
 			printf("exit\n");
 		write_error("minishell: exit: too many arguments\n");
-		data->exit_status = 1;
-		return (1);
+		return (data->exit_status = 1, 1);
 	}
 	return (printf("exit\n"), free_all(data, tokens, cmd), exit(exit_code
 			% 256), 1);

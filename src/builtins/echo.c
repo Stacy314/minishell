@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 22:01:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:36:33 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (75)
-	//- space in the end
-// echo '' "" (85)
-
-// echo $"" (should print \n) (go crazy)
 
 int	is_option(const char *arg)
 {
@@ -34,7 +28,6 @@ int	is_option(const char *arg)
 
 void	builtin_echo(t_cmd *cmd, t_data *data, int token_index)
 {
-
 	int	n_flag;
 
 	token_index++;

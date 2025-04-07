@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 22:14:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:34:40 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// export a="s -l"
-//		l$a
-
-//echo $? (122)
-//export "?"=hallo
-//echo $?
-
-//echo $? (126)
-//export $?=hallo
-//echo $?
-
-//export SHLVL=max_value
 
 static int	update_env_var(char *arg, t_data *data, int var_index)
 {

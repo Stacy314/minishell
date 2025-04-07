@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 19:22:56 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/07 16:57:22 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	write_error(const char *format, ...)
 	va_end(ap);
 }
 
-int	ft_strcmp(const char *s1, const char *s2) 
+int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
 

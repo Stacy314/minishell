@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:54:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:35:15 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	init_state(t_tokenizer_state *state, t_token **tokens)
 	state->tokens = tokens;
 	return (1);
 }
+
 t_cmd	*init_new_cmd(void)
 {
 	t_cmd	*cmd;
@@ -52,33 +53,20 @@ t_cmd	*init_new_cmd(void)
 
 int	increment_shlvl(t_data *data)
 {
-	int		i;
-	int		shlvl_value;
-	char	*new_shlvl;
-	char	*shlvl_str;
+	int	i;
 
 	i = 0;
 	while (data->env[i])
 	{
-		if (ft_strncmp(data->env[i], "SHLVL=", 6) == 0)
-		{
-			shlvl_value = ft_atoi(data->env[i] + 6);
-			shlvl_value++;
-			shlvl_str = ft_itoa(shlvl_value);
-			if (!shlvl_str)
-				return (ERROR);
-			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
-			free(shlvl_str); 
-			if (!new_shlvl)
-				return (ERROR);
-			return (free(data->env[i]), data->env[i] = new_shlvl, SUCCESS);
-		}
+		if (!ft_strncmp(data->env[i], "SHLVL=", 6))
+			return (update_shlvl_line(&data->env[i]));
 		i++;
 	}
 	data->env[i] = ft_strdup("SHLVL=1");
 	if (!data->env[i])
 		return (ERROR);
-	return (data->env[i + 1] = NULL, SUCCESS);
+	data->env[i + 1] = NULL;
+	return (SUCCESS);
 }
 
 static char	**init_env(char **env)
@@ -99,13 +87,8 @@ static char	**init_env(char **env)
 		env_copy[j] = ft_strdup(env[j]);
 		if (!env_copy[j])
 		{
-			 while (j > 0)
-			{
-				free(env_copy[j]);
-				j--;
-			}
-			 free(env_copy);
-			 return (NULL);
+			free_env_copy(env_copy, j);
+			return (NULL);
 		}
 		j++;
 	}

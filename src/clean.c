@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 17:46:27 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:06:36 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include <time.h>
 
 void	free_array(char **arr)
 {
@@ -76,22 +75,12 @@ void	*cleanup_and_null(t_tokenizer_state *state)
 	return (NULL);
 }
 
-void free_all(t_data *data, t_token **tokens, t_cmd *cmd)
+void	free_all(t_data *data, t_token **tokens, t_cmd *cmd)
 {
 	if (data->input)
 		free(data->input);
 	if (data->env)
-	 	free_array(data->env);
-	if (tokens)
-		free_tokens(tokens);
-	if (cmd)
-		free_cmd(cmd);
-}
-
-void free_main(t_data *data, t_token **tokens, t_cmd *cmd)
-{
-	if (data->input)
-		free(data->input);
+		free_array(data->env);
 	if (tokens)
 		free_tokens(tokens);
 	if (cmd)

@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:51:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:11:59 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-#include <stdbool.h>
 
-////////////////////////////////////////////////////////////////////////////
 void	debug_print_tokens(t_token **tokens)
 {
 	int	i;
@@ -33,8 +31,6 @@ void	debug_print_tokens(t_token **tokens)
 	}
 	printf("End of tokens (null)\n");
 }
-
-////////////////////////////////////////////////////////////////////////////
 
 t_token	*create_token(const char *value, t_token_type type, int index,
 		bool touch_quotes)
@@ -129,20 +125,19 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 
 	if (!str)
 		return (NULL);
-	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *)); // mem
+	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
 	if (!tokens)
 		return (perror("calloc"), NULL);
-	if (!init_state(&state, tokens)) // mem
+	if (!init_state(&state, tokens))
 		return (free(tokens), NULL);
-	if (tokenize_loop(str, &state, /* tokens,*/ data) == -1) // mem
-		return (/* cleanup_and_null(&state),  */ NULL);
+	if (tokenize_loop(str, &state, data) == -1)
+		return (NULL);
 	if (state.inside_quotes)
 	{
 		write_error("minishell: syntax error: unclosed quotes\n");
-		return (/* cleanup_and_null(&state),  */ data->exit_status = 2, NULL);
+		return (data->exit_status = 2, NULL);
 	}
 	tokens[state.i] = NULL;
 	free(state.buffer);
-	//debug_print_tokens(tokens);
 	return (tokens);
 }

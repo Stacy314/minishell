@@ -1,0 +1,3 @@
+syntax error near unexpected token `|'
+double free or corruption (out)
+/home/mgallyam/42_minishell_tester/tester.sh: строка 635: 2734793 Аварийный останов         (образ памяти сброшен на диск) LD_PRELOAD=/home/mgallyam/42_minishell_tester/utils/libintercept/libintercept.so /home/mgallyam/Projects/minishell/minishell

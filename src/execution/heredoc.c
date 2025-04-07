@@ -3,89 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:50:28 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:29:19 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// delimiter is "a c" without quotes
-//		cat << "a c"
-// check with "EOF " and " EOF" when in heredoc without quotes but with the spaces
-//- shouldn't quit - quit only with "EOF"
-// 	cat << EOF
-// press ctrl + d inside heredoc
-//- should quit heredoc with a warning but not minishell
-//		cat << EOF
-// 	cat << EOF
-// check f.e. with ctrl + c if all heredocs are closed with one command
-// 	<< 1 | << 2 | << 3 cat
-
-// cat << lim
-// "lim"
-// HELLO
-// 42
-// lim
-// testing your minishell
-// limm
-// lim
-
-//<<lim cat
-// "lim"
-// HELLO
-// 42
-// lim
-// testing your minishell
-// limm
-// lim
-
-// cat << lim
-// test
-// lim
-
-// cat << EOF
-//"EOF"
-//!! HELLO
-//@42 !!
-// EOF\t\b\n
-// testing your minishell :)
-// limm
-// EOF
-
-// cat << hello
-//$USER
-//$NOVAR
-//$HOME
-// hello
-
-// cat << 'lim'
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// cat << lim''
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// cat << "lim"
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// cat << 'lim'
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// echo test |  <<lala
 
 static int	make_rand_numb(void)
 {
@@ -181,17 +106,18 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 		{
 			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
 				*cmd->heredoc_delimiter);
-			break;
+			break ;
 		}
-		if (ft_strncmp(line, heredoc_delimiter, ft_strlen(heredoc_delimiter)) == 0)
+		if (ft_strncmp(line, heredoc_delimiter,
+				ft_strlen(heredoc_delimiter)) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		expand = is_quoted(line);
 		if (!expand)
 		{
-			expanded = expand_heredoc(line, data); //need to change
+			expanded = expand_heredoc(line, data);
 			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
 					1), free(expanded));
 		}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:45:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 21:29:08 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@
 # define SYNTAXIS_ERROR 2
 # define PERMISSION_DENIED 126
 # define COMMAND_NOT_FOUND 127
+# define INPUT_STOP     0
+# define INPUT_CONTINUE 1
+# define INPUT_ERROR    2
+# define INPUT_SUCCESS  3
 
 //# define ERROR_CODE_MALLOC 1
 //# define ERROR_CODE_GENERAL 7
@@ -139,6 +143,13 @@ int								init_data(t_data *data, char **env);
 int								init_state(t_tokenizer_state *state,
 									t_token **tokens);
 t_cmd							*init_new_cmd(void);
+int								update_shlvl_line(char **line);
+int								increment_shlvl(t_data *data);
+
+// utils_init
+int								update_shlvl_line(char **line);
+void							free_env_copy(char **env_copy, int i);
+int								prepare_input(t_data *data);
 
 // signals
 void							set_signals_main(void);
@@ -152,8 +163,8 @@ void							handle_sigquit_child(int sig);
 // tokenization
 int								handle_expansion(t_tokenizer_state *state,
 									const char *str, t_data *data);
-int								handle_quotes_and_redirects(t_tokenizer_state *state,
-									const char *str);
+int								handle_quotes_and_redirects(
+									t_tokenizer_state *state, const char *str);
 int								create_word_token(t_tokenizer_state *state);
 int								is_redirect(char c);
 int								is_quote(char c);
@@ -162,7 +173,8 @@ int								expand_buffer(t_tokenizer_state *state);
 void							*append_char_to_buffer(t_tokenizer_state *state,
 									char c);
 t_token							*create_token(const char *value,
-									t_token_type type, int index, bool touch_quotes);
+									t_token_type type, int index,
+									bool touch_quotes);
 t_token							**split_to_tokens(const char *str,
 									t_data *data);
 void							free_tokens(t_token **tokens);
@@ -178,7 +190,8 @@ int								handle_token_word(t_tokenizer_state *state,
 									const char *str, t_data *data);
 int								update_quote_state(t_tokenizer_state *state,
 									char c);
-int								flush_word_before_redirect(t_tokenizer_state *state);
+int								flush_word_before_redirect(
+									t_tokenizer_state *state);
 int								add_redirect_token(t_tokenizer_state *state,
 									const char *symbol, t_token_type type,
 									int advance);
