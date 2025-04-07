@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 18:00:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:30:02 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,11 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input, data);
-		//printf("I'm in child\n");
 		execute_for_one(tokens, cmd, data);
 		//del below
-		//printf("before exit - %d\n", data->exit_status);
 		(close(STDIN_FILENO), close(STDOUT_FILENO));
 		(free_all(data, tokens, cmd), exit(data->exit_status));
+		exit(data->exit_status);
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))

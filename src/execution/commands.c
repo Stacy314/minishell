@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 22:20:15 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:10:08 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,15 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 	int sig;
 
 	parent_ignore_signals(); // move?
-	//if (data->is_child == false)
-	//{
+	if (data->is_child == false)
+	{
 		pid = fork();
 		if (pid == -1)
 			return (perror("fork"), data->exit_status = 1);
 		if (pid == 0)
 			(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL),
 				execve(executable, args, data->env), /*free_all(data,
-					data->tokens, data->cmd),*/ exit(data->exit_status));
+					data->tokens, data->cmd),*/ exit(0));
 		waitpid(pid, &status, 0);
 		parent_restore_signals();
 		if (WIFSIGNALED(status))
@@ -97,16 +97,16 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 			data->exit_status = WEXITSTATUS(status);
 		else
 			data->exit_status = 1;
-	//}
-	//else
-	//{
-	//	data->is_child = false; // maybe delete? because it is in child
-	//	// signal(SIGINT, SIG_DFL);
-	//	// signal(SIGQUIT, SIG_DFL);
-	//	execve(executable, args, data->env);
-	//	//perror("execve");
-	//	//free_all(data, data->tokens, data->cmd);
-	//}
+	}
+	else
+	{
+		data->is_child = false; // maybe delete? because it is in child
+		// signal(SIGINT, SIG_DFL);
+		// signal(SIGQUIT, SIG_DFL);
+		execve(executable, args, data->env);
+		//perror("execve");
+		//free_all(data, data->tokens, data->cmd);
+	}
 	return (data->exit_status);
 }
 
@@ -163,13 +163,8 @@ int	execute_command(char *cmd, t_data *data, char **args)
 {
 	int	result;
 	
-	//if (data->tokens[0]->type == NOTHING)
-	//{
-	//	write_error("minishell: command '' not found\n");
-	//	return (data->exit_status = 127);
-	//}
 	if (!cmd || !args)
-		return (data->exit_status = 0);
+		return (data->exit_status = 1);
 	result = execute_direct_path(cmd, data, args);
 	if (result >= 0)
 		return (result);

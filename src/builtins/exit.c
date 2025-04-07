@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 15:46:13 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 22:03:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,8 @@ int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens, int token_index)
 	int		error;
 
 	error = 0;
-	if (data->is_child)
-		return (free_all(data, tokens, cmd), exit(data->exit_status), 1);
 	if (!cmd->args[token_index + 1])
-		return ((ft_putstr_fd("this exit\n", 1), free_all(data, tokens, cmd),
+		return ((printf("exit\n"), free_all(data, tokens, cmd),
 				exit(data->exit_status), 1));
 	exit_code = ft_atol(cmd->args[1], &error);
 	if (error)

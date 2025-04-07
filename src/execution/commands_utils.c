@@ -6,13 +6,16 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 20:12:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 21:44:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-
+static int	is_delim(char c, const char *delim)
+{
+	return (ft_strchr(delim, c) != NULL);
+}
 static size_t	count_colons(const char *path)
 {
 	size_t	count;
@@ -23,7 +26,32 @@ static size_t	count_colons(const char *path)
 			count++;
 	return (count);
 }
+char	*ft_strtok(char *str, const char *delim)
+{
+	static char	*saved = NULL;
+	char		*token_start;
 
+	if (str != NULL)
+		saved = str;
+	if (saved == NULL)
+		return (NULL);
+	while (*saved && is_delim(*saved, delim))
+		saved++;
+	if (*saved == '\0')
+	{
+		saved = NULL;
+		return (NULL);
+	}
+	token_start = saved;
+	while (*saved && !is_delim(*saved, delim))
+		saved++;
+	if (*saved != '\0')
+	{
+		*saved = '\0';
+		saved++;
+	}
+	return (token_start);
+}
 
 char	*get_path_from_env(char **env)
 {
@@ -86,31 +114,4 @@ char	*find_executable(const char *cmd, char **paths)
 		i++;
 	}
 	return (NULL);
-}
-
-char	*ft_strtok(char *str, const char *delim)
-{
-	static char	*saved = NULL;
-	char		*token_start;
-
-	if (str != NULL)
-		saved = str;
-	if (saved == NULL)
-		return (NULL);
-	while (*saved && ft_strchr(delim, *saved))
-		saved++;
-	if (*saved == '\0')
-	{
-		saved = NULL;
-		return (NULL);
-	}
-	token_start = saved;
-	while (*saved && !ft_strchr(delim, *saved))
-		saved++;
-	if (*saved != '\0')
-	{
-		*saved = '\0';
-		saved++;
-	}
-	return (token_start);
 }

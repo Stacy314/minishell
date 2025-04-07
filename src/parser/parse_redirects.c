@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/05 22:33:27 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:13:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data, int *i
 {
 	char	*unexpected_token;
 
-	if (tokens[*i + 1] && tokens[*i + 1]->type == EMPTY)
+	if (tokens[*i + 1] && tokens[*i + 1]->type == NOTHING)
 	{
 		data->exit_status = 1;
 		write_error("minishell: ambiguous redirect\n"); // need add name on var

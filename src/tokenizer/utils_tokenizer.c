@@ -3,70 +3,107 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenizer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 23:50:56 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/07 15:35:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	is_redirect(char c)
+int	expand_buffer(t_tokenizer_state *state)
 {
-	return (c == '>' || c == '<');
+	char	*new_buffer;
+
+	state->buffer_size *= 2;
+	new_buffer = ft_calloc(state->buffer_size, sizeof(char));
+	if (!new_buffer)
+		return (-1);
+	ft_strlcpy(new_buffer, state->buffer, state->buffer_size);
+	free(state->buffer);
+	state->buffer = new_buffer;
+	return (0);
+}
+int	create_nothing_token(const char *str, t_tokenizer_state *state)
+{
+	state->buffer[state->k] = '\0';
+	state->tokens[state->i] = create_token(state->buffer, NOTHING,
+			state->index++, false);
+	if (!state->tokens[state->i])
+	{
+		perror("failed create token");
+		return (-1);
+	}
+	state->i++;
+	state->k = 0;
+	skip_spaces(str, state);
+	return (0);
+}
+ int	handle_token_word(t_tokenizer_state *state, const char *str,
+		t_data *data)
+{
+	int	result;
+
+	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
+			|| state->inside_quotes))
+	{
+		result = handle_quotes_and_redirects(state, str);
+		if (result == -1)
+			return (-1);
+		if (result == 1)
+			continue ;
+
+		result = handle_expansion(state, str, data);
+		if (result == -1)
+			return (-1);
+		if (result == 1)
+			continue ;
+		if (result == 2)
+		{
+			if (create_nothing_token(str, state) == -1)
+				return (-1);
+			continue ;
+		}
+
+		if (state->k >= state->buffer_size - 1)
+			if (expand_buffer(state) == -1)
+				return (-1);
+
+		state->buffer[state->k++] = str[state->j++];
+	}
+	return (create_word_token(state));
 }
 
-int	is_quote(char c)
+int	update_quote_state(t_tokenizer_state *state, char c)
 {
-	return (c == '\'' || c == '\"');
-}
-
-int	is_pipe(char c)
-{
-	return (c == '|');
-}
-
-int	skip_spaces(const char *str, t_tokenizer_state *state)
-{
-	while (str[state->j] && (str[state->j] == ' ' || str[state->j] == '\t'
-			|| str[state->j] == '\n'))
-		state->j++;
-	if (str[state->j] == '\0')
-		return (0);
+	if (!state->inside_quotes)
+	{
+		state->inside_quotes = 1;
+		state->quote_type = c;
+		state->empty_quotes = 0; // marat
+	}
+	else if (state->inside_quotes && c == state->quote_type)
+	{
+		state->inside_quotes = 0;
+		state->quote_type = 0;
+		if (state->k == 0) // marat
+			state->empty_quotes = 1; //marat
+	}
+	state->j++;
 	return (1);
 }
 
-void	skip_quotes_and_spaces(const char *str, t_tokenizer_state *state)
+int	flush_word_before_redirect(t_tokenizer_state *state)
 {
-	while (str[state->j] && (str[state->j] == ' ' || str[state->j] == '\t'
-			|| str[state->j] == '\n' || is_quote(str[state->j])))
+	state->buffer[state->k] = '\0';
+	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++, false);
+	if (!state->tokens[state->i])
 	{
-		if (str[state->j] == ' ' || str[state->j] == '\t' || str[state->j] == '\n')
-			state->j++;
-		if (is_quote(str[state->j]))
-		{
-			if (str[state->j] == '\'' || str[state->j] == '\"')
-			{
-				if (state->inside_quotes)
-					state->inside_quotes = 0;
-				else
-					state->inside_quotes = 1;
-				state->quote_type = str[state->j];
-				state->j++;
-			}
-			if ((str[state->j] == '\'' || str[state->j] == '\"')
-					&& state->inside_quotes)
-			{
-				create_nothing_token(str, state);
-					//return (-1);
-				state->inside_quotes = 0;
-			}
-			//return (0);
-		}
-
-		
-			
+		perror("failed create token");
+		return (-1);
 	}
-
+	state->i++;
+	state->k = 0;
+	return (0);
 }

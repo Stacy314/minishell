@@ -6,23 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 16:23:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 15:50:28 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// minishell$ cat << $USER
-//> dfsdf
-//> sdfsdf
-//> sdf
-//> $USER
-//> apechkov
-// minishell: warning: here-document at line 8 delimited by end-of-file (wanted `apechkov')
-// dfsdf
-// sdfsdf
-// sdf
-// apechkov
 
 // delimiter is "a c" without quotes
 //		cat << "a c"
@@ -127,8 +115,8 @@ static int	write_name(size_t size, int rand, char *out_filename)
 	char	*prefix;
 	char	*suffix;
 
-	prefix = "/tmp/heredoc_"; //. (hide file)
-	suffix = "tmp";
+	prefix = "/tmp/heredoc_";
+	suffix = ".tmp";
 	num = ft_itoa(rand);
 	if (!num)
 		return (-1);
@@ -171,91 +159,39 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 	return (fd);
 }
 
-//	tmp_fd = create_unique_tmpfile(tmp_filename, size);
-//	if (tmp_fd == -1)
-//		return (-1);
-//	set_signals_heredoc(); //need to fix ctrl + c
-//	while (1)
-//	{
-//		if (g_signal_flag == SIGINT)
-//		{
-//			//g_signal_flag = 0;
-//			data->exit_status = 130;
-//			//printf("1%d\n", data->exit_status);
-//			break ;
-//		}
-//		line = readline("> ");
-//		if (!line || ft_strncmp(line, heredoc_delimiter,
-//				ft_strlen(heredoc_delimiter)) == 0)
-//		{
-//			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
-//				*cmd->heredoc_delimiter);
-//			//free(line);
-//			break ;
-//		}
-//		expand = is_quoted(line);
-//		if (!expand)
-//		{
-//			expanded = expand_heredoc(line, data); //need to change
-//			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
-//					1), free(expanded));
-//		}
-//		else
-//			(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1));
-//		free(line);
-//	}
-
-//	close(tmp_fd);
-//	//set-signal to default
-//	tmp_fd = open(tmp_filename, O_RDONLY);
-//	//printf("2%d\n", data->exit_status);
-//	return (unlink(tmp_filename), tmp_fd);
-//}
-
 int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 		t_data *data)
 {
 	char	tmp_filename[128];
 	char	*line;
-	char	*unquoted;
-	bool	expand_flag;
+	int		expand;
 	int		tmp_fd;
 	char	*expanded;
 
 	(void)cmd;
 	if (!heredoc_delimiter)
 		return (ERROR);
-	unquoted = unquote_delimiter(heredoc_delimiter);
-	if (!unquoted)
-		return (ERROR);
-	expand_flag = is_quoted(heredoc_delimiter);
-	printf("%d\n", expand_flag);
 	tmp_fd = create_unique_tmpfile(tmp_filename, size);
 	if (tmp_fd == -1)
-		return (free(unquoted), -1);
-	set_signals_heredoc(); // need to fix ctrl + c
+		return (-1);
 	while (1)
 	{
-		if (g_signal_flag == SIGINT)
-		{
-			data->exit_status = 130;
-			break ; // exit?
-		}
 		line = readline("> ");
 		if (!line)
 		{
 			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
-					*cmd->heredoc_delimiter);
-			break ;
+				*cmd->heredoc_delimiter);
+			break;
 		}
-		else if (ft_strncmp(line, unquoted, ft_strlen(unquoted) + 1) == 0)
+		if (ft_strncmp(line, heredoc_delimiter, ft_strlen(heredoc_delimiter)) == 0)
 		{
 			free(line);
-			break ;
+			break;
 		}
-		if (!expand_flag)
+		expand = is_quoted(line);
+		if (!expand)
 		{
-			expanded = expand_heredoc(line, data);
+			expanded = expand_heredoc(line, data); //need to change
 			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
 					1), free(expanded));
 		}
@@ -263,10 +199,11 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1));
 		free(line);
 	}
-	(free(unquoted), close(tmp_fd));
+	close(tmp_fd);
 	tmp_fd = open(tmp_filename, O_RDONLY);
 	return (unlink(tmp_filename), tmp_fd);
 }
+
 void	execute_heredoc(t_cmd *cmd, t_data *data)
 {
 	int	infile_fd;

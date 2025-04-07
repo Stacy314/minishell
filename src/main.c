@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/05 16:29:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:22:05 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	main(int argc, char **argv, char **env)
 			return (printf("exit\n"), free_array(data.env), data.exit_status);
 		if (*data.input == '\0' || ft_str_only_spaces(data.input))
 		{
-			//free(data.input);
+			//free(dara.input);
 			continue ;
 		}
 		if (g_signal_flag == SIGINT) // move to sig
@@ -41,7 +41,8 @@ int	main(int argc, char **argv, char **env)
 			data.exit_status = 130;
 			g_signal_flag = 0;
 		}
-		add_history(data.input);
+		if (*data.input)
+			add_history(data.input);
 		data.tokens = split_to_tokens(data.input, &data);
 		if (!data.tokens)
 		{
@@ -60,9 +61,6 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		}
 		execute(data.tokens, data.cmd, &data);
-		last_value = find_last_value(data.tokens); //need to fix	
-		if (last_value)
-			update_underscore(&data, last_value);
 		if (data.exit_status == 130)
 			continue;	
 		free(data.input);

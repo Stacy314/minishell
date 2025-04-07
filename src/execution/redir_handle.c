@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 15:41:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/04 13:46:01 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,28 @@
 
 int	check_error(const char *filename) //need to check exit code
 {
-	struct stat	st;
-	//char *error;
+	//struct stat	st;
+	char *error;
 
-	//error = ft_strjoin("minishell: ", filename);
-	//if (!error)
+	error = ft_strjoin("minishell: ", filename);
+	if (!error)
+	{
+		perror("malloc");
+		return (1);
+	}
+	perror(error);
+	free(error);
+
+	//if (stat(filename, &st) == -1)
 	//{
-	//	perror("malloc");
+	//	write_error("minishell: %s: No such file or directory\n", filename);
 	//	return (1);
 	//}
-	//perror(error);
-	//free(error);
-
-	if (stat(filename, &st) == -1)
-	{
-		write_error("minishell: %s: No such file or directory\n", filename);
-		return (1);
-	}
-	if (access(filename, R_OK) == -1)
-	{
-		write_error("minishell: %s: Permission denied\n", filename);
-		return (1);
-	}
+	//if (access(filename, R_OK) == -1)
+	//{
+	//	write_error("minishell: %s: Permission denied\n", filename);
+	//	return (1);
+	//}
 	return (0);
 }
 
