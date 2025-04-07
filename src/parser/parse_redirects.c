@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/03 18:13:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:37:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,16 @@ char	***get_redirect_target(t_cmd *cmd, t_token_type type)
 	return (NULL);
 }
 
-int	initialize_redirect_array(char ***redirects, const char *value)
+int	initialize_redirect_array(char ***redirects, const char *value,
+		bool **flags, bool flag)
 {
 	*redirects = ft_calloc(2, sizeof(char *));
+	if (!*redirects)
+	{
+		perror("ft_calloc");
+		return (ERROR);
+	}
+	*flags = ft_calloc(2, sizeof(bool));
 	if (!*redirects)
 	{
 		perror("ft_calloc");
@@ -40,41 +47,36 @@ int	initialize_redirect_array(char ***redirects, const char *value)
 		perror("ft_strdup");
 		return (ERROR);
 	}
-	(*redirects)[1] = NULL;
+	(*flags)[0] = flag;
 	return (SUCCESS);
 }
 
-int	append_redirect_value(char ***redirects, const char *value)
+int	append_redirect_value(char ***redirects, const char *value, bool **flags,
+		bool flag)
 {
-	int		count;
-	char	**new_array;
 	int		i;
+	char	**new_array;
+	bool	*new_flags;
 
-	count = 0;
 	i = 0;
-	while ((*redirects)[count])
-		count++;
-	new_array = ft_calloc(count + 2, sizeof(char *));
-	if (!new_array)
-	{
-		perror("ft_calloc");
-		return (ERROR);
-	}
-	while (i < count)
-	{
-		new_array[i] = (*redirects)[i];
+	while ((*redirects)[i])
 		i++;
-	}
-	new_array[count] = ft_strdup(value);
-	if (!new_array[count])
-	{
-		perror("ft_strdup");
-		free(new_array);
+	new_array = ft_calloc(i + 2, sizeof(char *));
+	new_flags = ft_calloc(i + 2, sizeof(bool));
+	if (!new_array || !new_flags)
 		return (ERROR);
+	for (int j = 0; j < i; j++)
+	{
+		new_array[j] = (*redirects)[j];
+		new_flags[j] = (*flags)[j];
 	}
-	new_array[count + 1] = NULL;
+	new_array[i] = ft_strdup(value);
+	new_flags[i] = flag;
+	new_array[i + 1] = NULL;
 	free(*redirects);
+	free(*flags);
 	*redirects = new_array;
+	*flags = new_flags;
 	return (SUCCESS);
 }
 
@@ -86,12 +88,15 @@ int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
 	if (!redirects)
 		return (SUCCESS);
 	if (!*redirects)
-		return (initialize_redirect_array(redirects, token->value));
+		return (initialize_redirect_array(redirects, token->value,
+				&cmd->heredoc_touch_quotes, token->touch_quotes));
 	else
-		return (append_redirect_value(redirects, token->value));
+		return (append_redirect_value(redirects, token->value,
+				&cmd->heredoc_touch_quotes, token->touch_quotes));
 }
 
-int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
+int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
+		int *i)
 {
 	char	*unexpected_token;
 

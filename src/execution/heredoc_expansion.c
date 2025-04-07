@@ -6,24 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 21:42:10 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:26:01 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-bool	is_quoted(const char *str)
-{
-	size_t	len;
-
-	if (!str)
-		return (false);
-	len = ft_strlen(str);
-	if (len >= 2 && ((str[0] == '\'' && str[len - 1] == '\'') || (str[0] == '"'
-				&& str[len - 1] == '"')))
-		return (true);
-	return (false);
-}
 
 static char	*get_env(const char *var, t_data *data)
 {
@@ -57,24 +44,39 @@ static char	*get_env(const char *var, t_data *data)
 char	*expand_heredoc(const char *line, t_data *data)
 {
 	char	*result;
-	int		i;
-	int		k;
 	char	*var_value;
-	char	buffer[4096];
+	size_t	buffer_size;
+	size_t	i;
+	size_t	k;
+	char	*tmp;
 
-	if (!line)
-		return (NULL);
+	buffer_size = 128;
 	i = 0;
 	k = 0;
-	while (line[i] && k < 4095)
+	if (!line)
+		return (NULL);
+	result = ft_calloc(buffer_size, sizeof(char));
+	if (!result)
+		return (NULL);
+	while (line[i])
 	{
 		if (line[i] == '$' && line[i + 1] && (ft_isalnum(line[i + 1]) || line[i
 				+ 1] == '_'))
 		{
 			var_value = get_env(&line[i + 1], data);
 			if (!var_value)
-				return (NULL);
-			ft_strlcpy(&buffer[k], var_value, sizeof(buffer) - k);
+				return (free(result), NULL);
+			while (k + ft_strlen(var_value) >= buffer_size - 1)
+			{
+				tmp = ft_calloc(buffer_size * 2, sizeof(char));
+				if (!tmp)
+					return (free(result), free(var_value), NULL);
+				ft_strlcpy(tmp, result, buffer_size * 2);
+				free(result);
+				result = tmp;
+				buffer_size *= 2;
+			}
+			ft_strlcpy(&result[k], var_value, buffer_size - k);
 			k += ft_strlen(var_value);
 			free(var_value);
 			i++;
@@ -82,9 +84,20 @@ char	*expand_heredoc(const char *line, t_data *data)
 				i++;
 		}
 		else
-			buffer[k++] = line[i++];
+		{
+			if (k + 2 >= buffer_size)
+			{
+				tmp = ft_calloc(buffer_size * 2, sizeof(char));
+				if (!tmp)
+					return (free(result), NULL);
+				ft_strlcpy(tmp, result, buffer_size * 2);
+				free(result);
+				result = tmp;
+				buffer_size *= 2;
+			}
+			result[k++] = line[i++];
+		}
 	}
-	buffer[k] = '\0';
-	result = ft_strdup(buffer);
+	result[k] = '\0';
 	return (result);
 }

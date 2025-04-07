@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:45:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:42:05 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-# include <errno.h> //
+//# include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <readline/history.h>
@@ -35,15 +35,10 @@
 # define PERMISSION_DENIED 126
 # define COMMAND_NOT_FOUND 127
 
-//# define ERROR_CODE_MALLOC 1
-//# define ERROR_CODE_GENERAL 7
-//# define ERROR_CODE_QUOTES 8
-//# define ERROR_CODE_AMBIGUOUS_REDIRECT 9
-//# define ERROR_CODE_INVALID_VAR_NAME 10
-//# define ERROR_CODE_NO_PATH 11
-
 # define HEREDOC_RAND_MIN 1000
-# define HEREDOC_RAND_MAX 999999
+# define HEREDOC_RAND_MAX 9999
+
+#define HEREDOC_MAX 16
 
 extern volatile sig_atomic_t	g_signal_flag;
 
@@ -90,7 +85,7 @@ typedef struct s_cmd
 	char						**output_redirects;
 	char						**append_redirects;
 	char						**heredoc_delimiter;
-	bool						heredoc_touch_quotes;
+	bool						*heredoc_touch_quotes;
 	int							heredoc_fd;
 	pid_t						*pipe_pids;
 	int							pipe_fd[2];
@@ -198,10 +193,6 @@ int								check_initial_syntax_errors(t_token **tokens,
 									t_data *data);
 char							***get_redirect_target(t_cmd *cmd,
 									t_token_type type);
-int								initialize_redirect_array(char ***redirects,
-									const char *value);
-int								append_redirect_value(char ***redirects,
-									const char *value);
 t_cmd							*parse_tokens(t_token **tokens, t_data *data);
 
 // builtins

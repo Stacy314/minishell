@@ -3,14 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   underscore.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/31 23:38:48 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/07 18:40:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+// apechkov@c3r4p2:~/projects/minishell$ cd
+// apechkov@c3r4p2:~$ echo $_
+// cd
+// apechkov@c3r4p2:~$ env | echo $_
+// cd
+// apechkov@c3r4p2:~$ env | grep "_=" | echo $_
+// cd
+// apechkov@c3r4p2:~$ env | grep "_="
+//_=/usr/bin/env
+// apechkov@c3r4p2:~$
 
 char	*find_last_value(t_token **tokens)
 {

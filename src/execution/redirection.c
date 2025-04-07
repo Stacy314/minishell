@@ -6,30 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:30:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:46:12 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// Ambigious redirection
-// export a="a b"
-// > $a (bash: $a: ambiguous redirect)
-
-// export a="a b"
-// echo > $a | echo > $a | echo > $a | echo hi
-
-// > $notexists
-// bash: $notexists: ambiguous redirect
-
-// echo <"./test_files/infile_big" | cat <"./test_files/infile" (18)
-// cat <missing | cat <"./test_files/infile" (38)
-
-// cat <minishell.h|ls (118) - parsing
-
-// cd '/////' >/dev/null (=cd /)
-// cd "doesntexist" >/dev/null
-// cd "wtf" >/dev/null
 
 static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
 {
@@ -79,12 +60,10 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 		return (perror("fork"), 0);
 	if (pid == 0)
 	{
-		// data->is_child = true;
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input, data);
 		execute_for_one(tokens, cmd, data);
-		//del below
 		(close(STDIN_FILENO), close(STDOUT_FILENO));
 		(free_all(data, tokens, cmd), exit(data->exit_status));
 		exit(data->exit_status);
@@ -92,7 +71,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 	{
-		parent_restore_signals(); // need to move to signals
+		parent_restore_signals();
 		if (WIFSIGNALED(status))
 		{
 			sig = WTERMSIG(status);

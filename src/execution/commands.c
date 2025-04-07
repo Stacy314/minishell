@@ -6,36 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:10:08 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:32:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// "" (: command not found, EC - 127) (11)
-// touch "" (touch: cannot touch '': No such file or directory) (13)
-
-//"."
-
-//////////////////////////////////////////////////////////////////////////////
-void	debug_paths_info(const char *cmd, char **paths, const char *found_path)
-{
-	int	i;
-
-	printf("Debug info for command: \"%s\"\n", cmd);
-	printf("Parsed PATH directories:\n");
-	for (i = 0; paths && paths[i]; i++)
-		printf("  [%d]: %s\n", i, paths[i]);
-
-	if (found_path)
-		printf("Executable found at: %s\n", found_path);
-	else
-		printf("Executable NOT found for command: %s\n", cmd);
-
-	printf("----------------------------------------\n");
-}
-/////////////////////////////////////////////////////////////////////////////////
-
 
 int	check_permissions(char *cmd)
 {
@@ -65,7 +40,7 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 	int status;
 	int sig;
 
-	parent_ignore_signals(); // move?
+	parent_ignore_signals();
 	if (data->is_child == false)
 	{
 		pid = fork();
@@ -73,13 +48,12 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 			return (perror("fork"), data->exit_status = 1);
 		if (pid == 0)
 			(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL),
-				execve(executable, args, data->env), /*free_all(data,
-					data->tokens, data->cmd),*/ exit(0));
+				execve(executable, args, data->env), exit(0));
 		waitpid(pid, &status, 0);
 		parent_restore_signals();
 		if (WIFSIGNALED(status))
 		{
-			sig = WTERMSIG(status); // need to move to signals
+			sig = WTERMSIG(status);
 			if (sig == SIGINT)
 			{
 				data->exit_status = 130;
@@ -100,12 +74,8 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 	}
 	else
 	{
-		data->is_child = false; // maybe delete? because it is in child
-		// signal(SIGINT, SIG_DFL);
-		// signal(SIGQUIT, SIG_DFL);
+		data->is_child = false; 
 		execve(executable, args, data->env);
-		//perror("execve");
-		//free_all(data, data->tokens, data->cmd);
 	}
 	return (data->exit_status);
 }
@@ -146,7 +116,6 @@ static int	execute_via_path(char *cmd, t_data *data, char **args)
 			data->tokens, data->cmd),data->exit_status = 1);
 	}
 	executable = find_executable(cmd, paths);
-	//debug_paths_info(cmd, paths, executable);
 	if (!executable)
 	{
 		write_error("%s: command not found\n", cmd);

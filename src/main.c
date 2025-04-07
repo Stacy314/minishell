@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:22:05 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:38:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,8 @@ int	main(int argc, char **argv, char **env)
 		if (!data.input)
 			return (printf("exit\n"), free_array(data.env), data.exit_status);
 		if (*data.input == '\0' || ft_str_only_spaces(data.input))
-		{
-			//free(dara.input);
 			continue ;
-		}
-		if (g_signal_flag == SIGINT) // move to sig
+		if (g_signal_flag == SIGINT)
 		{
 			data.exit_status = 130;
 			g_signal_flag = 0;

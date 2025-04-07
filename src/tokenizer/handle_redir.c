@@ -6,16 +6,16 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:48:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:01:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
-		t_token_type type, int advance) // marat
+		t_token_type type, int advance)
 {
-	int j;
+	int	j;
 
 	state->tokens[state->i] = create_token(symbol, type, (state->index)++,
 			false);

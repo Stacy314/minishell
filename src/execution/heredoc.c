@@ -6,126 +6,40 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:50:28 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:44:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// delimiter is "a c" without quotes
-//		cat << "a c"
-// check with "EOF " and " EOF" when in heredoc without quotes but with the spaces
-//- shouldn't quit - quit only with "EOF"
-// 	cat << EOF
-// press ctrl + d inside heredoc
-//- should quit heredoc with a warning but not minishell
-//		cat << EOF
-// 	cat << EOF
-// check f.e. with ctrl + c if all heredocs are closed with one command
-// 	<< 1 | << 2 | << 3 cat
-
-// cat << lim
-// "lim"
-// HELLO
-// 42
-// lim
-// testing your minishell
-// limm
-// lim
-
-//<<lim cat
-// "lim"
-// HELLO
-// 42
-// lim
-// testing your minishell
-// limm
-// lim
-
-// cat << lim
-// test
-// lim
-
-// cat << EOF
-//"EOF"
-//!! HELLO
-//@42 !!
-// EOF\t\b\n
-// testing your minishell :)
-// limm
-// EOF
-
-// cat << hello
-//$USER
-//$NOVAR
-//$HOME
-// hello
-
-// cat << 'lim'
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// cat << lim''
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// cat << "lim"
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// cat << 'lim'
-//$USER
-//$NOVAR
-//$HOME
-// lim
-
-// echo test |  <<lala
-
 static int	make_rand_numb(void)
 {
-	char	buf[256];
-	int		len;
-	int		hash;
-	int		offset;
-	int		range;
+	static int	counter = HEREDOC_RAND_MIN;
 
-	len = 0;
-	hash = 0;
-	range = HEREDOC_RAND_MAX - HEREDOC_RAND_MIN + 1;
-	if (!getcwd(buf, sizeof(buf)))
-		return (getpid() % range + HEREDOC_RAND_MIN);
-	while (buf[len])
-	{
-		hash += buf[len] * (len + 1);
-		len++;
-	}
-	offset = (getpid() ^ hash ^ (len * 31));
-	return ((offset % range) + HEREDOC_RAND_MIN);
+	if (counter >= HEREDOC_RAND_MAX)
+		counter = HEREDOC_RAND_MIN;
+	return (counter++);
 }
 
 static int	write_name(size_t size, int rand, char *out_filename)
 {
-	char	*num;
-	char	*prefix;
-	char	*suffix;
+	char		*num;
+	const char	*dir = "/tmp/.minishell/";
+	const char	*prefix = ".heredoc_";
+	const char	*suffix = ".tmp";
 
-	prefix = "/tmp/heredoc_";
-	suffix = ".tmp";
 	num = ft_itoa(rand);
 	if (!num)
 		return (-1);
-	if (ft_strlen(prefix) + ft_strlen(num) + ft_strlen(suffix) >= size)
+	if (ft_strlen(dir) + ft_strlen(prefix) + ft_strlen(num)
+		+ ft_strlen(suffix) >= size)
 	{
 		free(num);
 		return (-1);
 	}
-	ft_strlcpy(out_filename, prefix, size);
+	mkdir("/tmp/.minishell", 0700);
+	ft_strlcpy(out_filename, dir, size);
+	ft_strlcat(out_filename, prefix, size);
 	ft_strlcat(out_filename, num, size);
 	ft_strlcat(out_filename, suffix, size);
 	free(num);
@@ -164,39 +78,45 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 {
 	char	tmp_filename[128];
 	char	*line;
-	int		expand;
 	int		tmp_fd;
 	char	*expanded;
+	int		i;
 
-	(void)cmd;
 	if (!heredoc_delimiter)
 		return (ERROR);
 	tmp_fd = create_unique_tmpfile(tmp_filename, size);
 	if (tmp_fd == -1)
 		return (-1);
+	i = 0;
+	while (cmd->heredoc_delimiter && cmd->heredoc_delimiter[i])
+	{
+		if (ft_strcmp(cmd->heredoc_delimiter[i], heredoc_delimiter) == 0)
+			break ;
+		i++;
+	}
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
 		{
 			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
-				*cmd->heredoc_delimiter);
-			break;
+				heredoc_delimiter);
+			break ;
 		}
-		if (ft_strncmp(line, heredoc_delimiter, ft_strlen(heredoc_delimiter)) == 0)
+		if (ft_strcmp(line, heredoc_delimiter) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
-		expand = is_quoted(line);
-		if (!expand)
-		{
-			expanded = expand_heredoc(line, data); //need to change
-			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
-					1), free(expanded));
-		}
-		else
+		if (cmd->heredoc_touch_quotes && cmd->heredoc_touch_quotes[i])
 			(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1));
+		else
+		{
+			expanded = expand_heredoc(line, data);
+			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
+					1));
+			free(expanded);
+		}
 		free(line);
 	}
 	close(tmp_fd);

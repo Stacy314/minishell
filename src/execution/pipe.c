@@ -6,17 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/04 14:27:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:34:13 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// exit | exit | exit (shouldn't exit and shouldn't print anything)
-
-// echo hi | echo hi | (should open input)
-
-// echo test |  <<lala (should open herdoc input)
 
 int	count_commands(t_cmd *cmd)
 {
@@ -35,7 +29,7 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 {
 	pid_t	pid;
 
-	if (pipe(cmd->pipe_fd) == -1) // dont need if have one command
+	if (pipe(cmd->pipe_fd) == -1)
 		return (perror("pipe"), -1);
 	pid = fork();
 	if (pid < 0)
@@ -47,7 +41,6 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		{
 			perror("dup2");
 			free_all(data, tokens, cmd);
-			// close(STDOUT_FILENO);
 			exit(1);
 		}
 		close(cmd->pipe_fd[0]);
@@ -121,8 +114,6 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 	if (pid == 0)
 	{
 		data->is_child = true;
-		// signal(SIGINT, SIG_DFL);
-		// signal(SIGQUIT, SIG_DFL);
 		if (current->pipe_fd[0] != -1)
 		{
 			if (dup2(current->pipe_fd[0], STDIN_FILENO) == -1)
@@ -132,7 +123,6 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 			}
 			close(current->pipe_fd[0]);
 		}
-		// close(current->pipe_fd[0]);
 		apply_redirections(current, data);
 		execute_for_one(tokens, current, data);
 		close(STDIN_FILENO);
@@ -145,48 +135,14 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 	return (pid);
 }
 
-//static int	handle_all_heredocs(t_cmd *cmd, t_data *data)
-//{
-//	t_cmd	*tmp;
-//	int		i;
-
-//	tmp = cmd;
-//	if (!tmp->heredoc_delimiter)
-//		return (SUCCESS);
-//	while (tmp)
-//	{
-//		i = 0;
-//		if (tmp->heredoc_delimiter)
-//		{
-//			while (tmp->heredoc_delimiter[i])
-//			{
-//				if (tmp->heredoc_delimiter[i])
-//				{
-//					tmp->heredoc_fd = handle_heredoc(tmp,
-//							tmp->heredoc_delimiter[i], 128, data);
-//					if (tmp->heredoc_fd == -1)
-//					{
-//						perror("heredoc");
-//						return (ERROR);
-//					}
-//				}
-//				i++;
-//			}
-//			else if (fd < 0)
-//				return (false);
-//			tmp->heredoc_fd = fd;
-//		}
-//		tmp = tmp->next;
-//	}
-//	return (SUCCESS);
-//}
-
-int	handle_heredoc_pipe(t_cmd *cmd) // marat
+int	handle_heredoc_pipe(t_cmd *cmd)
 {
-	int pipe_fd[2];
-	pid_t pid;
-	int status;
-	char *line;
+	int		pipe_fd[2];
+	pid_t	pid;
+	int		status;
+	char	*line;
+	int		sig;
+	int		code;
 
 	if (pipe(pipe_fd) == -1)
 	{
@@ -204,7 +160,6 @@ int	handle_heredoc_pipe(t_cmd *cmd) // marat
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);
 		close(pipe_fd[0]);
-
 		while (1)
 		{
 			line = readline("> ");
@@ -230,7 +185,7 @@ int	handle_heredoc_pipe(t_cmd *cmd) // marat
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status))
 	{
-		int sig = WTERMSIG(status);
+		sig = WTERMSIG(status);
 		if (sig == SIGINT)
 		{
 			close(pipe_fd[0]);
@@ -239,20 +194,23 @@ int	handle_heredoc_pipe(t_cmd *cmd) // marat
 	}
 	else if (WIFEXITED(status))
 	{
-		int code = WEXITSTATUS(status);
+		code = WEXITSTATUS(status);
 		(void)code;
 	}
 	return (pipe_fd[0]);
 }
 
-bool	handle_all_heredocs(t_cmd *cmd, t_data *data) // marat
+bool	handle_all_heredocs(t_cmd *cmd, t_data *data)
 {
-	t_cmd *tmp = cmd;
+	t_cmd	*tmp;
+	int		fd;
+
+	tmp = cmd;
 	while (tmp)
 	{
 		if (tmp->heredoc_delimiter)
 		{
-			int fd = handle_heredoc_pipe(tmp);
+			fd = handle_heredoc_pipe(tmp);
 			if (fd == -2)
 			{
 				data->exit_status = 130;
@@ -289,7 +247,6 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 				current, cmd, data, new_pipe_fd);
 		temp_fd[0] = new_pipe_fd[0];
 		temp_fd[1] = new_pipe_fd[1];
-		// free_all(data, tokens, current);
 		current = current->next;
 	}
 	if (current)
@@ -309,18 +266,17 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 
 void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 {
-	int n_cmds;
-	int process_count;
-	int status;
-	int i;
+	int	n_cmds;
+	int	process_count;
+	int	status;
+	int	i;
 
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
 		return ;
-
 	if (!handle_all_heredocs(cmd, data))
 		return ;
-	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1); // move to init
+	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1);
 	if (!cmd->pipe_pids)
 		return (perror("calloc"));
 	process_count = launch_all_processes(tokens, cmd, data);

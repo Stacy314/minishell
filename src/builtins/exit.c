@@ -6,13 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 22:03:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:43:01 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// exit "" (bash: exit: : numeric argument required, EC - 2)
 
 int	ft_isspace(int c)
 {
@@ -22,30 +20,30 @@ int	ft_isspace(int c)
 	return (0);
 }
 
-static unsigned long	overflow_check(const char *str, int *idx, int sign,
+static unsigned long	overflow_check(const char *str, int *index, int sign,
 		int *error)
 {
 	unsigned long	result;
 
 	result = 0;
-	while (str[*idx] && ft_isdigit((unsigned char)str[*idx]))
+	while (str[*index] && ft_isdigit((unsigned char)str[*index]))
 	{
 		if (sign == 1)
 		{
 			if (result > (unsigned long)LONG_MAX / 10
-				|| (result == (unsigned long)LONG_MAX / 10 && (str[*idx]
+				|| (result == (unsigned long)LONG_MAX / 10 && (str[*index]
 						- '0') > (int)(LONG_MAX % 10)))
 				return (*error = 1, 0);
 		}
 		else
 		{
 			if (result > ((unsigned long)LONG_MAX + 1) / 10
-				|| (result == ((unsigned long)LONG_MAX + 1) / 10 && (str[*idx]
+				|| (result == ((unsigned long)LONG_MAX + 1) / 10 && (str[*index]
 						- '0') > (int)(((unsigned long)LONG_MAX + 1) % 10)))
 				return (*error = 1, 0);
 		}
-		result = result * 10 + (str[*idx] - '0');
-		(*idx)++;
+		result = result * 10 + (str[*index] - '0');
+		(*index)++;
 	}
 	return (result);
 }
@@ -101,8 +99,11 @@ int	builtin_exit(t_cmd *cmd, t_data *data, t_token **tokens, int token_index)
 
 	error = 0;
 	if (!cmd->args[token_index + 1])
-		return ((printf("exit\n"), free_all(data, tokens, cmd),
-				exit(data->exit_status), 1));
+	{
+		if (!data->is_child)
+			printf("exit\n");
+		return ((free_all(data, tokens, cmd), exit(data->exit_status), 1));
+	}
 	exit_code = ft_atol(cmd->args[1], &error);
 	if (error)
 	{

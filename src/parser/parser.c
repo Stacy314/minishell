@@ -6,13 +6,26 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:53:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:48:26 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 // need to fix:
+
+//name var in ambiguous redirect
+
+// $non - ignor
+// '$non' - $non word
+// "" '' "$non" - empty string
+
+// // echo|echo
+
+// cd '/////' >/dev/null (=cd /)
+// cd "doesntexist" >/dev/null
+// cd "wtf" >/dev/null
+
 // cat << $USER (wrong expansion)
 //"" (: command not found, EC - 127)
 // echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
@@ -31,6 +44,11 @@
 
 // export A='"echo hi"'
 //$A  ("echo: command not found)
+
+// echo $"" (should print \n) (go crazy)
+// "" echo
+// "" (: command not found, EC - 127) (11)
+// touch "" (touch: cannot touch '': No such file or directory) (13)
 
 //////////////////////////////////////////////////////////////////////
 void	debug_print_cmd(t_cmd *cmd)
@@ -93,6 +111,16 @@ void	debug_print_cmd(t_cmd *cmd)
 		else
 			printf("(null)");
 		printf("\n");
+		// Touch_quotes
+		printf("Touch Quotes: ");
+		if (cmd->heredoc_touch_quotes)
+		{
+			for (i = 0; cmd->heredoc_touch_quotes[i]; i++)
+				printf("%d ", cmd->heredoc_touch_quotes[i]);
+		}
+		else
+			printf("(null)");
+		printf("\n");
 		printf("============================\n");
 		cmd = cmd->next;
 	}
@@ -106,13 +134,6 @@ int	check_initial_syntax_errors(t_token **tokens, t_data *data)
 	i = 0;
 	while (tokens[i])
 	{
-		if (tokens[i]->type == LOGICAL_AND || tokens[i]->type == LOGICAL_OR)
-		{
-			write_error("minishell: syntax error near unexpected token `%s'\n",
-				tokens[i]->value);
-			data->exit_status = 2;
-			return (1);
-		}
 		if (tokens[i]->type == PIPE && (i == 0 || !tokens[i + 1]))
 		{
 			write_error("minishell: syntax error near unexpected token `|'\n");
@@ -136,7 +157,7 @@ char	**append_to_args(char **args, char *new_arg)
 		while (args[len])
 			len++;
 	}
-	new_args = ft_calloc(sizeof(char *) * (len + 2), 1); //
+	new_args = ft_calloc(sizeof(char *) * (len + 2), 1);
 	if (!new_args)
 		return (perror("calloc"), NULL);
 	i = 0;
@@ -171,43 +192,35 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 	}
 	return (1);
 }
-// marat - added
-static int	check_empty_command(t_cmd *cmd, t_data *data)
-{
-	int		has_args;
-	int		has_any_redirect;
-	char	*arg;
 
-	has_args = 0;
-	if (cmd->args && cmd->args[0] && cmd->args[0][0] != '\0')
-		has_args = 1;
-	has_any_redirect = 0;
-	if ((cmd->input_redirects && cmd->input_redirects[0])
-		|| (cmd->output_redirects && cmd->output_redirects[0])
-		|| (cmd->append_redirects && cmd->append_redirects[0])
-		|| (cmd->heredoc_delimiter && cmd->heredoc_delimiter[0]))
-	{
-		has_any_redirect = 1;
-	}
-	if (!has_args && !has_any_redirect)
-	{
-		arg = "";
-		if (cmd->args && cmd->args[0])
-			arg = cmd->args[0];
-		write_error("minishell: '%s': command not found\n", arg);
-		data->exit_status = 127;
-		return (0);
-	}
-	// if (!has_args && !has_any_redirect)
-	//{
-	//	write_error("minishell: '%s': command not found\n",
-	//		(cmd->args && cmd->args[0]) ? cmd->args[0] : "");
-	//	data->exit_status = 127;
-	//	return (0);
-	//}
-	return (1);
-}
-////////
+//static int	check_empty_command(t_cmd *cmd, t_data *data)
+//{
+//	int		has_args;
+//	int		has_any_redirect;
+//	//char	*arg;
+
+//	(void)data;
+//	has_args = 0;
+//	if (cmd->args && cmd->args[0] && cmd->args[0][0] != '\0')
+//		has_args = 1;
+//	has_any_redirect = 0;
+//	if ((cmd->input_redirects && cmd->input_redirects[0])
+//		|| (cmd->output_redirects && cmd->output_redirects[0])
+//		|| (cmd->append_redirects && cmd->append_redirects[0])
+//		|| (cmd->heredoc_delimiter && cmd->heredoc_delimiter[0]))
+//		has_any_redirect = 1;
+//	//if (!has_args && !has_any_redirect)
+//	//{
+//	//	arg = "";
+//	//	if (cmd->args && cmd->args[0])
+//	//		arg = cmd->args[0];
+//	//	// write_error("'%s': command not found\n", arg);
+//	//	// data->exit_status = 127;
+//	//	// return (1);
+//	//}
+//	return (1);
+//}
+
 int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 {
 	t_cmd	*prev;
@@ -226,8 +239,8 @@ int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 			prev->next = current;
 		if (!fill_cmd(current, tokens, data, i))
 			return (0);
-		if (!check_empty_command(current, data)) // marat
-			return (0);
+		//if (!check_empty_command(current, data))
+		//	return (0);
 		prev = current;
 		if (tokens[*i] && tokens[*i]->type == PIPE)
 			(*i)++;
@@ -247,8 +260,8 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 	if (!build_command_list(&head, tokens, data, &i))
 	{
 		free_cmd(head);
-		return (NULL); // need fix
+		return (NULL);
 	}
-	// debug_print_cmd(head);
+	 debug_print_cmd(head);
 	return (head);
 }
