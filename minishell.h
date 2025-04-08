@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 16:25:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:44:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-#include <dirent.h>
+//#include <dirent.h>
 
 # define MALLOC_ERROR -1
 # define SUCCESS 1

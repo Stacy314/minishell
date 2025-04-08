@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 14:12:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:28:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,6 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	}
 	tokens[state.i] = NULL;
 	free(state.buffer);
-	debug_print_tokens(tokens);
+	//debug_print_tokens(tokens);
 	return (tokens);
 }

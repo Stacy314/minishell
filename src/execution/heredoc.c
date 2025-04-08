@@ -6,30 +6,18 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 16:25:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:46:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-// static int	make_rand_numb(void)
-//{
-//	static int	counter = HEREDOC_RAND_MIN;
-
-//	if (counter >= HEREDOC_RAND_MAX)
-//		counter = HEREDOC_RAND_MIN;
-//	return (counter++);
-//}
-
-
 static int	make_rand_numb(void)
 {
-	char			cwd[256];
-	int				hash;
-	int				i;
-	DIR				*dir;
-	struct dirent	*entry;
-	int				range;
+	char	cwd[256];
+	int		hash;
+	int		i;
+	int		range;
 
 	hash = 0;
 	i = 0;
@@ -40,16 +28,6 @@ static int	make_rand_numb(void)
 		return (HEREDOC_RAND_MIN);
 	while (cwd[i])
 		hash += cwd[i++] * 31;
-	dir = opendir(".");
-	if (!dir)
-		return ((hash % range) + HEREDOC_RAND_MIN);
-	while ((entry = readdir(dir)))
-	{
-		i = 0;
-		while (entry->d_name[i])
-			hash += entry->d_name[i++] * 17;
-	}
-	closedir(dir);
 	return ((hash % range) + HEREDOC_RAND_MIN);
 }
 
@@ -112,34 +90,37 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 	int		tmp_fd;
 	char	*expanded;
 	int		i;
+	char	*tmp_filename;
 
-	char tmp_filename[128]; // change
 	if (!heredoc_delimiter)
 		return (ERROR);
+	tmp_filename = malloc(size);
+	if (!tmp_filename)
+		return (perror("malloc"), ERROR);
 	tmp_fd = create_unique_tmpfile(tmp_filename, size);
 	if (tmp_fd == -1)
-		return (-1);
+		return (free(tmp_filename), -1);
 	i = 0;
-	while (cmd->heredoc_delimiter && cmd->heredoc_delimiter[i]) //
+	while (cmd->heredoc_delimiter && cmd->heredoc_delimiter[i])
 	{
 		if (ft_strcmp(cmd->heredoc_delimiter[i], heredoc_delimiter) == 0)
 			break ;
 		i++;
 	}
-	set_signals_heredoc();
+	//set_signals_heredoc();
 	while (1)
 	{
+		//if (g_signal_flag == SIGINT)
+		//{
+		//	data->exit_status = 130;
+		//	g_signal_flag = 0;
+		//	break ;
+		//}
 		line = readline("> ");
 		if (!line)
 		{
 			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
 				heredoc_delimiter);
-			break ;
-		}
-		if (g_signal_flag == SIGINT)
-		{
-			data->exit_status = 130;
-			g_signal_flag = 0;
 			break ;
 		}
 		if (ft_strcmp(line, heredoc_delimiter) == 0)
@@ -148,19 +129,24 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			break ;
 		}
 		if (cmd->heredoc_touch_quotes && cmd->heredoc_touch_quotes[i])
-			(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1));
+		{
+			write(tmp_fd, line, ft_strlen(line));
+			write(tmp_fd, "\n", 1);
+		}
 		else
 		{
 			expanded = expand_heredoc(line, data);
-			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
-					1));
+			write(tmp_fd, expanded, ft_strlen(expanded));
+			write(tmp_fd, "\n", 1);
 			free(expanded);
 		}
 		free(line);
 	}
 	close(tmp_fd);
 	tmp_fd = open(tmp_filename, O_RDONLY);
-	return (unlink(tmp_filename), tmp_fd);
+	unlink(tmp_filename);
+	free(tmp_filename);
+	return (tmp_fd);
 }
 
 void	execute_heredoc(t_cmd *cmd, t_data *data)
