@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:42:05 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:25:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+#include <dirent.h>
 
+# define MALLOC_ERROR -1
 # define SUCCESS 1
 # define ERROR 0
 # define SYNTAXIS_ERROR 2
@@ -50,10 +52,7 @@ typedef enum e_token_type
 	REDIRECT_OUT,
 	APPEND,
 	HEREDOC,
-	LOGICAL_AND,
-	LOGICAL_OR,
 	NOTHING,
-	END
 }								t_token_type;
 
 typedef struct s_token
@@ -101,6 +100,7 @@ typedef struct s_data
 	t_token						**tokens;
 	t_cmd						*cmd;
 	bool						is_child;
+	int							heredoc_count;
 }								t_data;
 
 int								add_or_update_env(char *arg, t_data *data);
@@ -148,7 +148,7 @@ void							handle_sigquit_child(int sig);
 int								handle_expansion(t_tokenizer_state *state,
 									const char *str, t_data *data);
 int								handle_quotes_and_redirects(t_tokenizer_state *state,
-									const char *str);
+									const char *str, t_data *data);
 int								create_word_token(t_tokenizer_state *state);
 int								is_redirect(char c);
 int								is_quote(char c);
@@ -162,7 +162,7 @@ t_token							**split_to_tokens(const char *str,
 									t_data *data);
 void							free_tokens(t_token **tokens);
 int								handle_redirection_tok(t_tokenizer_state *state,
-									const char *str);
+									const char *str, t_data *data);
 void							skip_spaces(const char *str,
 									t_tokenizer_state *state);
 int								is_logical_operator(const char *str,

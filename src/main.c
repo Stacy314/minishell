@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:38:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 22:39:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,15 @@ int	main(int argc, char **argv, char **env)
 		data.cmd = parse_tokens(data.tokens, &data);
 		if (!data.cmd)
 		{
-			free_tokens(data.tokens);
+			// free_tokens(data.tokens); >|
 			free(data.input);
-			if (data.exit_status != 2)
-				return (EXIT_FAILURE);
-			continue ;
+			if (data.exit_status == 2 || data.exit_status == 1)
+				continue ;
+			return (EXIT_FAILURE); //change only for -1 (malloc)
 		}
 		execute(data.tokens, data.cmd, &data);
 		if (data.exit_status == 130)
-			continue;	
+			continue ;
 		free(data.input);
 		free_tokens(data.tokens);
 		free_cmd(data.cmd);

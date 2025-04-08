@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:48:26 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 19:50:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,6 +262,6 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 		free_cmd(head);
 		return (NULL);
 	}
-	 debug_print_cmd(head);
+	// debug_print_cmd(head);
 	return (head);
 }

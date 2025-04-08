@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/07 18:37:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:04:57 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,20 +100,47 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 {
 	char	*unexpected_token;
 
-	if (tokens[*i + 1] && tokens[*i + 1]->type == NOTHING)
+	// if (tokens[*i + 1] && tokens[*i + 1]->type == NOTHING)
+	//{
+	//	data->exit_status = 1;
+	//	write_error("minishell: ambiguous redirect\n"); // need add name on var
+	//	return (0);
+	//}
+	if (!tokens[*i + 1])
 	{
-		data->exit_status = 1;
-		write_error("minishell: ambiguous redirect\n"); // need add name on var
+		
 		return (0);
 	}
-	if (!tokens[*i + 1] || tokens[*i + 1]->type != WORD)
+	if (tokens[*i + 1]->type == NOTHING)
 	{
-		if (tokens[*i + 1])
-			unexpected_token = tokens[*i + 1]->value;
-		else
-			unexpected_token = "newline";
+		data->exit_status = 1;
+		return (0); 
+	}
+	if (tokens[*i + 1]->type != WORD)
+	{
+		unexpected_token = tokens[*i + 1]->value;
 		write_error("minishell: syntax error near unexpected token `%s'\n",
 			unexpected_token);
+		data->exit_status = 2;
+		return (0);
+	}
+
+	
+	//if (!tokens[*i + 1] || tokens[*i + 1]->type != WORD)
+	//{
+	//	if (tokens[*i + 1])
+	//		unexpected_token = tokens[*i + 1]->value;
+	//	else
+	//		unexpected_token = "newline";
+	//	write_error("minishell: syntax error near unexpected token `%s'\n",
+	//		unexpected_token);
+	//	data->exit_status = 2;
+	//	return (0);
+	//}
+	if (data->heredoc_count > HEREDOC_MAX)
+	{
+		printf("heredoc count: %d\n", data->heredoc_count);
+		write_error("minishell: maximum here-document count exceeded\n");
 		data->exit_status = 2;
 		return (0);
 	}

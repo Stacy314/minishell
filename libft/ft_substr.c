@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 16:14:40 by apechkov          #+#    #+#             */
-/*   Updated: 2024/04/19 19:00:15 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 21:51:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,3 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	str[j] = 0;
 	return (str);
 }
-
-/*int main(void)
-{
-    char *s = "Hello, World!";
-    char *substr = ft_substr(s, 7, 5); // Starting from index 7, length 5
-
-    if (substr != NULL)
-    {
-        printf("Substring: %s\n", substr);
-        free(substr);
-    }
-    else
-    {
-        printf("Substring is NULL\n");
-    }
-
-    return 0;
-}*/

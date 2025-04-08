@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 15:54:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/07 21:11:21 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,5 +129,6 @@ int	init_data(t_data *data, char **env)
 	data->tokens = NULL;
 	data->cmd = NULL;
 	data->is_child = false;
+	data->heredoc_count = 0;
 	return (SUCCESS);
 }

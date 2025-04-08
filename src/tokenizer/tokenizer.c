@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:48:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:12:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	create_word_token(t_tokenizer_state *state)
 		}
 		free(state->tokens);
 		perror("create_token");
-		return (-1);
+		return (MALLOC_ERROR);
 	}
 	state->empty_quotes = 0;
 	state->i++;
@@ -94,6 +94,8 @@ int	create_word_token(t_tokenizer_state *state)
 static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		t_data *data)
 {
+	int	redir_result;
+
 	while (str[state->j])
 	{
 		skip_spaces(str, state);
@@ -104,22 +106,26 @@ static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		{
 			if (str[state->j] == '|')
 			{
-				if (create_pipe_operator(str, state) == -1)
-					return (cleanup_and_null(state), -1);
+				if (create_pipe_operator(str, state) == MALLOC_ERROR)
+					return (MALLOC_ERROR);
 				state->j++;
 			}
 			else
 			{
-				if (handle_redirection_tok(state, str) == -1)
-					return (cleanup_and_null(state), -1);
+				redir_result = handle_quotes_and_redirects(state, str, data);
+				if (redir_result == MALLOC_ERROR)
+					return (MALLOC_ERROR);
+				if (redir_result == 2)
+					return (ERROR);
 			}
 			continue ;
 		}
-		if (handle_token_word(state, str, data) == -1)
-			return (-1);
+		if (handle_token_word(state, str, data) == MALLOC_ERROR)
+			return (MALLOC_ERROR);
 	}
-	return (0);
+	return (SUCCESS);
 }
+
 int	heredoc_count(const char *str, t_data *data)
 {
 	int	count;
@@ -131,9 +137,8 @@ int	heredoc_count(const char *str, t_data *data)
 	{
 		if (count > HEREDOC_MAX)
 		{
-			write_error("minishell: maximum here-document count exceeded\n");
-			free(data->input);
-			exit (2);
+			data->heredoc_count = count;
+			return (0);
 		}
 		if (str[i] == '<' && str[i + 1] == '<')
 		{
@@ -152,14 +157,13 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 
 	if (!str)
 		return (NULL);
-	if (!heredoc_count(str, data))
-		return (NULL);
+	heredoc_count(str, data);
 	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
 	if (!tokens)
 		return (perror("calloc"), NULL);
 	if (!init_state(&state, tokens))
 		return (free(tokens), NULL);
-	if (tokenize_loop(str, &state, data) == -1)
+	if (tokenize_loop(str, &state, data) == MALLOC_ERROR)
 		return (NULL);
 	if (state.inside_quotes)
 	{

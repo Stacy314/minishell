@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:49:35 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:13:46 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,27 +35,29 @@ int	create_nothing_token(const char *str, t_tokenizer_state *state)
 	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
 			|| state->inside_quotes))
 	{
-		result = handle_quotes_and_redirects(state, str);
-		if (result == -1)
-			return (-1);
-		if (result == 1)
-			continue ;
-
-		result = handle_expansion(state, str, data);
-		if (result == -1)
-			return (-1);
+		result = handle_quotes_and_redirects(state, str, data);
+		if (result == MALLOC_ERROR)
+			return (MALLOC_ERROR);
 		if (result == 1)
 			continue ;
 		if (result == 2)
+			return (ERROR);
+		result = handle_expansion(state, str, data);
+		if (result == MALLOC_ERROR)
+			return (MALLOC_ERROR);
+		if (result == 1)
+			continue ;
+		if (/*result == 2 || */result == 3)
 		{
-			if (create_nothing_token(str, state) == -1)
-				return (-1);
+			if (create_nothing_token(str, state) == MALLOC_ERROR)
+				return (MALLOC_ERROR);
 			continue ;
 		}
-
+		if (result == 2)
+			break ;
 		if (state->k >= state->buffer_size - 1)
-			if (expand_buffer(state) == -1)
-				return (-1);
+			if (expand_buffer(state) == MALLOC_ERROR)
+				return (MALLOC_ERROR);
 
 		state->buffer[state->k++] = str[state->j++];
 	}
