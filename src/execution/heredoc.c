@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 18:55:56 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 21:43:08 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,15 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			break ;
 		i++;
 	}
-	// set_signals_heredoc();
+	//set_signals_heredoc();
 	while (1)
 	{
 		// if (g_signal_flag == SIGINT)
-		//{
-		//	data->exit_status = 130;
-		//	g_signal_flag = 0;
-		//	break ;
-		//}
+		// {
+		// 	data->exit_status = 130;
+		// 	g_signal_flag = 0;
+		// 	break ;
+		// }
 		line = readline("> ");
 		if (!line)
 		{
@@ -105,7 +105,7 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 	tmp_fd = open(tmp_filename, O_RDONLY);
 	unlink(tmp_filename);
 	free(tmp_filename);
-	return (tmp_fd);
+	return (tmp_fd); // FIXME exit code should be 130 if SIGINT
 }
 
 void	execute_heredoc(t_cmd *cmd, t_data *data)

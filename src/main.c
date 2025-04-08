@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 17:30:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 20:42:23 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include <termios.h>
 
 volatile sig_atomic_t	g_signal_flag = 0;
 
@@ -51,11 +52,12 @@ int	main(int argc, char **argv, char **env)
 		data.cmd = parse_tokens(data.tokens, &data);
 		if (!data.cmd)
 		{
-			free_tokens(data.tokens); //>| minishell: syntax error near unexpected token `|' , syntax error: unclosed quotes
+			free_tokens(data.tokens);
+			//>| minishell: syntax error near unexpected token `|' , syntax error: unclosed quotes
 			free(data.input);
 			if (data.exit_status == 2 || data.exit_status == 1)
 				continue ;
-			return (EXIT_FAILURE); //change only for -1 (malloc)
+			return (EXIT_FAILURE); // change only for -1 (malloc)
 		}
 		execute(data.tokens, data.cmd, &data);
 		if (data.exit_status == 130)
