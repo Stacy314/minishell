@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 21:29:52 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:51:37 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	check_args(int argc, char **argv)
 	return (SUCCESS);
 }
 
-static int	read_line_and_check(t_data *data)
+int	read_line_and_check(t_data *data)
 {
 	data->input = readline("minishell$ ");
 	if (!data->input)
@@ -54,7 +54,7 @@ static int	read_line_and_check(t_data *data)
 	return (INPUT_SUCCESS);
 }
 
-static int	tokenize_and_parse(t_data *data)
+int	tokenize_and_parse(t_data *data)
 {
 	data->tokens = split_to_tokens(data->input, data);
 	if (!data->tokens)

@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 17:11:59 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/08 13:54:09 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,7 @@ int	create_word_token(t_tokenizer_state *state)
 		while (j < state->i)
 		{
 			if (state->tokens[j])
-			{
-				free(state->tokens[j]->value);
-				free(state->tokens[j]);
-			}
+				(free(state->tokens[j]->value), free(state->tokens[j]));
 			j++;
 		}
 		free(state->tokens);

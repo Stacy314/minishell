@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 17:16:13 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:18:28 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,34 +39,19 @@ int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
 	return (0);
 }
 
-static int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
+static int	fill_delimiter_buffer(t_tokenizer_state *state, const char *str,
+		bool *touch_quotes)
 {
-	bool	touch_quotes;
-	int		start;
 	int		k;
 	char	quote;
 
-	touch_quotes = false;
-	start = state->j;
 	k = 0;
-	skip_spaces(str, state);
-	if (str[state->j] == '\0')
-	{
-		write_error("minishell: syntax error near unexpected token `newline'\n");
-		return (-1);
-	}
-	if (str[state->j] == '|' || is_redirect(str[state->j]))
-	{
-		write_error("minishell: syntax error near unexpected token `%c'\n",
-			str[state->j]);
-		return (-1);
-	}
 	while (str[state->j] && !ft_isspace(str[state->j]) && str[state->j] != '<'
 		&& str[state->j] != '>' && str[state->j] != '|')
 	{
 		if (str[state->j] == '\'' || str[state->j] == '\"')
 		{
-			touch_quotes = true;
+			*touch_quotes = true;
 			quote = str[state->j++];
 			while (str[state->j] && str[state->j] != quote)
 				state->buffer[k++] = str[state->j++];
@@ -77,6 +62,29 @@ static int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
 			state->buffer[k++] = str[state->j++];
 	}
 	state->buffer[k] = '\0';
+	return (0);
+}
+
+static int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
+{
+	bool	touch_quotes;
+	int		start;
+
+	touch_quotes = false;
+	start = state->j;
+	skip_spaces(str, state);
+	if (str[state->j] == '\0')
+	{
+		return (write_error("minishell: syntax error near unexpected token ",
+				"`newline'\n"), -1);
+	}
+	if (str[state->j] == '|' || is_redirect(str[state->j]))
+	{
+		write_error("minishell: syntax error near unexpected token `%c'\n",
+			str[state->j]);
+		return (-1);
+	}
+	fill_delimiter_buffer(state, str, &touch_quotes);
 	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++,
 			touch_quotes);
 	if (!state->tokens[state->i])
@@ -109,7 +117,7 @@ int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str)
 		return (update_quote_state(state, str[state->j]));
 	if (!state->inside_quotes && is_redirect(str[state->j]))
 	{
-		if (state->k > 0 && flush_word_before_redirect(state) == -1)
+		if (state->k > 0 && flush_word_before(state) == -1)
 			return (-1);
 		if (handle_redirection_tok(state, str) == -1)
 			return (-1);

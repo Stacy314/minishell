@@ -6,7 +6,7 @@
 /*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 17:10:33 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:18:17 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,6 @@ int	expand_buffer(t_tokenizer_state *state)
 	return (0);
 }
 
-int	create_nothing_token(const char *str, t_tokenizer_state *state)
-{
-	state->buffer[state->k] = '\0';
-	state->tokens[state->i] = create_token(state->buffer, NOTHING,
-			state->index++, false);
-	if (!state->tokens[state->i])
-	{
-		perror("failed create token");
-		return (-1);
-	}
-	state->i++;
-	state->k = 0;
-	skip_spaces(str, state);
-	return (0);
-}
-
 int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	int	result;
@@ -49,22 +33,11 @@ int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
 	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
 			|| state->inside_quotes))
 	{
-		result = handle_quotes_and_redirects(state, str);
+		result = checking_token_word(state, data, str);
 		if (result == -1)
 			return (-1);
 		if (result == 1)
 			continue ;
-		result = handle_expansion(state, str, data);
-		if (result == -1)
-			return (-1);
-		if (result == 1)
-			continue ;
-		if (result == 2)
-		{
-			if (create_nothing_token(str, state) == -1)
-				return (-1);
-			continue ;
-		}
 		if (state->k >= state->buffer_size - 1)
 			if (expand_buffer(state) == -1)
 				return (-1);
@@ -92,7 +65,7 @@ int	update_quote_state(t_tokenizer_state *state, char c)
 	return (1);
 }
 
-int	flush_word_before_redirect(t_tokenizer_state *state)
+int	flush_word_before(t_tokenizer_state *state)
 {
 	state->buffer[state->k] = '\0';
 	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++,
