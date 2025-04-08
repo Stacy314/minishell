@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 22:31:21 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:09:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,6 @@ int	handle_quotes_and_redirects(t_tokenizer_state *state, const char *str,
 		redir_result = handle_redirection_tok(state, str, data);
 		if (redir_result == MALLOC_ERROR)
 			return (MALLOC_ERROR);
-		if (redir_result == ERROR)
-			return (2);
 		return (SUCCESS);
 	}
 	return (0);

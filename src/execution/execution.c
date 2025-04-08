@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:39:25 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:01:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,14 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 	int	i;
 
 	i = 0;
-	//if (!cmd->args[i] && !cmd->args[i + 1])
-	//{
-	//	write_error("'%s': command not found\n", cmd->args[i]);
-	//	data->exit_status = 127;
-	//	return ;
-	//}
+	if (cmd->args[i][0] == '\0' && !cmd->args[i][1] && tokens[i]->type != NOTHING)
+	{
+		write_error("'%s': command not found\n", cmd->args[i]);
+		data->exit_status = 127;
+		return ;
+	}
 	while (cmd->args[i] && tokens[i] && tokens[i]->type == NOTHING)
 		i++;
-
 	if (tokens[i])
 	{
 		if (ft_strncmp(cmd->args[i], "echo", 5) == 0)
