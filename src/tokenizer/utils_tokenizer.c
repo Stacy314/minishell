@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 16:13:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:19:02 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ int	create_nothing_token(const char *str, t_tokenizer_state *state)
 	skip_spaces(str, state);
 	return (0);
 }
- int	handle_token_word(t_tokenizer_state *state, const char *str,
-		t_data *data)
+int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	int	result;
 
 	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
-			|| state->inside_quotes))
+			|| state->inside_quotes) /*&& str[state->j] != '|'
+		&& !is_redirect(str[state->j])*/)
 	{
 		result = handle_quotes_and_redirects(state, str, data);
 		if (result == MALLOC_ERROR)
@@ -45,9 +45,9 @@ int	create_nothing_token(const char *str, t_tokenizer_state *state)
 		result = handle_expansion(state, str, data);
 		if (result == MALLOC_ERROR)
 			return (MALLOC_ERROR);
-		if (result == 1)
+		if (result == 1 || result == 2)
 			continue ;
-		if (/*result == 2 || */result == 3)
+		if (result == 3)
 		{
 			if (create_nothing_token(str, state) == MALLOC_ERROR)
 				return (MALLOC_ERROR);
@@ -58,7 +58,6 @@ int	create_nothing_token(const char *str, t_tokenizer_state *state)
 		if (state->k >= state->buffer_size - 1)
 			if (expand_buffer(state) == MALLOC_ERROR)
 				return (MALLOC_ERROR);
-
 		state->buffer[state->k++] = str[state->j++];
 	}
 	return (create_word_token(state));
@@ -86,7 +85,8 @@ int	update_quote_state(t_tokenizer_state *state, char c)
 int	flush_word_before_redirect(t_tokenizer_state *state)
 {
 	state->buffer[state->k] = '\0';
-	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++, false);
+	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++,
+			false);
 	if (!state->tokens[state->i])
 	{
 		perror("failed create token");

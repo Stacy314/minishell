@@ -6,11 +6,12 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 18:55:56 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 21:42:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
 static int	create_unique_tmpfile(char *out_filename, size_t size)
 {
 	const char	*prefix = ".heredoc_";

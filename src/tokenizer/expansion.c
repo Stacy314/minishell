@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 18:09:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:46:43 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,18 +90,18 @@ int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 				state->buffer[state->k++] = str[i++];
 			return (free(expanded), 1);
 		}
-		//if (!expanded/* || !*expanded*/)
-		//{
-		//	free(expanded);
-		//	if (state->quote_type == '\"')
-		//		return (free(expanded), 2);
-		//	return (free(expanded), 3);
-		//}
-		if (!expanded || !*expanded)
+		if (!expanded /*|| !*expanded*/)
 		{
 			free(expanded);
-			return (1);
+			if (state->quote_type == '\"')
+				return (free(expanded), 2);
+			return (free(expanded), 3);
 		}
+		//if (!expanded || !*expanded)
+		//{
+		//	free(expanded);
+		//	return (1);
+		//}
 		len = ft_strlen(expanded);
 		while (state->k + len >= (size_t)state->buffer_size)
 		{

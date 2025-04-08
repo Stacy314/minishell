@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 17:30:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:55:08 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ int	main(int argc, char **argv, char **env)
 		{
 			free_tokens(data.tokens); //>| minishell: syntax error near unexpected token `|' , syntax error: unclosed quotes
 			free(data.input);
-			if (data.exit_status == 2 || data.exit_status == 1)
-				continue ;
-			return (EXIT_FAILURE); //change only for -1 (malloc)
+			//if (data.exit_status == 2 || data.exit_status == 1)
+			continue ;
+			//return (printf("im here\n"), EXIT_FAILURE); //change only for -1 (malloc)
 		}
 		execute(data.tokens, data.cmd, &data);
 		if (data.exit_status == 130)

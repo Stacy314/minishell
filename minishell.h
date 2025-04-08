@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 18:43:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:02:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef enum e_token_type
 	REDIRECT_OUT,
 	APPEND,
 	HEREDOC,
-	NOTHING,
+	NOTHING
 }								t_token_type;
 
 typedef struct s_token
@@ -247,7 +247,7 @@ int								handle_heredoc(t_cmd *cmd,
 									t_data *data);
 void							apply_redirections(t_cmd *cmd, t_data *data);
 
-int								handle_heredoc_pipe(t_cmd *cmd);
+int								handle_heredoc_pipe(t_cmd *cmd, t_data *data);
 bool							handle_all_heredocs(t_cmd *cmd, t_data *data);
 // expantion
 char							*expand_variable(const char *str, int *j,

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 17:33:38 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 21:57:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	builtin_echo(t_cmd *cmd, t_data *data, int token_index)
 	while (cmd->args[token_index] != NULL)
 	{
 		ft_putstr_fd(cmd->args[token_index], STDOUT_FILENO);
-		if (cmd->args[token_index + 1] != NULL)
+		if (cmd->args[token_index + 1] != NULL )
 			ft_putstr_fd(" ", STDOUT_FILENO);
 		token_index++;
 	}

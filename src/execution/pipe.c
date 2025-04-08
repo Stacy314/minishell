@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 22:15:00 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 21:43:42 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 	return (pid);
 }
 
-int	handle_heredoc_pipe(t_cmd *cmd)
+int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
@@ -179,6 +179,7 @@ int	handle_heredoc_pipe(t_cmd *cmd)
 			free(line);
 		}
 		close(pipe_fd[1]);
+		free_all(data, data->tokens, cmd);
 		exit(0);
 	}
 	close(pipe_fd[1]);
@@ -210,7 +211,7 @@ bool	handle_all_heredocs(t_cmd *cmd, t_data *data)
 	{
 		if (tmp->heredoc_delimiter)
 		{
-			fd = handle_heredoc_pipe(tmp);
+			fd = handle_heredoc_pipe(tmp, data);
 			if (fd == -2)
 			{
 				data->exit_status = 130;

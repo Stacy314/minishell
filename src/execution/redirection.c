@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:46:12 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 21:52:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,25 @@ static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '>' && input[i + 1] == '>')
+		if (input[i] == '>' && input[i + 1] == '>' && cmd->append_redirects)
 		{
 			handle_append_redirect(data, cmd);
 			i += 2;
 			break ;
 		}
-		else if (input[i] == '<' && input[i + 1] == '<')
+		else if (input[i] == '<' && input[i + 1] == '<' && cmd->heredoc_delimiter)
 		{
 			execute_heredoc(cmd, data);
 			i += 2;
 			break ;
 		}
-		else if (input[i] == '<')
+		else if (input[i] == '<' && cmd->input_redirects)
 		{
 			handle_input_redirect(data, cmd);
 			i++;
 			break ;
 		}
-		else if (input[i] == '>')
+		else if (input[i] == '>' && cmd->output_redirects)
 		{
 			handle_output_redirect(data, cmd);
 			i++;

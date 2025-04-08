@@ -6,12 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 18:15:00 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 20:42:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-#include <unistd.h>
 
 int	check_permissions(char *cmd)
 {
@@ -35,11 +34,12 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-static int	fork_and_exec(const char *executable, char **args, t_data *data)
+static int	fork_and_exec(char *executable, char **args, t_data *data,
+		char **paths)
 {
-	pid_t pid;
-	int status;
-	int sig;
+	pid_t	pid;
+	int		status;
+	int		sig;
 
 	parent_ignore_signals();
 	if (data->is_child == false)
@@ -49,7 +49,9 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 			return (perror("fork"), data->exit_status = 1);
 		if (pid == 0)
 			(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL),
-				execve(executable, args, data->env), close(STDIN_FILENO), close(STDOUT_FILENO), exit(0));
+				execve(executable, args, data->env), close(STDIN_FILENO),
+				close(STDOUT_FILENO), free_array(paths), free(executable),
+				free_all(data, data->tokens, data->cmd), exit(0));
 		waitpid(pid, &status, 0);
 		parent_restore_signals();
 		if (WIFSIGNALED(status))
@@ -75,8 +77,10 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 	}
 	else
 	{
-		data->is_child = false; 
-		(execve(executable, args, data->env), close(STDIN_FILENO), close(STDOUT_FILENO));
+		data->is_child = false;
+		(execve(executable, args, data->env), close(STDIN_FILENO),
+			close(STDOUT_FILENO), free_array(paths), free(executable),
+			free_all(data, data->tokens, data->cmd), exit(0));
 	}
 	return (data->exit_status);
 }
@@ -84,7 +88,7 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 static int	execute_direct_path(char *cmd, t_data *data, char **args)
 {
 	int	error_code;
-	
+
 	if (cmd[0] == '.' && cmd[1] == '\0')
 	{
 		write_error("minishell: %s: filename argument required\n", cmd);
@@ -95,7 +99,7 @@ static int	execute_direct_path(char *cmd, t_data *data, char **args)
 		error_code = check_permissions(cmd);
 		if (error_code)
 			return (data->exit_status = error_code);
-		return (fork_and_exec(cmd, args, data));
+		return (fork_and_exec(cmd, args, data, NULL));
 	}
 	return (-1);
 }
@@ -105,16 +109,15 @@ static int	execute_via_path(char *cmd, t_data *data, char **args)
 	char	*path;
 	char	**paths;
 	char	*executable;
-	int		i;
-	
+
 	path = get_path_from_env(data->env);
 	if (!path)
-		return (write_error("%s: command not found\n", cmd), data->exit_status = 127);
+		return (write_error("%s: command not found\n", cmd),
+			data->exit_status = 127);
 	paths = split_path(path);
 	if (!paths)
 	{
-		return (free_all(data,
-			data->tokens, data->cmd),data->exit_status = 1);
+		return (data->exit_status = 1);
 	}
 	executable = find_executable(cmd, paths);
 	if (!executable)
@@ -122,17 +125,14 @@ static int	execute_via_path(char *cmd, t_data *data, char **args)
 		write_error("%s: command not found\n", cmd);
 		return (free_array(paths), data->exit_status = 127);
 	}
-	(fork_and_exec(executable, args, data), free(executable));
-	i = 0;
-	while (paths[i])
-		free(paths[i++]);
-	return (free(paths), data->exit_status);
+	fork_and_exec(executable, args, data, paths);
+	return (free_array(paths), free(executable), data->exit_status);
 }
 
 int	execute_command(char *cmd, t_data *data, char **args)
 {
 	int	result;
-	
+
 	if (!cmd || !args)
 		return (data->exit_status = 1);
 	result = execute_direct_path(cmd, data, args);

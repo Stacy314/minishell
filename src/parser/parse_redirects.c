@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/08 18:01:11 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:44:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	initialize_redirect_array(char ***redirects, const char *value,
 		free(*redirects);
 		free(*flags);
 		//*redirects = NULL;
-        //*flags = NULL;
+		//*flags = NULL;
 		perror("ft_strdup");
 		return (ERROR);
 	}
@@ -105,16 +105,15 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 		int *i)
 {
 	char	*unexpected_token;
+
 	if (!tokens[*i + 1])
 	{
-		
+		write_error("minishell: syntax error near unexpected token `newline'\n");
+		data->exit_status = 2;
 		return (0);
 	}
 	if (tokens[*i + 1]->type == NOTHING)
-	{
-		data->exit_status = 1;
-		return (0); 
-	}
+		return (0);
 	if (tokens[*i + 1]->type != WORD)
 	{
 		unexpected_token = tokens[*i + 1]->value;
@@ -123,17 +122,6 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 		data->exit_status = 2;
 		return (0);
 	}
-	//if (!tokens[*i + 1] || tokens[*i + 1]->type != WORD)
-	//{
-	//	if (tokens[*i + 1])
-	//		unexpected_token = tokens[*i + 1]->value;
-	//	else
-	//		unexpected_token = "newline";
-	//	write_error("minishell: syntax error near unexpected token `%s'\n",
-	//		unexpected_token);
-	//	data->exit_status = 2;
-	//	return (0);
-	//}
 	if (data->heredoc_count > HEREDOC_MAX)
 	{
 		printf("heredoc count: %d\n", data->heredoc_count);

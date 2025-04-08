@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 19:50:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 22:04:59 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // need to fix:
 
-//name var in ambiguous redirect
+// name var in ambiguous redirect
 
 // $non - ignor
 // '$non' - $non word
@@ -176,6 +176,11 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 {
 	while (tokens[*i] && tokens[*i]->type != PIPE)
 	{
+		if (tokens[*i]->type == NOTHING)
+		{
+			(*i)++;
+			continue ;
+		}
 		if (tokens[*i]->type == REDIRECT_IN || tokens[*i]->type == REDIRECT_OUT
 			|| tokens[*i]->type == APPEND || tokens[*i]->type == HEREDOC)
 		{
@@ -192,34 +197,6 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 	}
 	return (1);
 }
-
-//static int	check_empty_command(t_cmd *cmd, t_data *data)
-//{
-//	int		has_args;
-//	int		has_any_redirect;
-//	//char	*arg;
-
-//	(void)data;
-//	has_args = 0;
-//	if (cmd->args && cmd->args[0] && cmd->args[0][0] != '\0')
-//		has_args = 1;
-//	has_any_redirect = 0;
-//	if ((cmd->input_redirects && cmd->input_redirects[0])
-//		|| (cmd->output_redirects && cmd->output_redirects[0])
-//		|| (cmd->append_redirects && cmd->append_redirects[0])
-//		|| (cmd->heredoc_delimiter && cmd->heredoc_delimiter[0]))
-//		has_any_redirect = 1;
-//	//if (!has_args && !has_any_redirect)
-//	//{
-//	//	arg = "";
-//	//	if (cmd->args && cmd->args[0])
-//	//		arg = cmd->args[0];
-//	//	// write_error("'%s': command not found\n", arg);
-//	//	// data->exit_status = 127;
-//	//	// return (1);
-//	//}
-//	return (1);
-//}
 
 int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 {
@@ -239,8 +216,6 @@ int	build_command_list(t_cmd **head, t_token **tokens, t_data *data, int *i)
 			prev->next = current;
 		if (!fill_cmd(current, tokens, data, i))
 			return (0);
-		//if (!check_empty_command(current, data))
-		//	return (0);
 		prev = current;
 		if (tokens[*i] && tokens[*i]->type == PIPE)
 			(*i)++;
