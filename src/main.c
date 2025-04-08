@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 17:10:00 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:30:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **env)
 		data.cmd = parse_tokens(data.tokens, &data);
 		if (!data.cmd)
 		{
-			// free_tokens(data.tokens); >|
+			free_tokens(data.tokens); //>| minishell: syntax error near unexpected token `|' , syntax error: unclosed quotes
 			free(data.input);
 			if (data.exit_status == 2 || data.exit_status == 1)
 				continue ;

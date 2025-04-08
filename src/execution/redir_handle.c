@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 22:18:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:07:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ int	check_error(const char *filename)
 	if (access(filename, R_OK) == -1)
 	{
 		write_error("minishell: %s: Permission denied\n", filename);
+		return (1);
+	}
+	if (S_ISDIR(st.st_mode))
+	{
+		write_error("minishell: %s: Is a directory\n", filename);
 		return (1);
 	}
 	return (0);

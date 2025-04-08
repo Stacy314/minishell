@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/08 16:04:57 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:01:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,10 @@ int	initialize_redirect_array(char ***redirects, const char *value,
 		return (ERROR);
 	}
 	*flags = ft_calloc(2, sizeof(bool));
-	if (!*redirects)
+	if (!*flags)
 	{
+		free(*redirects);
+		//*redirects = NULL;
 		perror("ft_calloc");
 		return (ERROR);
 	}
@@ -44,10 +46,14 @@ int	initialize_redirect_array(char ***redirects, const char *value,
 	if (!(*redirects)[0])
 	{
 		free(*redirects);
+		free(*flags);
+		//*redirects = NULL;
+        //*flags = NULL;
 		perror("ft_strdup");
 		return (ERROR);
 	}
 	(*flags)[0] = flag;
+	//(*redirects)[1] = NULL;
 	return (SUCCESS);
 }
 
@@ -99,13 +105,6 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 		int *i)
 {
 	char	*unexpected_token;
-
-	// if (tokens[*i + 1] && tokens[*i + 1]->type == NOTHING)
-	//{
-	//	data->exit_status = 1;
-	//	write_error("minishell: ambiguous redirect\n"); // need add name on var
-	//	return (0);
-	//}
 	if (!tokens[*i + 1])
 	{
 		
@@ -124,8 +123,6 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 		data->exit_status = 2;
 		return (0);
 	}
-
-	
 	//if (!tokens[*i + 1] || tokens[*i + 1]->type != WORD)
 	//{
 	//	if (tokens[*i + 1])

@@ -6,81 +6,40 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 16:46:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:55:56 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-static int	make_rand_numb(void)
-{
-	char	cwd[256];
-	int		hash;
-	int		i;
-	int		range;
-
-	hash = 0;
-	i = 0;
-	range = HEREDOC_RAND_MAX - HEREDOC_RAND_MIN + 1;
-	if (range <= 0)
-		return (HEREDOC_RAND_MIN);
-	if (!getcwd(cwd, sizeof(cwd)))
-		return (HEREDOC_RAND_MIN);
-	while (cwd[i])
-		hash += cwd[i++] * 31;
-	return ((hash % range) + HEREDOC_RAND_MIN);
-}
-
-static int	write_name(size_t size, int rand, char *out_filename)
-{
-	char		*num;
-	const char	*dir = "/tmp/.minishell/";
-	const char	*prefix = ".heredoc_";
-	const char	*suffix = ".tmp";
-
-	num = ft_itoa(rand);
-	if (!num)
-		return (-1);
-	if (ft_strlen(dir) + ft_strlen(prefix) + ft_strlen(num)
-		+ ft_strlen(suffix) >= size)
-	{
-		free(num);
-		return (-1);
-	}
-	mkdir("/tmp/.minishell", 0700);
-	ft_strlcpy(out_filename, dir, size);
-	ft_strlcat(out_filename, prefix, size);
-	ft_strlcat(out_filename, num, size);
-	ft_strlcat(out_filename, suffix, size);
-	free(num);
-	return (1);
-}
-
 static int	create_unique_tmpfile(char *out_filename, size_t size)
 {
-	int	tries;
-	int	fd;
-	int	rand;
+	const char	*prefix = ".heredoc_";
+	const char	*suffix = ".tmp";
+	static int	counter = 0;
+	int			fd;
+	char		*num;
 
-	tries = 0;
-	fd = -1;
-	while (tries < 100)
+	while (counter < 100000)
 	{
-		rand = make_rand_numb();
-		if (write_name(size, rand, out_filename) == -1)
+		num = ft_itoa(counter);
+		if (!num)
 			return (-1);
+		if (ft_strlen(prefix) + ft_strlen(num) + ft_strlen(suffix) >= size)
+		{
+			free(num);
+			return (-1);
+		}
+		ft_strlcpy(out_filename, prefix, size);
+		ft_strlcat(out_filename, num, size);
+		ft_strlcat(out_filename, suffix, size);
+		free(num);
 		fd = open(out_filename, O_RDWR | O_CREAT | O_EXCL, 0600);
 		if (fd >= 0)
 			return (fd);
-		else
-		{
-			perror("open");
-			return (-1);
-		}
-		tries++;
+		counter++;
 	}
 	write_error("Failed to create unique heredoc tmp file\n");
-	return (fd);
+	return (-1);
 }
 
 int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
@@ -107,10 +66,10 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			break ;
 		i++;
 	}
-	//set_signals_heredoc();
+	// set_signals_heredoc();
 	while (1)
 	{
-		//if (g_signal_flag == SIGINT)
+		// if (g_signal_flag == SIGINT)
 		//{
 		//	data->exit_status = 130;
 		//	g_signal_flag = 0;

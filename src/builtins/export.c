@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 17:11:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:01:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static int	append_env_var(char *arg, t_data *data)
 	if (!new_env[env_size])
 		return (perror("strdup"), data->exit_status = 1, 1);
 	new_env[env_size + 1] = NULL;
+	free(data->env);
 	data->env = new_env;
 	data->exit_status = 0;
 	return (0);

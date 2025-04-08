@@ -6,11 +6,12 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 17:32:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:15:00 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <unistd.h>
 
 int	check_permissions(char *cmd)
 {
@@ -48,7 +49,7 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 			return (perror("fork"), data->exit_status = 1);
 		if (pid == 0)
 			(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL),
-				execve(executable, args, data->env), exit(0));
+				execve(executable, args, data->env), close(STDIN_FILENO), close(STDOUT_FILENO), exit(0));
 		waitpid(pid, &status, 0);
 		parent_restore_signals();
 		if (WIFSIGNALED(status))
@@ -75,7 +76,7 @@ static int	fork_and_exec(const char *executable, char **args, t_data *data)
 	else
 	{
 		data->is_child = false; 
-		execve(executable, args, data->env);
+		(execve(executable, args, data->env), close(STDIN_FILENO), close(STDOUT_FILENO));
 	}
 	return (data->exit_status);
 }

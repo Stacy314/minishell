@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 16:44:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:43:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-//# include <errno.h>
+# include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <readline/history.h>
