@@ -6,13 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:40:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 17:58:53 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-
 
 static void	perform_cd(const char *dest_path, t_data *data)
 {
@@ -75,21 +73,28 @@ static char	*get_home(t_data *data)
 static char	*get_cd_destination(t_cmd *cmd, t_data *data)
 {
 	char	*home;
+	char 	*home_new;
 
 	if (!cmd->args[1])
 	{
-		home = get_home(data);
+		home_new = get_home(data);
+		home = ft_strdup(home_new);
 		return (home);
 	}
 	if (ft_strncmp(cmd->args[1], "-", ft_strlen(cmd->args[1])) == 0)
-		return (handle_minus(data));
+	{
+		home_new = handle_minus(data);
+		home = ft_strdup(home_new);
+		return (home);
+	}
 	if (ft_strncmp(cmd->args[1], "~", 1) == 0)
 	{
 		home = get_home(data);
 		home = ft_strjoin(home, cmd->args[1] + 1);
 		return (home);
 	}
-	return (cmd->args[1]);
+	home = ft_strdup(cmd->args[1]);
+	return (home);
 }
 
 int	builtin_cd(t_cmd *cmd, t_data *data, int token_index)
@@ -106,11 +111,15 @@ int	builtin_cd(t_cmd *cmd, t_data *data, int token_index)
 		data->exit_status = 1;
 		return (1);
 	}
+	if(cmd->args[token_index] && !cmd->args[token_index + 1])
+	{
+		
+	}
 	dest_path = get_cd_destination(cmd, data);
 	if (!dest_path)
 		return (data->exit_status);
 	if (check_cd_path(dest_path, data) != 0)
-		return (data->exit_status);
+		return (free(dest_path), data->exit_status);
 	perform_cd(dest_path, data);
-	return (data->exit_status);
+	return (free(dest_path), data->exit_status);
 }

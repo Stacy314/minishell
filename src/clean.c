@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 18:00:28 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 18:42:52 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ void	free_array(char **arr)
 	}
 	free(arr);
 }
+void	free_bool_array(bool *arr)
+{
+	if (arr)
+		free(arr);
+}
 
 void	free_cmd(t_cmd *cmd)
 {
@@ -43,6 +48,7 @@ void	free_cmd(t_cmd *cmd)
 		free_array(cmd->heredoc_delimiter);
 		free(cmd->pipe_pids);
 		free(cmd->heredoc_touch_quotes);
+		//free_bool_array(cmd->heredoc_touch_quotes);
 		free(cmd);
 		cmd = tmp;
 	}

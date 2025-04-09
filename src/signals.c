@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:38:54 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:42:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,20 +60,33 @@
 // print minishell twice
 
 //bash: warning: here-document at line 7 delimited by end-of-file (heredoc ctrl+D)
-
+///////
 void	parent_ignore_signals(void)
 {
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
 
+//////
+
 void	parent_restore_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
+	//signal(SIGQUIT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 }
 
 ////////////////////////////
+void handle_sigquit_child(int sig)
+{
+	//rl_on_new_line();
+	(void)sig;
+	//g_signal_flag = sig;
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	//write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	
+}
 void	handle_sigint_child(int sig)
 {
 	rl_on_new_line();
@@ -83,19 +96,21 @@ void	handle_sigint_child(int sig)
 
 void	set_signals_child(void)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, handle_sigint_child);
+	signal(SIGQUIT, handle_sigquit_child);
 }
 
 ////////////////////////////
 static void	handle_sigint_heredoc(int sig)
 {
+	(void)sig;
+	g_signal_flag = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
 	// ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
-	rl_redisplay();
-	g_signal_flag = sig;
+	//rl_redisplay();
+	//exit(130);
 }
 
 void	set_signals_heredoc(void)
@@ -108,12 +123,12 @@ void	set_signals_heredoc(void)
 
 void	handle_sigint(int sig)
 {
+	g_signal_flag = sig;
 	write(STDOUT_FILENO, "\n", 1); //ioctl
 	// ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_signal_flag = sig;
 }
 
 void	set_signals_main()

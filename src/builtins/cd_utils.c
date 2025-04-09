@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/02 21:57:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 17:48:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ char	**set_env_value(char **envp, const char *key, const char *value)
 	}
 	if (i >= 0)
 	{
-		free(envp[i]);
+		if (envp[i])
+			free(envp[i]);
 		envp[i] = new_entry;
 		return (envp);
 	}

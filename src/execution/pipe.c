@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 21:43:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 17:16:19 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"), -1);
+	parent_ignore_signals();
 	if (pid == 0)
 	{
+		set_signals_child();
 		data->is_child = true;
 		if (dup2(cmd->pipe_fd[1], STDOUT_FILENO) == -1)
 		{
@@ -66,6 +68,7 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 		perror("pipe");
 		return (-1);
 	}
+	parent_ignore_signals();
 	pid = fork();
 	if (pid < 0)
 	{
@@ -74,6 +77,7 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 	}
 	if (pid == 0)
 	{
+		// set_signals_child();
 		data->is_child = true;
 		if (dup2(current->pipe_fd[0], STDIN_FILENO) == -1)
 		{
@@ -111,8 +115,10 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 		perror("fork");
 		return (-1);
 	}
+	parent_ignore_signals();
 	if (pid == 0)
 	{
+		set_signals_child();
 		data->is_child = true;
 		if (current->pipe_fd[0] != -1)
 		{
@@ -142,13 +148,13 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 	int		status;
 	char	*line;
 	int		sig;
-	int		code;
-
+	
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");
 		return (-1);
 	}
+	parent_ignore_signals();
 	pid = fork();
 	if (pid < 0)
 	{
@@ -157,8 +163,7 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 	}
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN);
 		close(pipe_fd[0]);
 		while (1)
 		{
@@ -184,20 +189,20 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 	}
 	close(pipe_fd[1]);
 	waitpid(pid, &status, 0);
+	parent_restore_signals();
 	if (WIFSIGNALED(status))
 	{
 		sig = WTERMSIG(status);
 		if (sig == SIGINT)
 		{
-			close(pipe_fd[0]);
+			write(1, "\n", 1);
+			data->exit_status = 130;
 			return (-2);
 		}
 	}
 	else if (WIFEXITED(status))
-	{
-		code = WEXITSTATUS(status);
-		(void)code;
-	}
+		data->exit_status = WEXITSTATUS(status);
+	set_signals_main();
 	return (pipe_fd[0]);
 }
 
@@ -212,9 +217,12 @@ bool	handle_all_heredocs(t_cmd *cmd, t_data *data)
 		if (tmp->heredoc_delimiter)
 		{
 			fd = handle_heredoc_pipe(tmp, data);
+			// fd = handle_heredoc(tmp, *tmp->heredoc_delimiter, 128, data);
+				// TODO close it
 			if (fd == -2)
 			{
 				data->exit_status = 130;
+				set_signals_main();
 				return (false);
 			}
 			else if (fd < 0)

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 21:52:16 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:01:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
 			i += 2;
 			break ;
 		}
-		else if (input[i] == '<' && input[i + 1] == '<' && cmd->heredoc_delimiter)
+		else if (input[i] == '<' && input[i + 1] == '<'
+			&& cmd->heredoc_delimiter)
 		{
 			execute_heredoc(cmd, data);
 			i += 2;
@@ -60,37 +61,25 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 		return (perror("fork"), 0);
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_IGN);
 		redir_loop(cmd, data->input, data);
 		execute_for_one(tokens, cmd, data);
 		(close(STDIN_FILENO), close(STDOUT_FILENO));
 		(free_all(data, tokens, cmd), exit(data->exit_status));
-		exit(data->exit_status);
 	}
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
+	parent_restore_signals();
+	if (WIFSIGNALED(status))
 	{
-		parent_restore_signals();
-		if (WIFSIGNALED(status))
+		sig = WTERMSIG(status);
+		if (sig == SIGINT)
 		{
-			sig = WTERMSIG(status);
-			if (sig == SIGINT)
-			{
-				write(STDOUT_FILENO, "\n", 1);
-				data->exit_status = 130;
-			}
-			else if (sig == SIGQUIT)
-			{
-				write(STDERR_FILENO, "Quit (core dumped)\n", 19);
-				data->exit_status = 131;
-			}
-			else
-				data->exit_status = 128 + sig;
+			write(1, "\n", 1);
+			data->exit_status = 130;
 		}
-		else if (WIFEXITED(status))
-			data->exit_status = WEXITSTATUS(status);
 	}
+	else if (WIFEXITED(status))
+			data->exit_status = WEXITSTATUS(status);
+	set_signals_main();
 	return (1);
 }
 

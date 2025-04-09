@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 19:07:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 17:22:15 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	check_error(const char *filename)
 {
-	struct stat st;
-	
+	struct stat	st;
+
 	if (stat(filename, &st) == -1)
 	{
 		write_error("minishell: %s: No such file or directory\n", filename);
@@ -36,10 +36,11 @@ int	check_error(const char *filename)
 
 void	handle_input_redirect(t_data *data, t_cmd *cmd)
 {
-	int fd;
-	int i;
-	int ret;
+	int	fd;
+	int	i;
+	int	ret;
 
+	(void)data;
 	if (!cmd->input_redirects)
 		return ;
 	i = 0;
@@ -58,7 +59,15 @@ void	handle_input_redirect(t_data *data, t_cmd *cmd)
 				exit(1);
 			}
 		}
-		dup2(fd, STDIN_FILENO);
+		if (dup2(fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close(STDOUT_FILENO);
+			close(STDIN_FILENO);
+			close(fd);
+			free_all(data, data->tokens, data->cmd);
+			exit(1);
+		}
 		close(fd);
 		i++;
 	}
@@ -67,10 +76,11 @@ void	handle_input_redirect(t_data *data, t_cmd *cmd)
 
 void	handle_output_redirect(t_data *data, t_cmd *cmd)
 {
-	int fd;
-	int i;
-	int ret;
+	int	fd;
+	int	i;
+	int	ret;
 
+	(void)data;
 	if (!cmd->output_redirects)
 		return ;
 	i = 0;
@@ -82,14 +92,22 @@ void	handle_output_redirect(t_data *data, t_cmd *cmd)
 			ret = check_error(cmd->output_redirects[i]);
 			if (ret != 0)
 			{
-				close(fd);            
-				close(STDOUT_FILENO); 
-				close(STDIN_FILENO);  
+				close(fd);
+				close(STDOUT_FILENO);
+				close(STDIN_FILENO);
 				free_all(data, data->tokens, data->cmd);
 				exit(1);
 			}
 		}
-		dup2(fd, STDOUT_FILENO);
+		if (dup2(fd, STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(STDOUT_FILENO);
+			close(STDIN_FILENO);
+			close(fd);
+			free_all(data, data->tokens, data->cmd);
+			exit(1);
+		}
 		close(fd);
 		i++;
 	}
@@ -97,9 +115,9 @@ void	handle_output_redirect(t_data *data, t_cmd *cmd)
 
 void	handle_append_redirect(t_data *data, t_cmd *cmd)
 {
-	int fd;
-	int i;
-	int ret;
+	int	fd;
+	int	i;
+	int	ret;
 
 	(void)data;
 	if (!cmd->append_redirects)
@@ -126,7 +144,15 @@ void	handle_append_redirect(t_data *data, t_cmd *cmd)
 			free_all(data, data->tokens, data->cmd);
 			exit(1);
 		}
-		dup2(fd, STDOUT_FILENO);
+		if (dup2(fd, STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(STDOUT_FILENO);
+			close(STDIN_FILENO);
+			close(fd);
+			free_all(data, data->tokens, data->cmd);
+			exit(1);
+		}
 		close(fd);
 		i++;
 	}

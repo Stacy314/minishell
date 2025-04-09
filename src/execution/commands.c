@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 20:42:36 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:52:23 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,15 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
+void	handle_sigquit(int sig)
+{
+	//(void)sig;
+	g_signal_flag = sig;
+	write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	
+}
 static int	fork_and_exec(char *executable, char **args, t_data *data,
 		char **paths)
 {
@@ -41,47 +50,56 @@ static int	fork_and_exec(char *executable, char **args, t_data *data,
 	int		status;
 	int		sig;
 
-	parent_ignore_signals();
-	if (data->is_child == false)
-	{
+	//parent_ignore_signals();
+	set_signals_child();
+	//if (data->is_child == false)
+	//{
 		pid = fork();
 		if (pid == -1)
 			return (perror("fork"), data->exit_status = 1);
 		if (pid == 0)
-			(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_DFL),
+			(/*set_signals_child(),*/ signal(SIGINT, SIG_DFL), signal(SIGQUIT, handle_sigquit),
 				execve(executable, args, data->env), close(STDIN_FILENO),
 				close(STDOUT_FILENO), free_array(paths), free(executable),
 				free_all(data, data->tokens, data->cmd), exit(0));
 		waitpid(pid, &status, 0);
+		//printf("%d\n", status);
 		parent_restore_signals();
+		//signal(SIGINT, SIG_IGN);
+		//signal(SIGQUIT, SIG_IGN);
+		//printf("%d\n", status);
 		if (WIFSIGNALED(status))
 		{
+			//printf("%d\n", status);
+			
 			sig = WTERMSIG(status);
 			if (sig == SIGINT)
 			{
 				data->exit_status = 130;
 				write(STDOUT_FILENO, "\n", 1);
 			}
-			else if (sig == SIGQUIT)
+			if (sig == SIGQUIT)
 			{
 				data->exit_status = 131;
 				write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+				//return (data->exit_status);
 			}
-			else
-				data->exit_status = 128 + sig;
+			//else
+			//	data->exit_status = 128 + sig;
 		}
 		else if (WIFEXITED(status))
 			data->exit_status = WEXITSTATUS(status);
-		else
-			data->exit_status = 1;
-	}
-	else
-	{
-		data->is_child = false;
-		(execve(executable, args, data->env), close(STDIN_FILENO),
-			close(STDOUT_FILENO), free_array(paths), free(executable),
-			free_all(data, data->tokens, data->cmd), exit(0));
-	}
+		//else
+		//	data->exit_status = 1;
+	//}
+	//else
+	//{
+	//	data->is_child = false;
+	//	(execve(executable, args, data->env), close(STDIN_FILENO),
+	//		close(STDOUT_FILENO), free_array(paths), free(executable),
+	//		free_all(data, data->tokens, data->cmd), exit(0));
+	//}
+	set_signals_main();
 	return (data->exit_status);
 }
 

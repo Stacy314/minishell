@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 21:42:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 16:53:20 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,14 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 	write_error("Failed to create unique heredoc tmp file\n");
 	return (-1);
 }
-
 int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
-		t_data *data)
+					t_data *data) // TODO 128 change
 {
-	char	*line;
-	int		tmp_fd;
-	char	*expanded;
-	int		i;
-	char	*tmp_filename;
+	char *line;
+	int tmp_fd;
+	char *expanded;
+	int i;
+	char *tmp_filename;
 
 	if (!heredoc_delimiter)
 		return (ERROR);
@@ -67,15 +66,11 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			break ;
 		i++;
 	}
-	// set_signals_heredoc();
+
+	signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN);
+
 	while (1)
 	{
-		// if (g_signal_flag == SIGINT)
-		//{
-		//	data->exit_status = 130;
-		//	g_signal_flag = 0;
-		//	break ;
-		//}
 		line = readline("> ");
 		if (!line)
 		{
@@ -83,6 +78,7 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 				heredoc_delimiter);
 			break ;
 		}
+
 		if (ft_strcmp(line, heredoc_delimiter) == 0)
 		{
 			free(line);
@@ -100,6 +96,7 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			write(tmp_fd, "\n", 1);
 			free(expanded);
 		}
+
 		free(line);
 	}
 	close(tmp_fd);

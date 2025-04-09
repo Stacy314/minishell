@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/08 22:44:18 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 18:59:20 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,42 +25,86 @@ char	***get_redirect_target(t_cmd *cmd, t_token_type type)
 	return (NULL);
 }
 
+//int	initialize_redirect_array(char ***redirects, const char *value,
+//		bool **flags, bool flag)
+//{
+//	*redirects = ft_calloc(2, sizeof(char *));
+//	if (!*redirects)
+//	{
+//		perror("ft_calloc");
+//		return (ERROR);
+//	}
+//	*flags = ft_calloc(1, sizeof(bool));
+//	if (!*flags)
+//	{
+//		free(*redirects);
+//		*redirects = NULL;
+//		perror("ft_calloc");
+//		return (ERROR);
+//	}
+//	(*redirects)[0] = ft_strdup(value);
+//	if (!(*redirects)[0])
+//	{
+//		free(*redirects);
+//		free(*flags);
+//		*redirects = NULL;
+//		*flags = NULL;
+//		perror("ft_strdup");
+//		return (ERROR);
+//	}
+//	(*flags)[0] = flag;
+//	(*redirects)[1] = NULL;
+//	//(*flags)[0] = false;
+//	return (SUCCESS);
+//}
+
 int	initialize_redirect_array(char ***redirects, const char *value,
-		bool **flags, bool flag)
+	bool **flags, bool flag)
 {
-	*redirects = ft_calloc(2, sizeof(char *));
-	if (!*redirects)
-	{
-		perror("ft_calloc");
-		return (ERROR);
-	}
+*redirects = ft_calloc(2, sizeof(char *));
+if (!*redirects)
+{
+	perror("ft_calloc");
+	return (ERROR);
+}
+if (flags)
+{
 	*flags = ft_calloc(2, sizeof(bool));
 	if (!*flags)
 	{
 		free(*redirects);
-		//*redirects = NULL;
+		*redirects = NULL;
 		perror("ft_calloc");
 		return (ERROR);
 	}
-	(*redirects)[0] = ft_strdup(value);
-	if (!(*redirects)[0])
-	{
-		free(*redirects);
-		free(*flags);
-		//*redirects = NULL;
-		//*flags = NULL;
-		perror("ft_strdup");
-		return (ERROR);
-	}
-	(*flags)[0] = flag;
-	//(*redirects)[1] = NULL;
-	return (SUCCESS);
 }
+(*redirects)[0] = ft_strdup(value);
+if (!(*redirects)[0])
+{
+	free(*redirects);
+	if (flags && *flags)
+		free(*flags);
+	*redirects = NULL;
+	if (flags)
+		*flags = NULL;
+	perror("ft_strdup");
+	return (ERROR);
+}
+if (flags)
+{
+	(*flags)[0] = flag;
+	(*flags)[1] = false;
+}
+(*redirects)[1] = NULL;
+return (SUCCESS);
+}
+
 
 int	append_redirect_value(char ***redirects, const char *value, bool **flags,
 		bool flag)
 {
 	int		i;
+	int		j;
 	char	**new_array;
 	bool	*new_flags;
 
@@ -68,15 +112,25 @@ int	append_redirect_value(char ***redirects, const char *value, bool **flags,
 	while ((*redirects)[i])
 		i++;
 	new_array = ft_calloc(i + 2, sizeof(char *));
-	new_flags = ft_calloc(i + 2, sizeof(bool));
-	if (!new_array || !new_flags)
+	if (!new_array)
 		return (ERROR);
-	for (int j = 0; j < i; j++)
+	new_flags = ft_calloc(i + 2, sizeof(bool));
+	if (!new_flags)
+		return (free(new_array), ERROR);
+	j = 0;
+	while (j < i)
 	{
 		new_array[j] = (*redirects)[j];
 		new_flags[j] = (*flags)[j];
+		j++;
 	}
 	new_array[i] = ft_strdup(value);
+	if (new_array[i] == NULL)
+	{
+		free(new_array);
+		free(new_flags);
+		return (ERROR);
+	}
 	new_flags[i] = flag;
 	new_array[i + 1] = NULL;
 	free(*redirects);
@@ -85,20 +139,28 @@ int	append_redirect_value(char ***redirects, const char *value, bool **flags,
 	*flags = new_flags;
 	return (SUCCESS);
 }
+bool	**get_redirect_flag_target(t_cmd *cmd, t_token_type type)
+{
+	if (type == HEREDOC)
+		return (&cmd->heredoc_touch_quotes);
+	return (NULL);
+}
 
 int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)
 {
 	char	***redirects;
+	bool	**flags;
 
 	redirects = get_redirect_target(cmd, type);
+	flags = get_redirect_flag_target(cmd, type);
 	if (!redirects)
 		return (SUCCESS);
 	if (!*redirects)
 		return (initialize_redirect_array(redirects, token->value,
-				&cmd->heredoc_touch_quotes, token->touch_quotes));
+				flags, token->touch_quotes));
 	else
 		return (append_redirect_value(redirects, token->value,
-				&cmd->heredoc_touch_quotes, token->touch_quotes));
+				flags, token->touch_quotes));
 }
 
 int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
