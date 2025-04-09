@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 22:13:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 22:47:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*get_var_name(const char *arg)
 		i++;
 	name = ft_calloc(i + 1, 1);
 	if (!name)
-		return (NULL);
+		return (perror("perror"), NULL);
 	ft_strlcpy(name, arg, i + 1);
 	return (name);
 }

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:26:01 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:17:34 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*expand_heredoc(const char *line, t_data *data)
 		return (NULL);
 	result = ft_calloc(buffer_size, sizeof(char));
 	if (!result)
-		return (NULL);
+		return (perror("calloc"), NULL);
 	while (line[i])
 	{
 		if (line[i] == '$' && line[i + 1] && (ft_isalnum(line[i + 1]) || line[i
@@ -70,7 +70,7 @@ char	*expand_heredoc(const char *line, t_data *data)
 			{
 				tmp = ft_calloc(buffer_size * 2, sizeof(char));
 				if (!tmp)
-					return (free(result), free(var_value), NULL);
+					return (free(result), free(var_value), perror("calloc"), NULL);
 				ft_strlcpy(tmp, result, buffer_size * 2);
 				free(result);
 				result = tmp;
@@ -89,7 +89,7 @@ char	*expand_heredoc(const char *line, t_data *data)
 			{
 				tmp = ft_calloc(buffer_size * 2, sizeof(char));
 				if (!tmp)
-					return (free(result), NULL);
+					return (free(result), perror("calloc"), NULL);
 				ft_strlcpy(tmp, result, buffer_size * 2);
 				free(result);
 				result = tmp;

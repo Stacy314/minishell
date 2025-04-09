@@ -6,11 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 16:01:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 21:49:59 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+//cat Makefile > out | << lim | echo hello >> out
 
 static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
 {
@@ -87,15 +89,15 @@ void	apply_redirections(t_cmd *cmd, t_data *data)
 {
 	int i;
 
-	if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
-	{
-		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
-		{
-			perror("dup2 heredoc");
-			exit(1);
-		}
-		close(cmd->heredoc_fd);
-	}
+	//if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
+	//{
+	//	if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
+	//	{
+	//		perror("dup2 heredoc");
+	//		exit(1);
+	//	}
+	//	close(cmd->heredoc_fd);
+	//}
 	i = 0;
 	while (data->input[i])
 	{

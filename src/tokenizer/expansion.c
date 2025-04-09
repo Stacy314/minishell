@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 22:46:43 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:21:37 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ char	*expand_variable(const char *str, int *j, t_data *data)
 	{
 		tmp = ft_calloc(2, sizeof(char));
 		if (!tmp)
-			return (NULL);
+			return (perror("calloc1"), NULL);
 		tmp[0] = '$';
 		return (tmp);
 	}
 	var_name = ft_calloc((*j - start + 1), 1);
 	if (!var_name)
-		return (NULL);
+		return (perror("calloc2"), NULL);
 	while (start < *j)
 		var_name[k++] = str[start++];
 	var_name[k] = '\0';
@@ -66,7 +66,7 @@ int	expand_buffer(t_tokenizer_state *state)
 	state->buffer_size *= 2;
 	new_buffer = ft_calloc(state->buffer_size, sizeof(char));
 	if (!new_buffer)
-		return (-1);
+		return (perror("calloc"), -1);
 	ft_strlcpy(new_buffer, state->buffer, state->buffer_size);
 	free(state->buffer);
 	state->buffer = new_buffer;
@@ -90,18 +90,13 @@ int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 				state->buffer[state->k++] = str[i++];
 			return (free(expanded), 1);
 		}
-		if (!expanded /*|| !*expanded*/)
+		if (!expanded)
 		{
 			free(expanded);
 			if (state->quote_type == '\"')
 				return (free(expanded), 2);
 			return (free(expanded), 3);
 		}
-		//if (!expanded || !*expanded)
-		//{
-		//	free(expanded);
-		//	return (1);
-		//}
 		len = ft_strlen(expanded);
 		while (state->k + len >= (size_t)state->buffer_size)
 		{

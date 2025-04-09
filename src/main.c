@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 15:06:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 21:26:55 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ int	main(int argc, char **argv, char **env)
 			data.exit_status = 130;
 			g_signal_flag = 0;
 		}
-		//if (*data.input)
 		add_history(data.input);
 		data.tokens = split_to_tokens(data.input, &data);
 		if (!data.tokens)
@@ -51,15 +50,12 @@ int	main(int argc, char **argv, char **env)
 		data.cmd = parse_tokens(data.tokens, &data);
 		if (!data.cmd)
 		{
-			free_tokens(data.tokens); //>| minishell: syntax error near unexpected token `|' , syntax error: unclosed quotes
+			free_tokens(data.tokens);
 			free(data.input);
-			//if (data.exit_status == 2 || data.exit_status == 1)
 			continue ;
-			//return (printf("im here\n"), EXIT_FAILURE); //change only for -1 (malloc)
+			//return (printf("im here\n"), EXIT_FAILURE); //change only for -1 (malloc) //TODO
 		}
 		execute(data.tokens, data.cmd, &data);
-		if (data.exit_status == 130)
-			continue ;
 		free(data.input);
 		free_tokens(data.tokens);
 		free_cmd(data.cmd);

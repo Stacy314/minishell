@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 16:53:20 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:53:44 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 	return (-1);
 }
 int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
-					t_data *data) // TODO 128 change
+					t_data *data)
 {
 	char *line;
 	int tmp_fd;
@@ -53,9 +53,9 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 
 	if (!heredoc_delimiter)
 		return (ERROR);
-	tmp_filename = malloc(size);
+	tmp_filename = ft_calloc((size), 1);
 	if (!tmp_filename)
-		return (perror("malloc"), ERROR);
+		return (perror("calloc"), ERROR);
 	tmp_fd = create_unique_tmpfile(tmp_filename, size);
 	if (tmp_fd == -1)
 		return (free(tmp_filename), -1);
@@ -74,8 +74,9 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 		line = readline("> ");
 		if (!line)
 		{
-			write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
+			write_error("minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
 				heredoc_delimiter);
+			unlink(tmp_filename);
 			break ;
 		}
 

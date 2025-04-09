@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 17:37:33 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:40:47 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	heredoc_count(str, data);
 	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
 	if (!tokens)
-		return (perror("calloc"), NULL);
+		return (/*perror("calloc"),*/ NULL);
 	if (!init_state(&state, tokens))
 		return (free(tokens), NULL);
 	if (tokenize_loop(str, &state, data) == MALLOC_ERROR)

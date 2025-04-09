@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 17:48:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 22:47:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static char	**extend_envp(char **envp, char *new_entry)
 		count++;
 	new_envp = ft_calloc(sizeof(char *), (count + 2));
 	if (!new_envp)
-		return (envp);
+		return (perror("calloc"), envp);
 	i = 0;
 	while (i < count)
 	{

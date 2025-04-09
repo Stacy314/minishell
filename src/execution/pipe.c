@@ -6,11 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 17:16:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 22:47:24 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+// sleep 10 | echo hello
 
 int	count_commands(t_cmd *cmd)
 {
@@ -148,7 +150,7 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 	int		status;
 	char	*line;
 	int		sig;
-	
+
 	if (pipe(pipe_fd) == -1)
 	{
 		perror("pipe");
@@ -159,6 +161,8 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 	if (pid < 0)
 	{
 		perror("fork");
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
 		return (-1);
 	}
 	if (pid == 0)
@@ -170,7 +174,7 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 			line = readline("> ");
 			if (!line)
 			{
-				write_error("minishell: warning: here-document at line 8 delimited by end-of-file (wanted `%s')\n",
+				write_error("minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
 					*cmd->heredoc_delimiter);
 				break ;
 			}
@@ -184,7 +188,8 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 			free(line);
 		}
 		close(pipe_fd[1]);
-		free_all(data, data->tokens, cmd);
+		free_all(data, data->tokens, data->cmd);
+		// close(cmd->heredozc_fd);
 		exit(0);
 	}
 	close(pipe_fd[1]);
@@ -196,7 +201,9 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 		if (sig == SIGINT)
 		{
 			write(1, "\n", 1);
-			data->exit_status = 130;
+			data->exit_status = 130; // leaks
+			// free_all(data, data->tokens, data->cmd);
+			close(pipe_fd[0]);
 			return (-2);
 		}
 	}
@@ -206,7 +213,7 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 	return (pipe_fd[0]);
 }
 
-bool	handle_all_heredocs(t_cmd *cmd, t_data *data)
+static int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 {
 	t_cmd	*tmp;
 	int		fd;
@@ -218,7 +225,6 @@ bool	handle_all_heredocs(t_cmd *cmd, t_data *data)
 		{
 			fd = handle_heredoc_pipe(tmp, data);
 			// fd = handle_heredoc(tmp, *tmp->heredoc_delimiter, 128, data);
-				// TODO close it
 			if (fd == -2)
 			{
 				data->exit_status = 130;
@@ -230,6 +236,7 @@ bool	handle_all_heredocs(t_cmd *cmd, t_data *data)
 			tmp->heredoc_fd = fd;
 		}
 		tmp = tmp->next;
+		// close(fd);
 	}
 	return (true);
 }
@@ -275,15 +282,16 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 
 void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 {
-	int	n_cmds;
-	int	process_count;
-	int	status;
-	int	i;
+	int		n_cmds;
+	int		process_count;
+	int		status;
+	int		i;
+	t_cmd	*tmp;
 
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
 		return ;
-	if (!handle_all_heredocs(cmd, data))
+	if (!handle_all_heredocs(cmd, data)) // TODO close fd
 		return ;
 	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1);
 	if (!cmd->pipe_pids)
@@ -297,4 +305,15 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 			data->exit_status = WEXITSTATUS(status);
 		i++;
 	}
+	tmp = cmd;
+	while (tmp)
+	{
+		if (tmp->heredoc_fd > 0)
+		{
+			close(tmp->heredoc_fd);
+			tmp->heredoc_fd = -1; // Mark as closed
+		}
+		tmp = tmp->next;
+	}
+	set_signals_main();
 }

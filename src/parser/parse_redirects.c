@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/09 19:04:03 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 19:05:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,102 +66,53 @@ int	initialize_redirect_array(char ***redirects, const char *value,
 	return (SUCCESS);
 }
 
-//int	append_redirect_value(char ***redirects, const char *value, bool **flags,
-//		bool flag)
-//{
-//	int		i;
-//	int		j;
-//	char	**new_array;
-//	bool	*new_flags;
-
-//	i = 0;
-//	while ((*redirects)[i])
-//		i++;
-//	new_array = ft_calloc(i + 2, sizeof(char *));
-//	if (!new_array)
-//		return (ERROR);
-//	new_flags = ft_calloc(i + 2, sizeof(bool));
-//	if (!new_flags)
-//		return (free(new_array), ERROR);
-//	j = 0;
-//	while (j < i)
-//	{
-//		new_array[j] = (*redirects)[j];
-//		new_flags[j] = (*flags)[j];
-//		j++;
-//	}
-//	new_array[i] = ft_strdup(value);
-//	if (new_array[i] == NULL)
-//	{
-//		free(new_array);
-//		free(new_flags);
-//		return (ERROR);
-//	}
-//	new_flags[i] = flag;
-//	new_array[i + 1] = NULL;
-//	free(*redirects);
-//	free(*flags);
-//	*redirects = new_array;
-//	*flags = new_flags;
-//	return (SUCCESS);
-//}
-
 int	append_redirect_value(char ***redirects, const char *value, bool **flags,
-	bool flag)
+		bool flag)
 {
-int		i;
-int		j;
-char	**new_array;
-bool	*new_flags = NULL;
+	int		i;
+	int		j;
+	char	**new_array;
+	bool	*new_flags;
 
-i = 0;
-while ((*redirects)[i])
-	i++;
-
-// новий масив для редіректів
-new_array = ft_calloc(i + 2, sizeof(char *));
-if (!new_array)
-	return (ERROR);
-
-// новий масив для флагів, тільки якщо треба
-if (flags)
-{
-	new_flags = ft_calloc(i + 2, sizeof(bool));
-	if (!new_flags)
-		return (free(new_array), ERROR);
-}
-
-// копіюємо старі значення
-j = 0;
-while (j < i)
-{
-	new_array[j] = (*redirects)[j];
+	new_flags = NULL;
+	i = 0;
+	while ((*redirects)[i])
+		i++;
+	new_array = ft_calloc(i + 2, sizeof(char *));
+	if (!new_array)
+		return (ERROR);
 	if (flags)
-		new_flags[j] = (*flags)[j];
-	j++;
-}
-
-// копіюємо нове значення
-new_array[i] = ft_strdup(value);
-if (!new_array[i])
-{
-	free(new_array);
+	{
+		new_flags = ft_calloc(i + 2, sizeof(bool));
+		if (!new_flags)
+			return (free(new_array), ERROR);
+	}
+	j = 0;
+	while (j < i)
+	{
+		new_array[j] = (*redirects)[j];
+		if (flags)
+			new_flags[j] = (*flags)[j];
+		j++;
+	}
+	new_array[i] = ft_strdup(value);
+	if (!new_array[i])
+	{
+		free(new_array);
+		if (flags)
+			free(new_flags);
+		return (ERROR);
+	}
+	new_array[i + 1] = NULL;
 	if (flags)
-		free(new_flags);
-	return (ERROR);
-}
-new_array[i + 1] = NULL;
-
-if (flags)
-{
-	new_flags[i] = flag;
-	free(*flags);
-	*flags = new_flags;
-}
-
-free(*redirects);
-*redirects = new_array;
-return (SUCCESS);
+	{
+		new_flags[i] = flag;
+		free(*flags);
+		*flags = new_flags;
+	}
+	free(*redirects);
+	*redirects = new_array;
+	return (SUCCESS);
 }
 
 bool	**get_redirect_flag_target(t_cmd *cmd, t_token_type type)

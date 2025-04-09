@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 19:22:28 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 22:48:02 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	**copy_env(char **env, int size)
 	i = 0;
 	copy = ft_calloc(sizeof(char *) * (size + 1), 1);
 	if (!copy)
-		return (NULL);
+		return (perror("calloc"), NULL);
 	while (i < size)
 	{
 		copy[i] = env[i];
@@ -88,9 +88,12 @@ static void	print_env_line(const char *env_line)
 		return ;
 	}
 	key_len = (int)(equal_sign - env_line);
-	key = ft_calloc(key_len + 1, 1);
+	key = ft_calloc(key_len + 1, 1); 
 	if (!key)
+	{
+		perror("calloc");
 		return ;
+	}
 	ft_strlcpy(key, env_line, key_len + 1);
 	value = equal_sign + 1;
 	printf("declare -x %s=\"%s\"\n", key, value);

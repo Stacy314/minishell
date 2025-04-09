@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 21:11:21 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:37:00 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ static char	**init_env(char **env)
 		i++;
 	env_copy = ft_calloc(sizeof(char *) * (i + 1), 1);
 	if (!env_copy)
-		return (NULL);
+		return (perror("calloc"), NULL);
 	j = 0;
 	while (j < i)
 	{

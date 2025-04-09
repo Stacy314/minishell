@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 21:44:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:17:00 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ char	**split_path(const char *path)
 	count = count_colons(path);
 	paths = ft_calloc((count + 1), sizeof(char *));
 	if (!paths)
-		return (NULL);
+		return (perror("calloc"), NULL);
 	path_copy = ft_strdup(path);
 	token = ft_strtok(path_copy, ":");
 	i = 0;

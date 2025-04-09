@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 22:48:34 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/09 19:53:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	ambiguous_check(t_tokenizer_state *state, const char *str, t_data *data)
 	value = getenv(var_name);
 	if (!value || value[0] == '\0')
 		return (write_error("minishell: $%s: ambiguous redirect\n", var_name),
-			free(var_name), ERROR);
+			free(var_name), data->exit_status = 1, ERROR);
 	free(var_name);
 	return (SUCCESS);
 }
