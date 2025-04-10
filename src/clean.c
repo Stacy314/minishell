@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 19:01:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 21:44:59 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,6 @@ void	free_array(char **arr)
 	}
 	free(arr);
 }
-void	free_bool_array(bool *arr)
-{
-	if (arr)
-		free(arr);
-}
 
 void	free_cmd(t_cmd *cmd)
 {
@@ -48,28 +43,11 @@ void	free_cmd(t_cmd *cmd)
 		free_array(cmd->heredoc_delimiter);
 		free(cmd->pipe_pids);
 		free(cmd->heredoc_touch_quotes);
-
-		if (cmd->heredoc_delimiter && cmd->heredoc_fd > 0 /*&& cmd->next*/)
+		if (cmd->heredoc_delimiter && cmd->heredoc_fd > 0)
 			close(cmd->heredoc_fd);
 		free(cmd);
 		cmd = tmp;
 	}
-}
-
-void	free_tokens(t_token **tokens)
-{
-	int	i;
-
-	i = 0;
-	if (!tokens && !tokens[i])
-		return ;
-	while (tokens[i])
-	{
-		free(tokens[i]->value);
-		free(tokens[i]);
-		i++;
-	}
-	free(tokens);
 }
 
 void	*cleanup_and_null(t_tokenizer_state *state)
@@ -84,19 +62,19 @@ void	*cleanup_and_null(t_tokenizer_state *state)
 	return (NULL);
 }
 
-void free_all(t_data *data, t_token **tokens, t_cmd *cmd)
+void	free_all(t_data *data, t_token **tokens, t_cmd *cmd)
 {
 	if (data->input)
 		free(data->input);
 	if (data->env)
-	 	free_array(data->env);
+		free_array(data->env);
 	if (tokens)
 		free_tokens(tokens);
 	if (cmd)
 		free_cmd(cmd);
 }
 
-void free_main(t_data *data, t_token **tokens, t_cmd *cmd)
+void	free_main(t_data *data, t_token **tokens, t_cmd *cmd)
 {
 	if (data->input)
 		free(data->input);

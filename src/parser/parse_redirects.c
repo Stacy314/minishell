@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/10 19:03:40 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:09:36 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,40 +30,29 @@ int	initialize_redirect_array(char ***redirects, const char *value,
 {
 	*redirects = ft_calloc(2, sizeof(char *));
 	if (!*redirects)
-	{
-		perror("ft_calloc");
-		return (ERROR);
-	}
+		return (perror("ft_calloc"), ERROR);
 	if (flags)
 	{
 		*flags = ft_calloc(2, sizeof(bool));
 		if (!*flags)
-		{
-			free(*redirects);
-			*redirects = NULL;
-			perror("ft_calloc");
-			return (ERROR);
-		}
+			return (free(*redirects), *redirects = NULL, perror("ft_calloc"),
+				ERROR);
 	}
 	(*redirects)[0] = ft_strdup(value);
 	if (!(*redirects)[0])
 	{
-		free(*redirects);
 		if (flags && *flags)
 			free(*flags);
-		*redirects = NULL;
 		if (flags)
 			*flags = NULL;
-		perror("ft_strdup");
-		return (ERROR);
+		return (free(*redirects), *redirects = NULL, perror("strdup"), ERROR);
 	}
 	if (flags)
 	{
 		(*flags)[0] = flag;
 		(*flags)[1] = false;
 	}
-	(*redirects)[1] = NULL;
-	return (SUCCESS);
+	return ((*redirects)[1] = NULL, SUCCESS);
 }
 
 int	append_redirect_value(char ***redirects, const char *value, bool **flags,
@@ -98,10 +87,9 @@ int	append_redirect_value(char ***redirects, const char *value, bool **flags,
 	new_array[i] = ft_strdup(value);
 	if (!new_array[i])
 	{
-		free(new_array);
 		if (flags)
 			free(new_flags);
-		return (ERROR);
+		return (free(new_array), ERROR);
 	}
 	new_array[i + 1] = NULL;
 	if (flags)
@@ -110,9 +98,7 @@ int	append_redirect_value(char ***redirects, const char *value, bool **flags,
 		free(*flags);
 		*flags = new_flags;
 	}
-	free(*redirects);
-	*redirects = new_array;
-	return (SUCCESS);
+	return (free(*redirects), *redirects = new_array, SUCCESS);
 }
 
 bool	**get_redirect_flag_target(t_cmd *cmd, t_token_type type)
@@ -145,11 +131,8 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 	char	*unexpected_token;
 
 	if (!tokens[*i + 1])
-	{
-		write_error("minishell: syntax error near unexpected token `newline'\n");
-		data->exit_status = 2;
-		return (0);
-	}
+		return (write_error("minishell: syntax error near unexpected"),
+			write_error(" token `newline'\n"), data->exit_status = 20);
 	if (tokens[*i + 1]->type == NOTHING)
 		return (0);
 	if (tokens[*i + 1]->type != WORD)
@@ -161,12 +144,9 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 		return (0);
 	}
 	if (data->heredoc_count > HEREDOC_MAX)
-	{
-		printf("heredoc count: %d\n", data->heredoc_count);
-		write_error("minishell: maximum here-document count exceeded\n");
-		data->exit_status = 2;
-		return (0);
-	}
+		return (write_error("minishell: "),
+			write_error("maximum here-document count exceeded\n"),
+			data->exit_status = 2, 0);
 	if (!parse_redirects(cmd, tokens[*i + 1], tokens[*i]->type))
 		return (0);
 	(*i)++;

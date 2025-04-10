@@ -4,9 +4,10 @@ CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
-SRC_FILES = main.c utils.c signals.c initialization.c clean.c \
+SRC_FILES = main.c utils.c utils2.c signals.c signals2.c initialization.c clean.c \
 			execution/commands.c execution/commands_utils.c execution/pipe.c execution/execution.c execution/heredoc_expansion.c\
-			execution/redirection.c execution/redir_handle.c execution/heredoc.c  execution/underscore.c\
+			execution/redirection.c execution/redir_handle.c execution/heredoc.c  execution/underscore.c execution/commands_utils2.c\
+			execution/pipe_heredoc.c \
 			parser/parser.c parser/parse_redirects.c  \
 			builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
 			builtins/export.c builtins/export_print.c builtins/pwd.c builtins/unset.c \

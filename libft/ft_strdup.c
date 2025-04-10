@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 21:51:52 by apechkov          #+#    #+#             */
-/*   Updated: 2025/03/27 22:25:32 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 21:43:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*ft_strdup(const char *s)
 	char	*dup;
 	int		i;
 
-	if(!s)
+	if (!s)
 		return (NULL);
 	i = 0;
 	while (s[i])

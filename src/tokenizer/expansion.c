@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 20:21:37 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:10:51 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ char	*expand_variable(const char *str, int *j, t_data *data)
 	start = *j;
 	while (str[*j] && (ft_isalnum(str[*j]) || str[*j] == '_'))
 		(*j)++;
-	// if (*j == start)
-	//	return (NULL);
 	if (*j == start)
 	{
 		tmp = ft_calloc(2, sizeof(char));
@@ -72,6 +70,7 @@ int	expand_buffer(t_tokenizer_state *state)
 	state->buffer = new_buffer;
 	return (0);
 }
+
 int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	char	*expanded;

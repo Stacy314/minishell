@@ -6,42 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 18:43:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 22:43:08 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// sleep 10 | echo hello
-
-void	close_fd(t_cmd *cmd)
-{
-	t_cmd	*tmp;
-
-	tmp = cmd;
-	while (tmp)
-	{
-		if (tmp->heredoc_fd > 0) //>=
-		{
-			close(tmp->heredoc_fd);
-			tmp->heredoc_fd = -1; // Mark as closed
-		}
-		tmp = tmp->next;
-	}
-}
-
-int	count_commands(t_cmd *cmd)
-{
-	int	count;
-
-	count = 0;
-	while (cmd)
-	{
-		count++;
-		cmd = cmd->next;
-	}
-	return (count);
-}
 
 pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 {
@@ -58,68 +27,42 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		set_signals_child();
 		data->is_child = true;
 		if (dup2(cmd->pipe_fd[1], STDOUT_FILENO) == -1)
-		{
-			perror("dup2");
-			close_fd(cmd);
-			free_all(data, tokens, cmd);
-			exit(1);
-		}
-		close(cmd->pipe_fd[0]);
-		close(cmd->pipe_fd[1]);
-		apply_redirections(cmd, data);
-		execute_for_one(tokens, cmd, data);
-		close(STDIN_FILENO);
-		close(STDOUT_FILENO);
-		close_fd(cmd);
-		free_all(data, tokens, cmd);
-		exit(data->exit_status);
+			(perror("dup2"), close_fd(cmd), free_all(data, tokens, cmd),
+				exit(1));
+		(close(cmd->pipe_fd[0]), close(cmd->pipe_fd[1]), apply_redirections(cmd,
+				data), execute_for_one(tokens, cmd, data), close(STDIN_FILENO),
+			close(STDOUT_FILENO), close_fd(cmd), free_all(data, tokens, cmd),
+			exit(data->exit_status));
 	}
 	close(cmd->pipe_fd[1]);
 	return (pid);
 }
 
-pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
-		t_data *data, int new_pipe_fd[2])
+pid_t	execute_middle_command(t_cmd *current, t_cmd *cmd, t_data *data,
+		int new_pipe_fd[2])
 {
 	pid_t	pid;
 
 	if (pipe(new_pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	parent_ignore_signals();
+		return (perror("pipe"), -1);
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork");
-		return (-1);
-	}
+		return (perror("fork"), -1);
 	if (pid == 0)
 	{
-		// set_signals_child();
 		data->is_child = true;
 		if (dup2(current->pipe_fd[0], STDIN_FILENO) == -1)
-		{
-			free_all(data, tokens, current);
-			return (perror("dup2 current->pipe_fd[0]"), exit(1), -1);
-		}
+			return (free_all(data, data->tokens, current),
+				perror("dup2 current->pipe_fd[0]"), exit(1), -1);
 		if (dup2(new_pipe_fd[1], STDOUT_FILENO) == -1)
-		{
-			free_all(data, tokens, current);
-			return (perror("dup2 new_pipe_fd[1]"), exit(1), -1);
-		}
-		close(current->pipe_fd[0]);
-		close(current->pipe_fd[1]);
-		close(new_pipe_fd[0]);
-		close(new_pipe_fd[1]);
-		apply_redirections(current, data);
-		execute_for_one(tokens, current, data);
-		close(STDIN_FILENO);
-		close(STDOUT_FILENO);
-		close_fd(cmd);
-		free_all(data, tokens, cmd);
-		exit(data->exit_status);
+			return (free_all(data, data->tokens, current),
+				perror("dup2 new_pipe_fd[1]"), exit(1), -1);
+		(close(current->pipe_fd[0]), close(current->pipe_fd[1]),
+			close(new_pipe_fd[0]), close(new_pipe_fd[1]),
+			apply_redirections(current, data), execute_for_one(data->tokens,
+				current, data), close(STDIN_FILENO), close(STDOUT_FILENO),
+			close_fd(cmd), free_all(data, data->tokens, cmd),
+			exit(data->exit_status));
 	}
 	close(current->pipe_fd[0]);
 	return (close(new_pipe_fd[1]), (pid));
@@ -132,142 +75,24 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 
 	pid = fork();
 	if (pid < 0)
-	{
-		perror("fork");
-		return (-1);
-	}
-	parent_ignore_signals();
+		return (perror("fork"), -1);
 	if (pid == 0)
 	{
-		set_signals_child();
 		data->is_child = true;
 		if (current->pipe_fd[0] != -1)
 		{
 			if (dup2(current->pipe_fd[0], STDIN_FILENO) == -1)
-			{
-				free_all(data, tokens, current);
-				return (perror("dup2 current->pipe_fd[0]"), exit(1), -1);
-			}
+				return (free_all(data, tokens, current),
+					perror("dup2 current->pipe_fd[0]"), exit(1), -1);
 			close(current->pipe_fd[0]);
 		}
-		apply_redirections(current, data);
-		execute_for_one(tokens, current, data);
-		close(STDIN_FILENO);
-		close(STDOUT_FILENO);
-		close_fd(cmd);
-		free_all(data, tokens, cmd);
-		exit(data->exit_status);
+		(apply_redirections(current, data), execute_for_one(tokens, current,
+				data), close(STDIN_FILENO), close(STDOUT_FILENO), close_fd(cmd),
+			free_all(data, tokens, cmd), exit(data->exit_status));
 	}
 	if (current->pipe_fd[0] != -1)
 		close(current->pipe_fd[0]);
 	return (pid);
-}
-
-int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
-{
-	int		pipe_fd[2];
-	pid_t	pid;
-	int		status;
-	char	*line;
-	int		sig;
-
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	parent_ignore_signals();
-	pid = fork();
-	if (pid < 0)
-	{
-		perror("fork");
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		return (-1);
-	}
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN);
-		//signal(SIGINT, handle_sigint_heredoc), signal(SIGQUIT, SIG_IGN);
-		
-		close(pipe_fd[0]);
-		while (1)
-		{
-			line = readline("> ");
-			if (!line)
-			{
-				write_error("minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-					*cmd->heredoc_delimiter);
-				break ;
-			}
-			//if (g_signal_flag == SIGINT)
-			//{
-			//	free(line);
-			//	//close(pipe_fd[1]);
-			//	free_all(data, data->tokens, cmd);
-			//	break ;
-			//}
-			if (ft_strcmp(line, *cmd->heredoc_delimiter) == 0)
-			{
-				free(line);
-				break ;
-			}
-			write(pipe_fd[1], line, ft_strlen(line));
-			write(pipe_fd[1], "\n", 1);
-			free(line);
-		}
-		close(pipe_fd[1]);
-		free_all(data, data->tokens, data->cmd);
-		// close(cmd->heredozc_fd);
-		exit(0);
-	}
-	close(pipe_fd[1]);
-	waitpid(pid, &status, 0);
-	parent_restore_signals();
-	if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		if (sig == SIGINT)
-		{
-			write(1, "\n", 1);
-			data->exit_status = 130; // leaks
-			// free_all(data, data->tokens, data->cmd);
-			close(pipe_fd[0]);
-			return (-2);
-		}
-	}
-	else if (WIFEXITED(status))
-		data->exit_status = WEXITSTATUS(status);
-	set_signals_main();
-	return (pipe_fd[0]);
-}
-
-static int	handle_all_heredocs(t_cmd *cmd, t_data *data)
-{
-	t_cmd	*tmp;
-	int		fd;
-
-	tmp = cmd;
-	while (tmp)
-	{
-		if (tmp->heredoc_delimiter)
-		{
-			fd = handle_heredoc_pipe(tmp, data);
-			// fd = handle_heredoc(tmp, *tmp->heredoc_delimiter, 128, data);
-			if (fd == -2)
-			{
-				data->exit_status = 130;
-				set_signals_main();
-				return (false);
-			}
-			else if (fd < 0)
-				return (false);
-			tmp->heredoc_fd = fd;
-		}
-		tmp = tmp->next;
-		// close(fd);
-	}
-	return (true);
 }
 
 int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
@@ -288,8 +113,8 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 	{
 		current->pipe_fd[0] = temp_fd[0];
 		current->pipe_fd[1] = temp_fd[1];
-		cmd->pipe_pids[process_count++] = execute_middle_command(tokens,
-				current, cmd, data, new_pipe_fd);
+		cmd->pipe_pids[process_count++] = execute_middle_command(current, cmd,
+				data, new_pipe_fd);
 		temp_fd[0] = new_pipe_fd[0];
 		temp_fd[1] = new_pipe_fd[1];
 		current = current->next;
@@ -302,10 +127,7 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 				cmd, data);
 	}
 	else
-	{
-		close(temp_fd[1]);
-		close(temp_fd[0]);
-	}
+		(close(temp_fd[1]), close(temp_fd[0]));
 	return (process_count);
 }
 
@@ -319,7 +141,7 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
 		return ;
-	if (!handle_all_heredocs(cmd, data)) // TODO close fd
+	if (!handle_all_heredocs(cmd, data))
 		return ;
 	cmd->pipe_pids = ft_calloc(sizeof(pid_t) * n_cmds, 1);
 	if (!cmd->pipe_pids)

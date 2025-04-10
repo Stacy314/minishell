@@ -6,34 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 19:04:04 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:12:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-////////////////////////////////////////////////////////////////////////////
-void	debug_print_tokens(t_token **tokens)
-{
-	int	i;
-
-	if (!tokens)
-	{
-		printf("No tokens (tokens == NULL)\n");
-		return ;
-	}
-	i = 0;
-	while (tokens[i])
-	{
-		printf("Token[%d]: Type = %d, Value = \"%s\", Index = %d, Quote = %d\n",
-			i, tokens[i]->type, tokens[i]->value, tokens[i]->index,
-			tokens[i]->touch_quotes);
-		i++;
-	}
-	printf("End of tokens (null)\n");
-}
-
-////////////////////////////////////////////////////////////////////////////
 
 t_token	*create_token(const char *value, t_token_type type, int index,
 		bool touch_quotes)
@@ -74,15 +51,10 @@ int	create_word_token(t_tokenizer_state *state)
 		while (j < state->i)
 		{
 			if (state->tokens[j])
-			{
-				free(state->tokens[j]->value);
-				free(state->tokens[j]);
-			}
+				(free(state->tokens[j]->value), free(state->tokens[j]));
 			j++;
 		}
-		free(state->tokens);
-		perror("create_token");
-		return (MALLOC_ERROR);
+		return (free(state->tokens), perror("create_token"), MALLOC_ERROR);
 	}
 	state->empty_quotes = 0;
 	state->i++;
@@ -160,7 +132,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	heredoc_count(str, data);
 	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
 	if (!tokens)
-		return (/*perror("calloc"),*/ NULL);
+		return (NULL);
 	if (!init_state(&state, tokens))
 		return (free(tokens), NULL);
 	if (tokenize_loop(str, &state, data) == MALLOC_ERROR)
@@ -174,6 +146,5 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 	}
 	tokens[state.i] = NULL;
 	free(state.buffer);
-	//debug_print_tokens(tokens);
 	return (tokens);
 }

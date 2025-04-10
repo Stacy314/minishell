@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 19:53:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:11:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ static int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
 	state->k = 0;
 	return (SUCCESS);
 }
+
 int	ambiguous_check(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	int		start;
@@ -105,8 +106,7 @@ int	ambiguous_check(t_tokenizer_state *state, const char *str, t_data *data)
 	if (!value || value[0] == '\0')
 		return (write_error("minishell: $%s: ambiguous redirect\n", var_name),
 			free(var_name), data->exit_status = 1, ERROR);
-	free(var_name);
-	return (SUCCESS);
+	return (free(var_name), SUCCESS);
 }
 
 int	handle_redirection_tok(t_tokenizer_state *state, const char *str,

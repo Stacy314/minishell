@@ -6,22 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/07 18:40:06 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:03:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// apechkov@c3r4p2:~/projects/minishell$ cd
-// apechkov@c3r4p2:~$ echo $_
-// cd
-// apechkov@c3r4p2:~$ env | echo $_
-// cd
-// apechkov@c3r4p2:~$ env | grep "_=" | echo $_
-// cd
-// apechkov@c3r4p2:~$ env | grep "_="
-//_=/usr/bin/env
-// apechkov@c3r4p2:~$
 
 char	*find_last_value(t_token **tokens)
 {
@@ -49,7 +38,6 @@ void	update_underscore(t_data *data, char *value)
 	new_val = ft_strjoin("_=", value);
 	if (!new_val)
 		return ;
-
 	i = 0;
 	while (data->env[i])
 	{

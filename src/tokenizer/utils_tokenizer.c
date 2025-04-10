@@ -6,11 +6,27 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 22:19:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:13:12 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+void	free_tokens(t_token **tokens)
+{
+	int	i;
+
+	i = 0;
+	if (!tokens && !tokens[i])
+		return ;
+	while (tokens[i])
+	{
+		free(tokens[i]->value);
+		free(tokens[i]);
+		i++;
+	}
+	free(tokens);
+}
 
 int	create_nothing_token(const char *str, t_tokenizer_state *state)
 {
@@ -27,13 +43,13 @@ int	create_nothing_token(const char *str, t_tokenizer_state *state)
 	skip_spaces(str, state);
 	return (0);
 }
+
 int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	int	result;
 
 	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
-			|| state->inside_quotes) /*&& str[state->j] != '|'
-		&& !is_redirect(str[state->j])*/)
+			|| state->inside_quotes))
 	{
 		result = handle_quotes_and_redirects(state, str, data);
 		if (result == MALLOC_ERROR)

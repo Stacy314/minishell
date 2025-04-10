@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 20:37:00 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 21:58:22 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	init_state(t_tokenizer_state *state, t_token **tokens)
 	state->tokens = tokens;
 	return (1);
 }
+
 t_cmd	*init_new_cmd(void)
 {
 	t_cmd	*cmd;
@@ -68,7 +69,7 @@ int	increment_shlvl(t_data *data)
 			if (!shlvl_str)
 				return (ERROR);
 			new_shlvl = ft_strjoin("SHLVL=", shlvl_str);
-			free(shlvl_str); 
+			free(shlvl_str);
 			if (!new_shlvl)
 				return (ERROR);
 			return (free(data->env[i]), data->env[i] = new_shlvl, SUCCESS);
@@ -99,13 +100,8 @@ static char	**init_env(char **env)
 		env_copy[j] = ft_strdup(env[j]);
 		if (!env_copy[j])
 		{
-			 while (j > 0)
-			{
-				free(env_copy[j]);
-				j--;
-			}
-			 free(env_copy);
-			 return (NULL);
+			free_env_copy(env_copy, j);
+			return (NULL);
 		}
 		j++;
 	}

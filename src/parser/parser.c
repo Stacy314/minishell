@@ -6,126 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 19:03:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 23:10:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// need to fix:
-
-// name var in ambiguous redirect
-
-// $non - ignor
-// '$non' - $non word
-// "" '' "$non" - empty string
-
-// // echo|echo
-
-// cd '/////' >/dev/null (=cd /)
-// cd "doesntexist" >/dev/null
-// cd "wtf" >/dev/null
-
-// cat << $USER (wrong expansion)
-//"" (: command not found, EC - 127)
-// echo $USER'$USER'text oui oui     oui  oui $USER oui      $USER '' (space in the end)
-// echo '' "" (print space)
-// exit "" (bash: exit: : numeric argument required, EC - 2)
-
-// export a="s -lsa"
-//		l$a
-
-// echo hi | echo hi | (should open input)
-
-//> $notexists echo "haha" (bash: $notexists: ambiguous redirect)
-
-// export A="haha         123"
-// echo $A  (should print haha 123 with one space)
-
-// export A='"echo hi"'
-//$A  ("echo: command not found)
-
-// echo $"" (should print \n) (go crazy)
-// "" echo
-// "" (: command not found, EC - 127) (11)
-// touch "" (touch: cannot touch '': No such file or directory) (13)
-
-//////////////////////////////////////////////////////////////////////
-void	debug_print_cmd(t_cmd *cmd)
-{
-	int	i;
-	int	cmd_num;
-
-	cmd_num = 1;
-	printf("\n==== DEBUG CMD STRUCTURE ====\n");
-	while (cmd)
-	{
-		printf("Command #%d\n", cmd_num++);
-		// Args
-		printf("Args: ");
-		if (cmd->args)
-		{
-			for (i = 0; cmd->args[i]; i++)
-				printf("\"%s\" ", cmd->args[i]);
-		}
-		else
-			printf("(null)");
-		printf("\n");
-		// Input Redirects
-		printf("Input Redirects: ");
-		if (cmd->input_redirects)
-		{
-			for (i = 0; cmd->input_redirects[i]; i++)
-				printf("\"%s\" ", cmd->input_redirects[i]);
-		}
-		else
-			printf("(null)");
-		printf("\n");
-		// Output Redirects
-		printf("Output Redirects: ");
-		if (cmd->output_redirects)
-		{
-			for (i = 0; cmd->output_redirects[i]; i++)
-				printf("\"%s\" ", cmd->output_redirects[i]);
-		}
-		else
-			printf("(null)");
-		printf("\n");
-		// Append Redirects
-		printf("Append Redirects: ");
-		if (cmd->append_redirects)
-		{
-			for (i = 0; cmd->append_redirects[i]; i++)
-				printf("\"%s\" ", cmd->append_redirects[i]);
-		}
-		else
-			printf("(null)");
-		printf("\n");
-		// Heredoc Delimiters
-		printf("Heredoc Delimiters: ");
-		if (cmd->heredoc_delimiter)
-		{
-			for (i = 0; cmd->heredoc_delimiter[i]; i++)
-				printf("\"%s\" ", cmd->heredoc_delimiter[i]);
-		}
-		else
-			printf("(null)");
-		printf("\n");
-		// Touch_quotes
-		printf("Touch Quotes: ");
-		if (cmd->heredoc_touch_quotes)
-		{
-			for (i = 0; cmd->heredoc_touch_quotes[i]; i++)
-				printf("%d ", cmd->heredoc_touch_quotes[i]);
-		}
-		else
-			printf("(null)");
-		printf("\n");
-		printf("============================\n");
-		cmd = cmd->next;
-	}
-}
-//////////////////////////////////////////////////////////////////////
 
 int	check_initial_syntax_errors(t_token **tokens, t_data *data)
 {
@@ -176,7 +61,7 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 {
 	while (tokens[*i] && tokens[*i]->type != PIPE)
 	{
-		if (tokens[*i]->type == NOTHING) //TODO with pipe
+		if (tokens[*i]->type == NOTHING)
 		{
 			(*i)++;
 			continue ;
@@ -237,6 +122,5 @@ t_cmd	*parse_tokens(t_token **tokens, t_data *data)
 		free_cmd(head);
 		return (NULL);
 	}
-	// debug_print_cmd(head);
 	return (head);
 }

@@ -6,32 +6,14 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 21:53:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 22:24:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
+void	executiom_first(t_token **tokens, t_cmd *cmd, t_data *data, int i)
 {
-	int	i;
-
-	i = 0;
-	if (!cmd->args || !cmd->args[0])
-		return ;
-	while (cmd->args[i] && tokens[i] && tokens[i]->type == NOTHING)
-	{
-		i++;
-	}
-	if (!cmd->args || !cmd->args[i])
-		return ;
-	if (cmd->args[i][0] == '\0' /*&& !cmd->args[i][1]*/
-		&& tokens[i]->type != NOTHING)
-	{
-		write_error("%s: command not found\n", cmd->args[i]);
-		data->exit_status = 127;
-		return ;
-	}
 	if (tokens[i])
 	{
 		if (ft_strncmp(cmd->args[i], "echo", 5) == 0)
@@ -51,6 +33,28 @@ void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
 		else
 			data->exit_status = execute_command(cmd->args[0], data, cmd->args);
 	}
+}
+
+void	execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	if (!cmd->args || !cmd->args[0])
+		return ;
+	while (cmd->args[i] && tokens[i] && tokens[i]->type == NOTHING)
+	{
+		i++;
+	}
+	if (!cmd->args || !cmd->args[i])
+		return ;
+	if (cmd->args[i][0] == '\0' && tokens[i]->type != NOTHING)
+	{
+		write_error("%s: command not found\n", cmd->args[i]);
+		data->exit_status = 127;
+		return ;
+	}
+	executiom_first(tokens, cmd, data, i);
 }
 
 void	execute(t_token **tokens, t_cmd *cmd, t_data *data)

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 18:50:39 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 22:28:21 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,22 +67,15 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			break ;
 		i++;
 	}
-	signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN);
-	//signal(SIGINT, handle_sigint_heredoc), signal(SIGQUIT, SIG_IGN);
+	(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN));
 	while (1)
 	{
-		if (g_signal_flag == SIGINT)
-		{
-			free(line);
-			unlink(tmp_filename);
-			break ;
-		}
 		line = readline("> ");
 		if (!line)
 		{
-			write_error("minishell: warning: here-document delimited by end-of-file (wanted `%s')\n",
-				heredoc_delimiter);
-			unlink(tmp_filename);
+			(write_error("minishell: warning: here-document delimited by "),
+				write_error("end-of-file (wanted `%s')\n", heredoc_delimiter),
+				unlink(tmp_filename));
 			break ;
 		}
 		if (ft_strcmp(line, heredoc_delimiter) == 0)
@@ -91,23 +84,18 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			break ;
 		}
 		if (cmd->heredoc_touch_quotes && cmd->heredoc_touch_quotes[i])
-		{
-			write(tmp_fd, line, ft_strlen(line));
-			write(tmp_fd, "\n", 1);
-		}
+			(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1));
 		else
 		{
 			expanded = expand_heredoc(line, data);
-			write(tmp_fd, expanded, ft_strlen(expanded));
-			write(tmp_fd, "\n", 1);
-			free(expanded);
+			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
+					1), free(expanded));
 		}
 		free(line);
 	}
 	close(tmp_fd);
 	tmp_fd = open(tmp_filename, O_RDONLY);
-	unlink(tmp_filename);
-	free(tmp_filename);
+	(unlink(tmp_filename), free(tmp_filename));
 	return (tmp_fd);
 }
 
