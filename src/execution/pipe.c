@@ -6,13 +6,29 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 22:47:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 18:43:06 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
 // sleep 10 | echo hello
+
+void	close_fd(t_cmd *cmd)
+{
+	t_cmd	*tmp;
+
+	tmp = cmd;
+	while (tmp)
+	{
+		if (tmp->heredoc_fd > 0) //>=
+		{
+			close(tmp->heredoc_fd);
+			tmp->heredoc_fd = -1; // Mark as closed
+		}
+		tmp = tmp->next;
+	}
+}
 
 int	count_commands(t_cmd *cmd)
 {
@@ -44,6 +60,7 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		if (dup2(cmd->pipe_fd[1], STDOUT_FILENO) == -1)
 		{
 			perror("dup2");
+			close_fd(cmd);
 			free_all(data, tokens, cmd);
 			exit(1);
 		}
@@ -53,6 +70,7 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		execute_for_one(tokens, cmd, data);
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
+		close_fd(cmd);
 		free_all(data, tokens, cmd);
 		exit(data->exit_status);
 	}
@@ -99,6 +117,7 @@ pid_t	execute_middle_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 		execute_for_one(tokens, current, data);
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
+		close_fd(cmd);
 		free_all(data, tokens, cmd);
 		exit(data->exit_status);
 	}
@@ -135,6 +154,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 		execute_for_one(tokens, current, data);
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
+		close_fd(cmd);
 		free_all(data, tokens, cmd);
 		exit(data->exit_status);
 	}
@@ -168,6 +188,8 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN);
+		//signal(SIGINT, handle_sigint_heredoc), signal(SIGQUIT, SIG_IGN);
+		
 		close(pipe_fd[0]);
 		while (1)
 		{
@@ -178,6 +200,13 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 					*cmd->heredoc_delimiter);
 				break ;
 			}
+			//if (g_signal_flag == SIGINT)
+			//{
+			//	free(line);
+			//	//close(pipe_fd[1]);
+			//	free_all(data, data->tokens, cmd);
+			//	break ;
+			//}
 			if (ft_strcmp(line, *cmd->heredoc_delimiter) == 0)
 			{
 				free(line);
@@ -282,11 +311,10 @@ int	launch_all_processes(t_token **tokens, t_cmd *cmd, t_data *data)
 
 void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 {
-	int		n_cmds;
-	int		process_count;
-	int		status;
-	int		i;
-	t_cmd	*tmp;
+	int	n_cmds;
+	int	process_count;
+	int	status;
+	int	i;
 
 	n_cmds = count_commands(cmd);
 	if (n_cmds == 0)
@@ -305,15 +333,6 @@ void	execute_pipeline(t_token **tokens, t_cmd *cmd, t_data *data)
 			data->exit_status = WEXITSTATUS(status);
 		i++;
 	}
-	tmp = cmd;
-	while (tmp)
-	{
-		if (tmp->heredoc_fd > 0)
-		{
-			close(tmp->heredoc_fd);
-			tmp->heredoc_fd = -1; // Mark as closed
-		}
-		tmp = tmp->next;
-	}
+	close_fd(cmd);
 	set_signals_main();
 }

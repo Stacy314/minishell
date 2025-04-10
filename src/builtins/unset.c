@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 22:47:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:07:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	find_env_var(char **env, const char *var)
 	char	*arg_name;
 	int		i;
 	char	*env_name;
-	
+
 	arg_name = get_var_name(var);
 	if (!arg_name)
 		return (-1);
@@ -53,7 +53,7 @@ int	find_env_var(char **env, const char *var)
 	return (free(arg_name), -1);
 }
 
-int	builtin_unset(t_cmd *cmd, t_data *data, int token_index) 
+int	builtin_unset(t_cmd *cmd, t_data *data, int token_index)
 {
 	int	j;
 	int	var_index;

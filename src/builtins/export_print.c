@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 22:48:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:07:11 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	print_env_line(const char *env_line)
 		return ;
 	}
 	key_len = (int)(equal_sign - env_line);
-	key = ft_calloc(key_len + 1, 1); 
+	key = ft_calloc(key_len + 1, 1);
 	if (!key)
 	{
 		perror("calloc");
@@ -102,9 +102,9 @@ static void	print_env_line(const char *env_line)
 
 void	print_sorted_env(char **env)
 {
-	int size;
-	char **copy;
-	int i;
+	int		size;
+	char	**copy;
+	int		i;
 
 	size = 0;
 	while (env[size])

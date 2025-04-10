@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/08 22:04:59 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:03:29 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 {
 	while (tokens[*i] && tokens[*i]->type != PIPE)
 	{
-		if (tokens[*i]->type == NOTHING)
+		if (tokens[*i]->type == NOTHING) //TODO with pipe
 		{
 			(*i)++;
 			continue ;

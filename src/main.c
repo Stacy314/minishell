@@ -6,13 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 21:26:55 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 18:25:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-volatile sig_atomic_t	g_signal_flag = 0;
+sig_atomic_t	g_signal_flag = 0;
 
 int	main(int argc, char **argv, char **env)
 {

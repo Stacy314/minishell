@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/03 22:13:05 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:05:41 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int	builtin_pwd(t_cmd *cmd, t_data *data, int token_index)
 	if (buf == NULL)
 	{
 		ft_putstr_fd("pwd: error retrieving current directory: getcwd: ", 2);
-		ft_putendl_fd("cannot access parent directories: No such file or directory",
-			2);
+		ft_putendl_fd("cannot access parent directories", 2);
+		ft_putendl_fd(": No such file or directory", 2);
 		data->exit_status = 2;
 		return (1);
 	}

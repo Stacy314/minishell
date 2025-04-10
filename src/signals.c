@@ -6,12 +6,14 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 16:42:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:01:20 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+
+extern sig_atomic_t	g_signal_flag;
 //CTRL+C
 //CTRL+D
 //CTRL+backslash
@@ -87,6 +89,16 @@ void handle_sigquit_child(int sig)
 	//write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 	
 }
+
+//void	handle_sigquit(int sig)
+//{
+//	//(void)sig;
+//	g_signal_flag = sig;
+//	write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+//	rl_on_new_line();
+//	rl_replace_line("", 0);
+	
+//}
 void	handle_sigint_child(int sig)
 {
 	rl_on_new_line();
@@ -101,7 +113,7 @@ void	set_signals_child(void)
 }
 
 ////////////////////////////
-static void	handle_sigint_heredoc(int sig)
+void	handle_sigint_heredoc(int sig)
 {
 	(void)sig;
 	g_signal_flag = SIGINT;
@@ -109,6 +121,7 @@ static void	handle_sigint_heredoc(int sig)
 	// ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
+	//exit(130);
 	//rl_redisplay();
 	//exit(130);
 }

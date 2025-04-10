@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 16:52:23 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:02:13 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static int	fork_and_exec(char *executable, char **args, t_data *data,
 	int		status;
 	int		sig;
 
+	printf("im here\n");
 	//parent_ignore_signals();
 	set_signals_child();
 	//if (data->is_child == false)

@@ -6,11 +6,13 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 20:53:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 18:50:39 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+extern sig_atomic_t	g_signal_flag;
 
 static int	create_unique_tmpfile(char *out_filename, size_t size)
 {
@@ -30,10 +32,8 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 			free(num);
 			return (-1);
 		}
-		ft_strlcpy(out_filename, prefix, size);
-		ft_strlcat(out_filename, num, size);
-		ft_strlcat(out_filename, suffix, size);
-		free(num);
+		(ft_strlcpy(out_filename, prefix, size), ft_strlcat(out_filename, num,
+				size), ft_strlcat(out_filename, suffix, size), free(num));
 		fd = open(out_filename, O_RDWR | O_CREAT | O_EXCL, 0600);
 		if (fd >= 0)
 			return (fd);
@@ -42,14 +42,15 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 	write_error("Failed to create unique heredoc tmp file\n");
 	return (-1);
 }
+
 int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
-					t_data *data)
+		t_data *data)
 {
-	char *line;
-	int tmp_fd;
-	char *expanded;
-	int i;
-	char *tmp_filename;
+	char	*line;
+	int		tmp_fd;
+	char	*expanded;
+	int		i;
+	char	*tmp_filename;
 
 	if (!heredoc_delimiter)
 		return (ERROR);
@@ -66,11 +67,16 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			break ;
 		i++;
 	}
-
 	signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN);
-
+	//signal(SIGINT, handle_sigint_heredoc), signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
+		if (g_signal_flag == SIGINT)
+		{
+			free(line);
+			unlink(tmp_filename);
+			break ;
+		}
 		line = readline("> ");
 		if (!line)
 		{
@@ -79,7 +85,6 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			unlink(tmp_filename);
 			break ;
 		}
-
 		if (ft_strcmp(line, heredoc_delimiter) == 0)
 		{
 			free(line);
@@ -97,7 +102,6 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 			write(tmp_fd, "\n", 1);
 			free(expanded);
 		}
-
 		free(line);
 	}
 	close(tmp_fd);

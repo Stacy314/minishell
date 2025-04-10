@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/09 17:58:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:06:08 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static char	*get_home(t_data *data)
 static char	*get_cd_destination(t_cmd *cmd, t_data *data)
 {
 	char	*home;
-	char 	*home_new;
+	char	*home_new;
 
 	if (!cmd->args[1])
 	{
@@ -101,9 +101,6 @@ int	builtin_cd(t_cmd *cmd, t_data *data, int token_index)
 {
 	char	*dest_path;
 
-	//while (cmd->args[token_index + 1] && data->tokens[token_index + 1]
-	//	&& data->tokens[token_index + 1]->type == NOTHING)
-	//	token_index++;
 	if (cmd->args[token_index] && cmd->args[token_index + 1]
 		&& cmd->args[token_index + 2])
 	{
@@ -111,9 +108,8 @@ int	builtin_cd(t_cmd *cmd, t_data *data, int token_index)
 		data->exit_status = 1;
 		return (1);
 	}
-	if(cmd->args[token_index] && !cmd->args[token_index + 1])
+	if (cmd->args[token_index] && !cmd->args[token_index + 1])
 	{
-		
 	}
 	dest_path = get_cd_destination(cmd, data);
 	if (!dest_path)
