@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 11:07:38 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/11 21:16:19 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,39 +39,17 @@ int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
 	return (SUCCESS);
 }
 
-static int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
+int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
 {
 	bool	touch_quotes;
-	// int		start;
-	int		k;
-	char	quote;
 
 	touch_quotes = false;
-	// start = state->j;
-	k = 0;
-	skip_spaces(str, state);
-	if (str[state->j] == '\0')
+	if (heredoc_delimiter_valid(state, str))
 		return (SUCCESS);
-	if (str[state->j] == '|' || is_redirect(str[state->j]))
-		return (SUCCESS);
-	while (str[state->j] && !ft_isspace(str[state->j]) && str[state->j] != '<'
-		&& str[state->j] != '>' && str[state->j] != '|')
-	{
-		if (str[state->j] == '\'' || str[state->j] == '\"')
-		{
-			touch_quotes = true;
-			quote = str[state->j++];
-			while (str[state->j] && str[state->j] != quote)
-				state->buffer[k++] = str[state->j++];
-			if (str[state->j] == quote)
-				state->j++;
-		}
-		else
-			state->buffer[k++] = str[state->j++];
-	}
-	state->buffer[k] = '\0';
-	state->tokens[state->i] = create_token(state->buffer, WORD, state->index++,
-			touch_quotes);
+	if (fill_heredoc_buffer(state, str, &touch_quotes) == -1)
+		return (MALLOC_ERROR);
+	state->tokens[state->i] = create_token(state->buffer, WORD,
+			state->index++, touch_quotes);
 	if (!state->tokens[state->i])
 		return (perror("heredoc delimiter token alloc"), MALLOC_ERROR);
 	state->i++;
@@ -86,7 +64,6 @@ int	ambiguous_check(t_tokenizer_state *state, const char *str, t_data *data)
 	char	*var_name;
 	char	*value;
 
-	(void)data;
 	skip_spaces(str, state);
 	if (str[state->j] == '\0')
 		return (SUCCESS);

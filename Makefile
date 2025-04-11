@@ -5,15 +5,20 @@ LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
 SRC_FILES = main.c utils.c utils_init.c signals.c signals2.c initialization.c clean.c \
-			execution/commands.c execution/commands_utils.c execution/pipe.c execution/execution.c execution/heredoc_expansion.c \
-			execution/redirection.c execution/redir_handle.c execution/heredoc.c  execution/underscore.c execution/commands_utils2.c \
-			execution/pipe_heredoc.c execution/utils_heredoc.c \
-			execution/utils_commands.c \
-			parser/parser.c parser/parse_redirects.c \
-			builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
-			builtins/export.c builtins/export_print.c builtins/pwd.c builtins/unset.c \
-			tokenizer/tokenizer.c tokenizer/utils_tokenizer.c tokenizer/find_operator.c tokenizer/handle_redir.c \
-			tokenizer/expansion.c
+execution/commands.c execution/commands_utils.c execution/pipe.c execution/execution.c execution/heredoc_expansion.c \
+execution/redirection.c execution/redir_handle.c execution/heredoc.c  execution/underscore.c execution/commands_utils2.c \
+execution/pipe_heredoc.c execution/utils_heredoc.c \
+execution/utils_commands.c \
+parser/parser.c parser/parse_redirects.c parser/utils_parser.c \
+parser/utils_parse_redir.c \
+builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
+builtins/export.c builtins/export_print.c builtins/pwd.c builtins/unset.c \
+tokenizer/tokenizer.c tokenizer/utils_tokenizer.c \
+tokenizer/find_operator.c tokenizer/handle_redir.c \
+tokenizer/utils_exp.c tokenizer/expansion.c \
+tokenizer/utils_checks.c tokenizer/utils_tokenizer2.c \
+tokenizer/utils_handle_word.c \
+
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 
 MAKEFLAGS += --no-print-directory
@@ -24,7 +29,7 @@ all: $(LIBFT) $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -c $< -o $@
+	@$(CC) $(CFLAGS) -I$(LIBFT_DIR) -c $< -o $@
 
 
 $(NAME): $(OBJ_FILES)

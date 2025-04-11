@@ -1,0 +1,4 @@
+Makefile: No such file or directory
+wc: out1: Нет такого файла или каталога
+minishell: Makefile: No such file or directory
+wc: out1: Нет такого файла или каталога
