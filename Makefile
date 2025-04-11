@@ -5,14 +5,13 @@ LDFLAGS = -lreadline
 SRC_DIR = src
 OBJ_DIR = obj
 SRC_FILES = main.c utils.c utils_init.c signals.c signals2.c initialization.c clean.c \
-execution/commands.c execution/commands_utils.c execution/pipe.c execution/execution.c execution/heredoc_expansion.c \
-execution/redirection.c execution/redir_handle.c execution/heredoc.c  execution/underscore.c execution/commands_utils2.c \
-execution/pipe_heredoc.c execution/utils_heredoc.c \
-execution/utils_commands.c \
-parser/parser.c parser/parse_redirects.c parser/utils_parser.c \
-parser/utils_parse_redir.c \
-builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c \
-builtins/export.c builtins/export_print.c builtins/pwd.c builtins/unset.c \
+			execution/commands.c execution/commands_utils.c execution/pipe.c execution/execution.c execution/heredoc_expansion.c \
+			execution/redirection.c execution/redir_handle.c execution/heredoc.c  execution/underscore.c execution/commands_utils2.c \
+			execution/pipe_heredoc.c execution/utils_heredoc.c execution/heredoc_expansion2.c \
+			execution/utils_commands.c execution/pipe2.c \
+			parser/parser.c parser/parse_redirects.c parser/utils_parser.c parser/utils_parse_redir.c \
+			builtins/echo.c builtins/cd.c builtins/cd_utils.c builtins/env.c builtins/exit.c builtins/exit_utils.c \
+			builtins/export.c builtins/export_print.c builtins/pwd.c builtins/unset.c \
 tokenizer/tokenizer.c tokenizer/utils_tokenizer.c \
 tokenizer/find_operator.c tokenizer/handle_redir.c \
 tokenizer/utils_exp.c tokenizer/expansion.c \

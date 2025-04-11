@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 17:20:58 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/11 20:41:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
