@@ -113,6 +113,14 @@ typedef struct s_data
 	int				heredoc_count;
 }					t_data;
 
+typedef struct s_redirect_append
+{
+    int				size;
+    char			**new_array;
+    bool			*new_flags;
+    bool			has_flags;
+}					t_redirect_append;
+
 // utils
 void				write_error(const char *format, ...);
 int					ft_strcmp(const char *s1, const char *s2);
@@ -181,6 +189,30 @@ int					update_quote_state(t_tokenizer_state *state, char c);
 int					flush_word_before_redirect(t_tokenizer_state *state);
 int					add_redirect_token(t_tokenizer_state *state,
 						const char *symbol, t_token_type type, int advance);
+char				*get_exit_status_value(t_data *data, int *j);
+char				*extract_var_name(const char *str, int *j);
+char				*search_env_value(char *var_name, t_data *data);
+int					heredoc_delimiter_valid(t_tokenizer_state *state,
+						const char *str);
+int					fill_heredoc_buffer(t_tokenizer_state *state,
+						const char *str, bool *touch_quotes);
+int					handle_heredoc_delimiter(t_tokenizer_state *state,
+						const char *str);
+int					check_quotes_and_redirects(t_tokenizer_state *state,
+						const char *str, t_data *data);
+int					check_expansion_result(int result, t_tokenizer_state *state,
+						const char *str);
+int					create_nothing_token(const char *str,
+						t_tokenizer_state *state);
+int					process_token_word(const char *str,
+						t_tokenizer_state *state, t_data *data);
+int					handle_pipe_or_redirect(const char *str,
+						t_tokenizer_state *state, t_data *data);
+int					add_to_buffer(t_tokenizer_state *state, const char *str);
+int					process_expansion(t_tokenizer_state *state,
+						const char *str, t_data *data);
+int					process_quotes_and_redirects(t_tokenizer_state *state,
+						const char *str, t_data *data);
 
 // parsing
 int					parse_redirects(t_cmd *cmd, t_token *token,
@@ -196,6 +228,14 @@ int					is_redirect_token(t_token *token);
 int					check_initial_syntax_errors(t_token **tokens, t_data *data);
 char				***get_redirect_target(t_cmd *cmd, t_token_type type);
 t_cmd				*parse_tokens(t_token **tokens, t_data *data);
+int					init_append_data(t_redirect_append *data,
+						char **redirects, bool **flags);
+int					copy_existing_data(t_redirect_append *data,
+						char **redirects, bool *flags);
+int					add_new_value(t_redirect_append *data,
+						const char *value, bool flag);
+char				***get_redirect_target(t_cmd *cmd, t_token_type type);
+bool				**get_redirect_flag_target(t_cmd *cmd, t_token_type type);
 
 // builtins
 void				builtin_echo(t_cmd *cmd, t_data *data, int token_index);
