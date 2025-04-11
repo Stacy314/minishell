@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 12:39:29 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/11 19:51:54 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,9 @@ t_cmd				*init_cmd(void);
 int					init_data(t_data *data, char **env);
 int					init_state(t_tokenizer_state *state, t_token **tokens);
 t_cmd				*init_new_cmd(void);
+int					update_shlvl_line(char **line);
+void				free_env_copy(char **env_copy, int i);
+int					prepare_input(t_data *data);
 
 // signals
 void				set_signals_main(void);
@@ -230,7 +233,17 @@ int					add_or_update_env(char *arg, t_data *data);
 int					handle_all_heredocs(t_cmd *cmd, t_data *data);
 void				close_fd(t_cmd *cmd);
 int					count_commands(t_cmd *cmd);
-void	apply_redirections_for_heredoc(t_cmd *cmd, t_data *data);
+void				apply_redirections_for_heredoc(t_cmd *cmd, t_data *data);
+int					cleanup_heredoc_file(int tmp_fd, char *tmp_filename,
+						t_data *data, int status);
+int					process_heredoc_input(t_cmd *cmd, char *heredoc_delimiter,
+						int tmp_fd, t_data *data);
+void				write_to_heredoc(int tmp_fd, char *line, int expand,
+						t_data *data);
+int					find_delimiter_index(t_cmd *cmd, char *heredoc_delimiter);
+void				handle_child_process(char *executable, char **args,
+						t_data *data, char **paths);
+void					handle_parent_status(int status, t_data *data);
 
 // expantion
 char				*expand_variable(const char *str, int *j, t_data *data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 12:25:17 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/11 18:23:34 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,59 +46,20 @@ static int	create_unique_tmpfile(char *out_filename, size_t size)
 int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 		t_data *data)
 {
-	char	*line;
 	int		tmp_fd;
-	char	*expanded;
-	int		i;
 	char	*tmp_filename;
+	int		status;
 
 	if (!heredoc_delimiter)
 		return (ERROR);
 	tmp_filename = ft_calloc((size), 1);
-	if (!tmp_filename)
-		return (perror("calloc"), ERROR);
 	tmp_fd = create_unique_tmpfile(tmp_filename, size);
 	if (tmp_fd == -1)
 		return (free(tmp_filename), -1);
-	i = 0;
-	while (cmd->heredoc_delimiter && cmd->heredoc_delimiter[i])
-	{
-		if (ft_strcmp(cmd->heredoc_delimiter[i], heredoc_delimiter) == 0)
-			break ;
-		i++;
-	}
-	(signal(SIGINT, SIG_DFL), signal(SIGQUIT, SIG_IGN));
-	while (1)
-	{
-		line = readline("> ");
-		if (!line)
-		{
-			(write_error("minishell: warning: here-document delimited by "),
-				write_error("end-of-file (wanted `%s')\n", heredoc_delimiter),
-				unlink(tmp_filename));
-			break ;
-		}
-		if (ft_strcmp(line, heredoc_delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (cmd->heredoc_touch_quotes && cmd->heredoc_touch_quotes[i])
-			(write(tmp_fd, line, ft_strlen(line)), write(tmp_fd, "\n", 1));
-		else
-		{
-			expanded = expand_heredoc(line, data);
-			(write(tmp_fd, expanded, ft_strlen(expanded)), write(tmp_fd, "\n",
-					1), free(expanded));
-		}
-		free(line);
-	}
-	if (g_signal_flag == SIGINT) //
-		return (free_all(data, data->tokens, data->cmd), close(tmp_fd), unlink(tmp_filename), free(tmp_filename), -2);
-	close(tmp_fd);
-	tmp_fd = open(tmp_filename, O_RDONLY);
-	(unlink(tmp_filename), free(tmp_filename));
-	return (tmp_fd);
+	status = process_heredoc_input(cmd, heredoc_delimiter, tmp_fd, data);
+	if (status == 0)
+		unlink(tmp_filename);
+	return (cleanup_heredoc_file(tmp_fd, tmp_filename, data, status));
 }
 
 void	execute_heredoc(t_cmd *cmd, t_data *data)

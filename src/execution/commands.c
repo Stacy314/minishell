@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:19:24 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 19:47:14 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,39 +34,19 @@ int	check_permissions(char *cmd)
 	return (0);
 }
 
-static int	fork_and_exec(char *executable, char **args, t_data *data,
-		char **paths)
+int	fork_and_exec(char *executable, char **args, t_data *data, char **paths)
 {
 	pid_t	pid;
 	int		status;
-	int		sig;
 
-	set_signals_child();
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), data->exit_status = 1);
 	if (pid == 0)
-		(execve(executable, args, data->env), close(STDIN_FILENO),
-			close(STDOUT_FILENO), free_array(paths), free(executable),
-			free_all(data, data->tokens, data->cmd), exit(0));
+		handle_child_process(executable, args, data, paths);
 	waitpid(pid, &status, 0);
 	parent_restore_signals();
-	if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		if (sig == SIGINT)
-		{
-			data->exit_status = 130;
-			write(STDOUT_FILENO, "\n", 1);
-		}
-		if (sig == SIGQUIT)
-		{
-			data->exit_status = 131;
-			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-		}
-	}
-	else if (WIFEXITED(status))
-		data->exit_status = WEXITSTATUS(status);
+	handle_parent_status(status, data);
 	set_signals_main();
 	return (data->exit_status);
 }

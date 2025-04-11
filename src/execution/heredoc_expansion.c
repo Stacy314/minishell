@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_expansion.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:31:44 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 19:02:28 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ char	*expand_heredoc(const char *line, t_data *data)
 		return (perror("calloc"), NULL);
 	while (line[i])
 	{
-		if (line[i] == '$' && line[i + 1] && (ft_isalnum(line[i + 1])
-				|| line[i + 1] == '_'))
+		if (line[i] == '$' && line[i + 1] && (ft_isalnum(line[i + 1]) || line[i
+				+ 1] == '_'))
 		{
 			var_value = get_env(&line[i + 1], data);
 			if (!var_value)

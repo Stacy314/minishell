@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 12:55:10 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/11 19:59:50 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 {
 	while (tokens[*i] && tokens[*i]->type != PIPE)
 	{
-		if (tokens[*i]->type == NOTHING && tokens[*i + 1] && tokens[*i + 1]->type != PIPE)
+		if (tokens[*i]->type == NOTHING && tokens[*i + 1] && tokens[*i + 1]->type != PIPE) //
 		{
 			(*i)++;
 			continue ;

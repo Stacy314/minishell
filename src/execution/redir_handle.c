@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_handle.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 12:30:49 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/11 17:17:14 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

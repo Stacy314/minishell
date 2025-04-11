@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 12:38:25 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/11 19:44:59 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,13 +123,10 @@ int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 			if (fd == -2)
 			{
 				data->exit_status = 130;
-				set_signals_main();
-				return (false);
+				return (set_signals_main(), false);
 			}
 			else if (fd < 0)
 				return (false);
-			// if (tmp->heredoc_delimiter[i + 1])
-			// 	close(fd);
 			else
 				tmp->heredoc_fd = fd;
 			i++;
@@ -141,7 +138,7 @@ int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 
 void	apply_redirections_for_heredoc(t_cmd *cmd, t_data *data)
 {
-	int i;
+	int	i;
 
 	if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
 	{

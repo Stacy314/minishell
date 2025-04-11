@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_utils2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:21:38 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 17:17:02 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
