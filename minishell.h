@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 22:19:53 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/12 01:16:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ typedef struct s_expand_ctx
 	size_t			buffer_size;
 	size_t			i;
 	size_t			k;
-	const char		*line;
 }					t_expand_ctx;
 
 typedef struct s_data
@@ -112,6 +111,14 @@ typedef struct s_data
 	bool			is_child;
 	int				heredoc_count;
 }					t_data;
+
+typedef struct s_redirect_append
+{
+	int				size;
+	char			**new_array;
+	bool			*new_flags;
+	bool			has_flags;
+}					t_redirect_append;
 
 // utils
 void				write_error(const char *format, ...);
@@ -181,6 +188,30 @@ int					update_quote_state(t_tokenizer_state *state, char c);
 int					flush_word_before_redirect(t_tokenizer_state *state);
 int					add_redirect_token(t_tokenizer_state *state,
 						const char *symbol, t_token_type type, int advance);
+char				*get_exit_status_value(t_data *data, int *j);
+char				*extract_var_name(const char *str, int *j);
+char				*search_env_value(char *var_name, t_data *data);
+int					heredoc_delimiter_valid(t_tokenizer_state *state,
+						const char *str);
+int					fill_heredoc_buffer(t_tokenizer_state *state,
+						const char *str, bool *touch_quotes);
+int					handle_heredoc_delimiter(t_tokenizer_state *state,
+						const char *str);
+int					check_quotes_and_redirects(t_tokenizer_state *state,
+						const char *str, t_data *data);
+int					check_expansion_result(int result, t_tokenizer_state *state,
+						const char *str);
+int					create_nothing_token(const char *str,
+						t_tokenizer_state *state);
+int					process_token_word(const char *str,
+						t_tokenizer_state *state, t_data *data);
+int					handle_pipe_or_redirect(const char *str,
+						t_tokenizer_state *state, t_data *data);
+int					add_to_buffer(t_tokenizer_state *state, const char *str);
+int					process_expansion(t_tokenizer_state *state, const char *str,
+						t_data *data);
+int					process_quotes_and_redirects(t_tokenizer_state *state,
+						const char *str, t_data *data);
 
 // parsing
 int					parse_redirects(t_cmd *cmd, t_token *token,
@@ -196,6 +227,16 @@ int					is_redirect_token(t_token *token);
 int					check_initial_syntax_errors(t_token **tokens, t_data *data);
 char				***get_redirect_target(t_cmd *cmd, t_token_type type);
 t_cmd				*parse_tokens(t_token **tokens, t_data *data);
+int					init_append_data(t_redirect_append *data, char **redirects,
+						bool **flags);
+int					copy_existing_data(t_redirect_append *data,
+						char **redirects, bool *flags);
+int					add_new_value(t_redirect_append *data, const char *value,
+						bool flag);
+char				***get_redirect_target(t_cmd *cmd, t_token_type type);
+bool				**get_redirect_flag_target(t_cmd *cmd, t_token_type type);
+int					append_redirect_value(char ***redirects, const char *value,
+						bool **flags, bool flag);
 
 // builtins
 void				builtin_echo(t_cmd *cmd, t_data *data, int token_index);
@@ -255,14 +296,14 @@ void				handle_child_process(char *executable, char **args,
 void				handle_parent_status(int status, t_data *data);
 t_expand_ctx		*init_ctx(t_expand_ctx *ctx, const char *line);
 char				*get_env_heredoc(const char *var, t_data *data);
-int					ensure_buffer_capacity(t_expand_ctx *ctx,
-						size_t required_size);
 pid_t				execute_first_command(t_token **tokens, t_cmd *cmd,
 						t_data *data);
 pid_t				execute_middle_command(t_cmd *current, t_cmd *cmd,
 						t_data *data, int new_pipe_fd[2]);
 pid_t				execute_last_command(t_token **tokens, t_cmd *current,
 						t_cmd *cmd, t_data *data);
+int					ensure_buffer_capacity(t_expand_ctx *ctx,
+						size_t required_size);
 
 // expantion
 char				*expand_variable(const char *str, int *j, t_data *data);

@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 22:12:43 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/12 01:16:05 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,21 +39,6 @@ char	*get_env_heredoc(const char *var, t_data *data)
 	}
 	free(name);
 	return (ft_strdup(""));
-}
-
-t_expand_ctx	*init_ctx(t_expand_ctx *ctx, const char *line)
-{
-	ctx = ft_calloc(sizeof(t_expand_ctx) + 1, 1);
-	if (ctx == NULL)
-		return (NULL);
-	ctx->i = 0;
-	ctx->k = 0;
-	ctx->line = line;
-	ctx->buffer_size = 128;
-	ctx->result = ft_calloc(ctx->buffer_size + 1, sizeof(char));
-	if (!ctx->result)
-		return (perror("calloc"), NULL);
-	return (ctx);
 }
 
 int	ensure_buffer_capacity(t_expand_ctx *ctx, size_t required_size)

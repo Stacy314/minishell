@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 23:12:49 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 21:18:37 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,8 @@ int	create_word_token(t_tokenizer_state *state)
 }
 
 static int	tokenize_loop(const char *str, t_tokenizer_state *state,
-		t_data *data)
+	t_data *data)
 {
-	int	redir_result;
-
 	while (str[state->j])
 	{
 		skip_spaces(str, state);
@@ -76,23 +74,11 @@ static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 		if (!state->inside_quotes && (is_pipe(str[state->j])
 				|| is_redirect(str[state->j])))
 		{
-			if (str[state->j] == '|')
-			{
-				if (create_pipe_operator(str, state) == MALLOC_ERROR)
-					return (MALLOC_ERROR);
-				state->j++;
-			}
-			else
-			{
-				redir_result = handle_quotes_and_redirects(state, str, data);
-				if (redir_result == MALLOC_ERROR)
-					return (MALLOC_ERROR);
-				if (redir_result == 2)
-					return (ERROR);
-			}
+			if (handle_pipe_or_redirect(str, state, data) != SUCCESS)
+				return (MALLOC_ERROR);
 			continue ;
 		}
-		if (handle_token_word(state, str, data) == MALLOC_ERROR)
+		if (process_token_word(str, state, data) == MALLOC_ERROR)
 			return (MALLOC_ERROR);
 	}
 	return (SUCCESS);

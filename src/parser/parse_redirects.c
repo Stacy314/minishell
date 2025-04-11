@@ -6,24 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/10 23:09:36 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 23:31:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-char	***get_redirect_target(t_cmd *cmd, t_token_type type)
-{
-	if (type == REDIRECT_IN)
-		return (&cmd->input_redirects);
-	else if (type == REDIRECT_OUT)
-		return (&cmd->output_redirects);
-	else if (type == APPEND)
-		return (&cmd->append_redirects);
-	else if (type == HEREDOC)
-		return (&cmd->heredoc_delimiter);
-	return (NULL);
-}
 
 int	initialize_redirect_array(char ***redirects, const char *value,
 		bool **flags, bool flag)
@@ -58,54 +45,30 @@ int	initialize_redirect_array(char ***redirects, const char *value,
 int	append_redirect_value(char ***redirects, const char *value, bool **flags,
 		bool flag)
 {
-	int		i;
-	int		j;
-	char	**new_array;
-	bool	*new_flags;
+	t_redirect_append	data;
+	bool				*flags_ptr;
 
-	new_flags = NULL;
-	i = 0;
-	while ((*redirects)[i])
-		i++;
-	new_array = ft_calloc(i + 2, sizeof(char *));
-	if (!new_array)
+	if (init_append_data(&data, *redirects, flags) == ERROR)
 		return (ERROR);
+	flags_ptr = NULL;
 	if (flags)
+		flags_ptr = *flags;
+	copy_existing_data(&data, *redirects, flags_ptr);
+	if (add_new_value(&data, value, flag) == ERROR)
 	{
-		new_flags = ft_calloc(i + 2, sizeof(bool));
-		if (!new_flags)
-			return (free(new_array), ERROR);
+		if (data.has_flags)
+			free(data.new_flags);
+		free(data.new_array);
+		return (ERROR);
 	}
-	j = 0;
-	while (j < i)
+	if (data.has_flags)
 	{
-		new_array[j] = (*redirects)[j];
-		if (flags)
-			new_flags[j] = (*flags)[j];
-		j++;
-	}
-	new_array[i] = ft_strdup(value);
-	if (!new_array[i])
-	{
-		if (flags)
-			free(new_flags);
-		return (free(new_array), ERROR);
-	}
-	new_array[i + 1] = NULL;
-	if (flags)
-	{
-		new_flags[i] = flag;
 		free(*flags);
-		*flags = new_flags;
+		*flags = data.new_flags;
 	}
-	return (free(*redirects), *redirects = new_array, SUCCESS);
-}
-
-bool	**get_redirect_flag_target(t_cmd *cmd, t_token_type type)
-{
-	if (type == HEREDOC)
-		return (&cmd->heredoc_touch_quotes);
-	return (NULL);
+	free(*redirects);
+	*redirects = data.new_array;
+	return (SUCCESS);
 }
 
 int	parse_redirects(t_cmd *cmd, t_token *token, t_token_type type)

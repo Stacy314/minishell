@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_tokenizer.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 23:13:12 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 22:18:58 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,41 +44,6 @@ int	create_nothing_token(const char *str, t_tokenizer_state *state)
 	return (0);
 }
 
-int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
-{
-	int	result;
-
-	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
-			|| state->inside_quotes))
-	{
-		result = handle_quotes_and_redirects(state, str, data);
-		if (result == MALLOC_ERROR)
-			return (MALLOC_ERROR);
-		if (result == 1)
-			continue ;
-		if (result == 2)
-			return (ERROR);
-		result = handle_expansion(state, str, data);
-		if (result == MALLOC_ERROR)
-			return (MALLOC_ERROR);
-		if (result == 1 || result == 2)
-			continue ;
-		if (result == 3)
-		{
-			if (create_nothing_token(str, state) == MALLOC_ERROR)
-				return (MALLOC_ERROR);
-			continue ;
-		}
-		if (result == 2)
-			break ;
-		if (state->k >= state->buffer_size - 1)
-			if (expand_buffer(state) == MALLOC_ERROR)
-				return (MALLOC_ERROR);
-		state->buffer[state->k++] = str[state->j++];
-	}
-	return (create_word_token(state));
-}
-
 int	update_quote_state(t_tokenizer_state *state, char c)
 {
 	if (!state->inside_quotes)
@@ -111,4 +76,33 @@ int	flush_word_before_redirect(t_tokenizer_state *state)
 	state->i++;
 	state->k = 0;
 	return (0);
+}
+
+int	handle_token_word(t_tokenizer_state *state, const char *str, t_data *data)
+{
+	int	status;
+
+	while (str[state->j] && (!ft_isspace((unsigned char)str[state->j])
+			|| state->inside_quotes))
+	{
+		status = process_quotes_and_redirects(state, str, data);
+		if (status != 0)
+		{
+			if (status == MALLOC_ERROR || status == ERROR)
+				return (status);
+			continue ;
+		}
+		status = process_expansion(state, str, data);
+		if (status != 0)
+		{
+			if (status == MALLOC_ERROR)
+				return (MALLOC_ERROR);
+			if (status == 2)
+				break ;
+			continue ;
+		}
+		if (add_to_buffer(state, str) == MALLOC_ERROR)
+			return (MALLOC_ERROR);
+	}
+	return (create_word_token(state));
 }

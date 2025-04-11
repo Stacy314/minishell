@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 23:10:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 20:33:45 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,46 +15,19 @@
 char	*expand_variable(const char *str, int *j, t_data *data)
 {
 	char	*var_name;
-	int		k;
-	char	**env;
-	int		i;
-	int		start;
-	char	*tmp;
+	char	*value;
 
-	k = 0;
-	i = 0;
 	(*j)++;
 	if (str[*j] == '?')
-		return ((*j)++, ft_itoa(data->exit_status));
-	start = *j;
-	while (str[*j] && (ft_isalnum(str[*j]) || str[*j] == '_'))
-		(*j)++;
-	if (*j == start)
-	{
-		tmp = ft_calloc(2, sizeof(char));
-		if (!tmp)
-			return (perror("calloc1"), NULL);
-		tmp[0] = '$';
-		return (tmp);
-	}
-	var_name = ft_calloc((*j - start + 1), 1);
+		return (get_exit_status_value(data, j));
+	var_name = extract_var_name(str, j);
 	if (!var_name)
-		return (perror("calloc2"), NULL);
-	while (start < *j)
-		var_name[k++] = str[start++];
-	var_name[k] = '\0';
-	env = data->env;
-	while (env[i])
-	{
-		if (!ft_strncmp(env[i], var_name, k) && env[i][k] == '=')
-		{
-			free(var_name);
-			return (ft_strdup(env[i] + k + 1));
-		}
-		i++;
-	}
+		return (NULL);
+	if (var_name[0] == '$' && var_name[1] == '\0')
+		return (var_name);
+	value = search_env_value(var_name, data);
 	free(var_name);
-	return (NULL);
+	return (value);
 }
 
 int	expand_buffer(t_tokenizer_state *state)
@@ -71,42 +44,49 @@ int	expand_buffer(t_tokenizer_state *state)
 	return (0);
 }
 
+static int	handle_single_quote_expansion(t_tokenizer_state *state,
+	const char *str, int start, char *expanded)
+{
+	int	i;
+
+	i = start;
+	while (i < state->j)
+		state->buffer[state->k++] = str[i++];
+	free(expanded);
+	return (1);
+}
+
+static int	handle_expansion_error(t_tokenizer_state *state, char *expanded)
+{
+	free(expanded);
+	if (state->quote_type == '\"')
+		return (2);
+	return (3);
+}
+
 int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 {
 	char	*expanded;
 	size_t	len;
-	int		start_j;
-	int		i;
+	int		start;
 
-	if (str[state->j] == '$')
+	if (str[state->j] != '$')
+		return (0);
+	start = state->j;
+	expanded = expand_variable(str, &state->j, data);
+	if (state->quote_type == '\'')
+		return (handle_single_quote_expansion(state, str, start, expanded));
+	if (!expanded)
+		return (handle_expansion_error(state, expanded));
+	len = ft_strlen(expanded);
+	while (state->k + len >= (size_t)state->buffer_size)
 	{
-		start_j = state->j;
-		expanded = expand_variable(str, &state->j, data);
-		if (state->quote_type == '\'')
-		{
-			i = start_j;
-			while (i < state->j)
-				state->buffer[state->k++] = str[i++];
-			return (free(expanded), 1);
-		}
-		if (!expanded)
-		{
-			free(expanded);
-			if (state->quote_type == '\"')
-				return (free(expanded), 2);
-			return (free(expanded), 3);
-		}
-		len = ft_strlen(expanded);
-		while (state->k + len >= (size_t)state->buffer_size)
-		{
-			if (expand_buffer(state) == -1)
-				return (free(expanded), -1);
-		}
-		ft_strlcpy(&state->buffer[state->k], expanded, state->buffer_size
-			- state->k);
-		state->k += len;
-		free(expanded);
-		return (1);
+		if (expand_buffer(state) == -1)
+			return (free(expanded), -1);
 	}
-	return (0);
+	ft_strlcpy(&state->buffer[state->k], expanded,
+		state->buffer_size - state->k);
+	state->k += len;
+	free(expanded);
+	return (1);
 }
