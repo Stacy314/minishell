@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:43:08 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:39:10 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ pid_t	execute_first_command(t_token **tokens, t_cmd *cmd, t_data *data)
 		if (dup2(cmd->pipe_fd[1], STDOUT_FILENO) == -1)
 			(perror("dup2"), close_fd(cmd), free_all(data, tokens, cmd),
 				exit(1));
-		(close(cmd->pipe_fd[0]), close(cmd->pipe_fd[1]), apply_redirections(cmd,
+		(close(cmd->pipe_fd[0]), close(cmd->pipe_fd[1]), apply_redirections_for_heredoc(cmd,
 				data), execute_for_one(tokens, cmd, data), close(STDIN_FILENO),
 			close(STDOUT_FILENO), close_fd(cmd), free_all(data, tokens, cmd),
 			exit(data->exit_status));
@@ -59,7 +59,7 @@ pid_t	execute_middle_command(t_cmd *current, t_cmd *cmd, t_data *data,
 				perror("dup2 new_pipe_fd[1]"), exit(1), -1);
 		(close(current->pipe_fd[0]), close(current->pipe_fd[1]),
 			close(new_pipe_fd[0]), close(new_pipe_fd[1]),
-			apply_redirections(current, data), execute_for_one(data->tokens,
+			apply_redirections_for_heredoc(current, data), execute_for_one(data->tokens,
 				current, data), close(STDIN_FILENO), close(STDOUT_FILENO),
 			close_fd(cmd), free_all(data, data->tokens, cmd),
 			exit(data->exit_status));
@@ -86,7 +86,7 @@ pid_t	execute_last_command(t_token **tokens, t_cmd *current, t_cmd *cmd,
 					perror("dup2 current->pipe_fd[0]"), exit(1), -1);
 			close(current->pipe_fd[0]);
 		}
-		(apply_redirections(current, data), execute_for_one(tokens, current,
+		(apply_redirections_for_heredoc(current, data), execute_for_one(tokens, current,
 				data), close(STDIN_FILENO), close(STDOUT_FILENO), close_fd(cmd),
 			free_all(data, tokens, cmd), exit(data->exit_status));
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:41:29 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:39:29 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,6 +230,7 @@ int					add_or_update_env(char *arg, t_data *data);
 int					handle_all_heredocs(t_cmd *cmd, t_data *data);
 void				close_fd(t_cmd *cmd);
 int					count_commands(t_cmd *cmd);
+void	apply_redirections_for_heredoc(t_cmd *cmd, t_data *data);
 
 // expantion
 char				*expand_variable(const char *str, int *j, t_data *data);

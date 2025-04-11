@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:28:21 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:25:17 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 		}
 		free(line);
 	}
+	if (g_signal_flag == SIGINT) //
+		return (free_all(data, data->tokens, data->cmd), close(tmp_fd), unlink(tmp_filename), free(tmp_filename), -2);
 	close(tmp_fd);
 	tmp_fd = open(tmp_filename, O_RDONLY);
 	(unlink(tmp_filename), free(tmp_filename));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 23:30:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:43:41 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,60 @@
 
 //cat Makefile > out | << lim | echo hello >> out
 
+// static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (input[i])
+// 	{
+// 		if (input[i] == '>' && input[i + 1] == '>' && cmd->append_redirects)
+// 		{
+// 			handle_append_redirect(data, cmd);
+// 			i += 2;
+// 			break ;
+// 		}
+// 		else if (input[i] == '<' && input[i + 1] == '<'
+// 			&& cmd->heredoc_delimiter)
+// 		{
+// 			execute_heredoc(cmd, data);
+// 			i += 2;
+// 			break ;
+// 		}
+// 		else if (input[i] == '<' && cmd->input_redirects)
+// 		{
+// 			handle_input_redirect(data, cmd);
+// 			i++;
+// 			break ;
+// 		}
+// 		else if (input[i] == '>' && cmd->output_redirects)
+// 		{
+// 			handle_output_redirect(data, cmd);
+// 			i++;
+// 			break ;
+// 		}
+// 		i++;
+// 	}
+// }
+
+
 static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
 {
 	int	i;
 
+	// ✳️ Спочатку обробляємо heredoc'и
+	i = 0;
+	while (input[i])
+	{
+		if (input[i] == '<' && input[i + 1] == '<' && cmd->heredoc_delimiter)
+		{
+			execute_heredoc(cmd, data);
+			break ;
+		}
+		i++;
+	}
+
+	// 🔁 Тепер обробляємо інші редіректи
 	i = 0;
 	while (input[i])
 	{
@@ -25,30 +75,22 @@ static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
 		{
 			handle_append_redirect(data, cmd);
 			i += 2;
-			break ;
 		}
-		else if (input[i] == '<' && input[i + 1] == '<'
-			&& cmd->heredoc_delimiter)
-		{
-			execute_heredoc(cmd, data);
-			i += 2;
-			break ;
-		}
-		else if (input[i] == '<' && cmd->input_redirects)
+		else if (input[i] == '<' && input[i + 1] != '<' && cmd->input_redirects)
 		{
 			handle_input_redirect(data, cmd);
 			i++;
-			break ;
 		}
-		else if (input[i] == '>' && cmd->output_redirects)
+		else if (input[i] == '>' && input[i + 1] != '>' && cmd->output_redirects)
 		{
 			handle_output_redirect(data, cmd);
 			i++;
-			break ;
 		}
-		i++;
+		else
+			i++;
 	}
 }
+
 
 int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 {
@@ -64,6 +106,7 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 	if (pid == 0)
 	{
 		redir_loop(cmd, data->input, data);
+		apply_redirections(cmd, data);
 		execute_for_one(tokens, cmd, data);
 		(close(STDIN_FILENO), close(STDOUT_FILENO));
 		(free_all(data, tokens, cmd), exit(data->exit_status));
@@ -89,15 +132,15 @@ void	apply_redirections(t_cmd *cmd, t_data *data)
 {
 	int i;
 
-	//if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
-	//{
-	//	if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
-	//	{
-	//		perror("dup2 heredoc");
-	//		exit(1);
-	//	}
-	//	close(cmd->heredoc_fd);
-	//}
+	// if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
+	// {
+	// 	if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
+	// 	{
+	// 		perror("dup2 heredoc");
+	// 		exit(1);
+	// 	}
+	// 	close(cmd->heredoc_fd);
+	// }
 	i = 0;
 	while (data->input[i])
 	{

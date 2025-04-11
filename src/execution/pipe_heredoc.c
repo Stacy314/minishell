@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:41:02 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:38:25 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+extern sig_atomic_t	g_signal_flag;
 
 void	close_fd(t_cmd *cmd)
 {
@@ -78,6 +80,12 @@ int	handle_heredoc_pipe(t_cmd *cmd, t_data *data)
 					1), free(line));
 		}
 		(close(pipe_fd[1]), free_all(data, data->tokens, data->cmd), exit(0));
+		if (g_signal_flag == SIGINT)
+		{
+			free_all(data, data->tokens, data->cmd);
+			close(pipe_fd[0]);
+			return (-2);
+		}
 	}
 	close(pipe_fd[1]);
 	waitpid(pid, &status, 0);
@@ -103,13 +111,15 @@ int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 {
 	t_cmd	*tmp;
 	int		fd;
+	int		i;
 
 	tmp = cmd;
 	while (tmp)
 	{
-		if (tmp->heredoc_delimiter)
+		i = 0;
+		while (tmp->heredoc_delimiter && tmp->heredoc_delimiter[i])
 		{
-			fd = handle_heredoc_pipe(tmp, data);
+			fd = handle_heredoc(tmp, tmp->heredoc_delimiter[i], 128, data);
 			if (fd == -2)
 			{
 				data->exit_status = 130;
@@ -118,9 +128,41 @@ int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 			}
 			else if (fd < 0)
 				return (false);
-			tmp->heredoc_fd = fd;
+			// if (tmp->heredoc_delimiter[i + 1])
+			// 	close(fd);
+			else
+				tmp->heredoc_fd = fd;
+			i++;
 		}
 		tmp = tmp->next;
 	}
 	return (true);
+}
+
+void	apply_redirections_for_heredoc(t_cmd *cmd, t_data *data)
+{
+	int i;
+
+	if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
+	{
+		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2 heredoc");
+			exit(1);
+		}
+		close(cmd->heredoc_fd);
+	}
+	i = 0;
+	while (data->input[i])
+	{
+		if (data->input[i] == '>' && data->input[i + 1] == '>')
+			handle_append_redirect(data, cmd);
+		else if (data->input[i] == '<' && data->input[i + 1] == '<')
+			;
+		else if (data->input[i] == '<')
+			handle_input_redirect(data, cmd);
+		else if (data->input[i] == '>')
+			handle_output_redirect(data, cmd);
+		i++;
+	}
 }

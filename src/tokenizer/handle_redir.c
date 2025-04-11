@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 23:11:22 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 11:07:38 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ int	add_redirect_token(t_tokenizer_state *state, const char *symbol,
 static int	handle_heredoc_delimiter(t_tokenizer_state *state, const char *str)
 {
 	bool	touch_quotes;
-	int		start;
+	// int		start;
 	int		k;
 	char	quote;
 
 	touch_quotes = false;
-	start = state->j;
+	// start = state->j;
 	k = 0;
 	skip_spaces(str, state);
 	if (str[state->j] == '\0')

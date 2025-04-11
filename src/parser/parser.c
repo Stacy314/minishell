@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 23:10:07 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:55:10 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,14 @@ int	check_initial_syntax_errors(t_token **tokens, t_data *data)
 	i = 0;
 	while (tokens[i])
 	{
-		if (tokens[i]->type == PIPE && (i == 0 || !tokens[i + 1]))
+		if (tokens[i]->type == PIPE)
 		{
-			write_error("minishell: syntax error near unexpected token `|'\n");
-			data->exit_status = 2;
-			return (1);
+			if (i == 0 || !tokens[i + 1] || tokens[i + 1]->type == PIPE)
+			{
+				write_error("minishell: syntax error near unexpected token `|'\n");
+				data->exit_status = 2;
+				return (1);
+			}
 		}
 		i++;
 	}
@@ -61,7 +64,7 @@ int	fill_cmd(t_cmd *cmd, t_token **tokens, t_data *data, int *i)
 {
 	while (tokens[*i] && tokens[*i]->type != PIPE)
 	{
-		if (tokens[*i]->type == NOTHING)
+		if (tokens[*i]->type == NOTHING && tokens[*i + 1] && tokens[*i + 1]->type != PIPE)
 		{
 			(*i)++;
 			continue ;
