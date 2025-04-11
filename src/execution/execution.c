@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 17:17:05 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/11 22:17:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data)
 {
 	if (contains_special_char(tokens, PIPE))
 	{
-		execute_pipeline(tokens, cmd, data);
+		execute_pipeline(cmd, data);
 		return ;
 	}
 	else if (cmd->heredoc_delimiter || cmd->input_redirects

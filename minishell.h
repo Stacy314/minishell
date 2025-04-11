@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 19:51:54 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/11 22:19:53 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_tokenizer_state
 	char			quote_type;
 	t_token			**tokens;
 }					t_tokenizer_state;
+
 typedef struct s_cmd
 {
 	char			**args;
@@ -89,6 +90,15 @@ typedef struct s_cmd
 	pid_t			*pipe_pids;
 	int				pipe_fd[2];
 }					t_cmd;
+
+typedef struct s_expand_ctx
+{
+	char			*result;
+	size_t			buffer_size;
+	size_t			i;
+	size_t			k;
+	const char		*line;
+}					t_expand_ctx;
 
 typedef struct s_data
 {
@@ -213,8 +223,7 @@ void				add_or_update_export(char *key, t_data *data);
 // execution
 void				execute(t_token **tokens, t_cmd *cmd, t_data *data);
 int					execute_command(char *cmd, t_data *data, char **args);
-void				execute_pipeline(t_token **tokens, t_cmd *cmd,
-						t_data *data);
+void				execute_pipeline(t_cmd *cmd, t_data *data);
 void				execute_for_one(t_token **tokens, t_cmd *cmd, t_data *data);
 int					execute_redirection(t_cmd *cmd, t_data *data,
 						t_token **tokens);
@@ -243,7 +252,17 @@ void				write_to_heredoc(int tmp_fd, char *line, int expand,
 int					find_delimiter_index(t_cmd *cmd, char *heredoc_delimiter);
 void				handle_child_process(char *executable, char **args,
 						t_data *data, char **paths);
-void					handle_parent_status(int status, t_data *data);
+void				handle_parent_status(int status, t_data *data);
+t_expand_ctx		*init_ctx(t_expand_ctx *ctx, const char *line);
+char				*get_env_heredoc(const char *var, t_data *data);
+int					ensure_buffer_capacity(t_expand_ctx *ctx,
+						size_t required_size);
+pid_t				execute_first_command(t_token **tokens, t_cmd *cmd,
+						t_data *data);
+pid_t				execute_middle_command(t_cmd *current, t_cmd *cmd,
+						t_data *data, int new_pipe_fd[2]);
+pid_t				execute_last_command(t_token **tokens, t_cmd *current,
+						t_cmd *cmd, t_data *data);
 
 // expantion
 char				*expand_variable(const char *str, int *j, t_data *data);
