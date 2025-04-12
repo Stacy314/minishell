@@ -3,22 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 21:33:13 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/13 00:38:20 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
+static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (input[i])
+	{
+		if (input[i] == '>' && input[i + 1] == '>' && cmd->append_redirects)
+		{
+			handle_append_redirect(data, cmd);
+			i += 2;
+		}
+		else if (input[i] == '<' && input[i + 1] != '<' && cmd->input_redirects)
+		{
+			handle_input_redirect(data, cmd);
+			i++;
+		}
+		else if (input[i] == '>' && input[i + 1] != '>'
+			&& cmd->output_redirects)
+		{
+			handle_output_redirect(data, cmd);
+			i++;
+		}
+		else
+			i++;
+	}
+}
+
 void	start_heredoc(t_cmd *cmd, const char *input, t_data *data)
 {
 	int	i;
 
-	data->saved_stdin = dup(STDIN_FILENO);
-	if (data->saved_stdin == -1)
-		perror("dup");
 	i = 0;
 	while (input[i])
 	{
@@ -29,13 +54,7 @@ void	start_heredoc(t_cmd *cmd, const char *input, t_data *data)
 		}
 		i++;
 	}
-	if (cmd->input_redirects || cmd->output_redirects || cmd->append_redirects)
-		execute_redirection(cmd, data, data->tokens);
-	if (data->saved_stdin != -1)
-		if (dup2(data->saved_stdin, STDIN_FILENO) == -1)
-			(perror("restore stdin"), close(data->saved_stdin),
-				close(STDIN_FILENO), close(STDOUT_FILENO));
-	close(data->saved_stdin);
+	redir_loop(cmd, input, data);
 }
 
 int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
@@ -49,10 +68,11 @@ int	execute_redirection(t_cmd *cmd, t_data *data, t_token **tokens)
 	if (pid == -1)
 		return (perror("fork"), 0);
 	if (pid == 0)
-		(apply_redirections(cmd, data), execute_for_one(tokens, cmd, data),
-			(close(STDIN_FILENO), close(STDOUT_FILENO)), (free_all(data, tokens,
-					cmd), exit(data->exit_status)));
-	(waitpid(pid, &status, 0), set_signals_main());
+		(start_heredoc(cmd, data->input, data), apply_redirections(cmd, data),
+			execute_for_one(tokens, cmd, data), (close(STDIN_FILENO),
+				close(STDOUT_FILENO)), (free_all(data, tokens, cmd),
+				exit(data->exit_status)));
+	(waitpid(pid, &status, 0), parent_restore_signals());
 	if (WIFSIGNALED(status))
 	{
 		sig = WTERMSIG(status);

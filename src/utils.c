@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 20:53:56 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 22:13:30 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ bool	contains_special_char(t_token **tokens, t_token_type type)
 	int	i;
 
 	i = 0;
-	if (!tokens || !tokens[i])
-		return (false);
 	while (tokens[i])
 	{
 		if (tokens[i]->type == type)

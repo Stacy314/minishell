@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 20:04:47 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/13 00:36:19 by anastasiia       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ char	*expand_variable(const char *str, int *j, t_data *data)
 	return (value);
 }
 
+
 int	expand_buffer(t_tokenizer_state *state)
 {
 	char	*new_buffer;
@@ -47,7 +48,7 @@ int	expand_buffer(t_tokenizer_state *state)
 }
 
 static int	handle_single_quote_expansion(t_tokenizer_state *state,
-		const char *str, int start, char *expanded)
+	const char *str, int start, char *expanded)
 {
 	int	i;
 
@@ -86,8 +87,8 @@ int	handle_expansion(t_tokenizer_state *state, const char *str, t_data *data)
 		if (expand_buffer(state) == -1)
 			return (free(expanded), -1);
 	}
-	ft_strlcpy(&state->buffer[state->k], expanded, state->buffer_size
-		- state->k);
+	ft_strlcpy(&state->buffer[state->k], expanded,
+		state->buffer_size - state->k);
 	state->k += len;
 	free(expanded);
 	return (1);

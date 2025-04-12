@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 17:28:51 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 21:18:37 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	create_word_token(t_tokenizer_state *state)
 }
 
 static int	tokenize_loop(const char *str, t_tokenizer_state *state,
-		t_data *data)
+	t_data *data)
 {
 	while (str[state->j])
 	{
@@ -84,6 +84,30 @@ static int	tokenize_loop(const char *str, t_tokenizer_state *state,
 	return (SUCCESS);
 }
 
+int	heredoc_count(const char *str, t_data *data)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (count > HEREDOC_MAX)
+		{
+			data->heredoc_count = count;
+			return (0);
+		}
+		if (str[i] == '<' && str[i + 1] == '<')
+		{
+			i += 2;
+			count++;
+		}
+		i++;
+	}
+	return (1);
+}
+
 t_token	**split_to_tokens(const char *str, t_data *data)
 {
 	t_tokenizer_state	state;
@@ -91,6 +115,7 @@ t_token	**split_to_tokens(const char *str, t_data *data)
 
 	if (!str)
 		return (NULL);
+	heredoc_count(str, data);
 	tokens = ft_calloc(ft_strlen(str) + 1, sizeof(t_token *));
 	if (!tokens)
 		return (NULL);

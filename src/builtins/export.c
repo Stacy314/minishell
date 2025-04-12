@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 17:53:14 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/10 19:07:03 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	append_env_var(char *arg, t_data *data)
 		env_size++;
 	new_env = ft_calloc(env_size + 2, sizeof(char *));
 	if (!new_env)
-		(perror("calloc"), free_all(data, data->tokens, data->cmd), exit(1));
+		return (perror("calloc"), data->exit_status = 1, 1);
 	j = 0;
 	while (j < env_size)
 	{
@@ -49,7 +49,8 @@ static int	append_env_var(char *arg, t_data *data)
 	}
 	new_env[env_size] = ft_strdup(arg);
 	if (!new_env[env_size])
-		(perror("strdup"), free_all(data, data->tokens, data->cmd), exit(1));
+		return (perror("strdup"), data->exit_status = 1, 1);
+	new_env[env_size + 1] = NULL;
 	free(data->env);
 	data->env = new_env;
 	data->exit_status = 0;

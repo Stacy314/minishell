@@ -6,24 +6,11 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 21:39:19 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 23:54:19 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-int	count_commands(t_cmd *cmd)
-{
-	int	count;
-
-	count = 0;
-	while (cmd)
-	{
-		count++;
-		cmd = cmd->next;
-	}
-	return (count);
-}
 
 void	close_fd(t_cmd *cmd)
 {
@@ -54,8 +41,11 @@ int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 		while (tmp->heredoc_delimiter && tmp->heredoc_delimiter[i])
 		{
 			fd = handle_heredoc(tmp, tmp->heredoc_delimiter[i], 128, data);
-			if (g_signal_flag == SIGINT)
-				return (data->exit_status = 130, false);
+			if (fd == -2)
+			{
+				data->exit_status = 130;
+				return (set_signals_main(), false);
+			}
 			else if (fd < 0)
 				return (false);
 			else
@@ -64,7 +54,19 @@ int	handle_all_heredocs(t_cmd *cmd, t_data *data)
 		}
 		tmp = tmp->next;
 	}
-	set_signals_main();
 	return (true);
 }
 
+void	apply_redirections_for_heredoc(t_cmd *cmd, t_data *data)
+{
+	if (cmd->heredoc_delimiter && cmd->heredoc_fd != -1)
+	{
+		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2 heredoc");
+			exit(1);
+		}
+		close(cmd->heredoc_fd);
+	}
+	apply_redirections(cmd, data);
+}

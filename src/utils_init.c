@@ -1,16 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils2.c                                           :+:      :+:    :+:   */
+/*   utils_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/10 22:15:13 by apechkov         ###   ########.fr       */
+/*   Created: 2025/04/10 14:56:52 by mgallyam          #+#    #+#             */
+/*   Updated: 2025/04/10 16:22:19 by mgallyam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	update_shlvl_line(char **line)
+{
+	int		shlvl;
+	char	*tmp;
+	char	*new;
+
+	shlvl = ft_atoi(*line + 6) + 1;
+	tmp = ft_itoa(shlvl);
+	if (!tmp)
+		return (ERROR);
+	new = ft_strjoin("SHLVL=", tmp);
+	free(tmp);
+	if (!new)
+		return (ERROR);
+	free(*line);
+	*line = new;
+	return (SUCCESS);
+}
 
 void	free_env_copy(char **env_copy, int i)
 {

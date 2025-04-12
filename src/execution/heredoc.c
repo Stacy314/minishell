@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 21:23:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 22:03:01 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,7 @@ int	handle_heredoc(t_cmd *cmd, char *heredoc_delimiter, size_t size,
 		return (free(tmp_filename), -1);
 	status = process_heredoc_input(cmd, heredoc_delimiter, tmp_fd, data);
 	if (status == 0)
-		return (close(tmp_fd), unlink(tmp_filename), free(tmp_filename), 0);
-	if (status == -2)
-		return (close(tmp_fd), unlink(tmp_filename), free(tmp_filename), -1);
+		unlink(tmp_filename);
 	return (cleanup_heredoc_file(tmp_fd, tmp_filename, data, status));
 }
 
@@ -73,11 +71,6 @@ void	execute_heredoc(t_cmd *cmd, t_data *data)
 		infile_fd = handle_heredoc(cmd, cmd->heredoc_delimiter[i], 128, data);
 		if (infile_fd == -1)
 			return ;
-		if (infile_fd == 0)
-		{
-			i++;
-			continue ;
-		}
 		i++;
 	}
 	if (dup2(infile_fd, STDIN_FILENO) == -1)

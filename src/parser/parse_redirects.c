@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 16:15:32 by mgallyam          #+#    #+#             */
-/*   Updated: 2025/04/12 18:48:20 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 23:31:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,10 @@ int	handle_redirection_parser(t_cmd *cmd, t_token **tokens, t_data *data,
 		data->exit_status = 2;
 		return (0);
 	}
+	if (data->heredoc_count > HEREDOC_MAX)
+		return (write_error("minishell: "),
+			write_error("maximum here-document count exceeded\n"),
+			data->exit_status = 2, 0);
 	if (!parse_redirects(cmd, tokens[*i + 1], tokens[*i]->type))
 		return (0);
 	(*i)++;

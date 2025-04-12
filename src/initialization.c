@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 18:44:50 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/11 20:41:10 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,9 @@ t_cmd	*init_new_cmd(void)
 	cmd->append_redirects = NULL;
 	cmd->heredoc_delimiter = NULL;
 	cmd->next = NULL;
-	cmd->pipe_pids = NULL;
 	cmd->pipe_fd[0] = -1;
 	cmd->pipe_fd[1] = -1;
-	cmd->heredoc_touch_quotes = NULL;
-	cmd->heredoc_fd = -1;
+	cmd->heredoc_touch_quotes = false;
 	return (cmd);
 }
 
@@ -114,6 +112,6 @@ int	init_data(t_data *data, char **env)
 	data->tokens = NULL;
 	data->cmd = NULL;
 	data->is_child = false;
-	data->saved_stdin = -1;
+	data->heredoc_count = 0;
 	return (SUCCESS);
 }
