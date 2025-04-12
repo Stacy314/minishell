@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 23:54:46 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/12 19:44:18 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,12 @@ void	execute(t_token **tokens, t_cmd *cmd, t_data *data)
 		execute_pipeline(cmd, data);
 		return ;
 	}
-	else if (cmd->heredoc_delimiter || cmd->input_redirects
-		|| cmd->output_redirects || cmd->append_redirects)
+	if (cmd->heredoc_delimiter)
+	{
+		start_heredoc(cmd, data->input, data);
+		return ;
+	}
+	if (cmd->input_redirects || cmd->output_redirects || cmd->append_redirects)
 	{
 		if (execute_redirection(cmd, data, tokens) == 1)
 			return ;

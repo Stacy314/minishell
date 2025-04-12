@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 00:55:42 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/12 19:51:49 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	handle_output_redirect(t_data *data, t_cmd *cmd)
 		close(fd);
 		i++;
 	}
+	close(fd);
 }
 
 void	handle_append_redirect(t_data *data, t_cmd *cmd)
@@ -111,4 +112,5 @@ void	handle_append_redirect(t_data *data, t_cmd *cmd)
 		close(fd);
 		i++;
 	}
+	close(fd);
 }

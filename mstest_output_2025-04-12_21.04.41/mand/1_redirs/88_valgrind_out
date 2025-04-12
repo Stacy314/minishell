@@ -1,0 +1,42 @@
+==282178== Memcheck, a memory error detector
+==282178== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==282178== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==282178== Command: /home/apechkov/minishell/minishell
+==282178== Parent PID: 282177
+==282178== 
+==282178== 
+==282178== FILE DESCRIPTORS: 4 open (3 std) at exit.
+==282178== Open file descriptor 3: /tmp/tmp.nkGCrnSriG/tmp_valgrind_out
+==282178==    <inherited from parent>
+==282178== 
+==282178== Open file descriptor 2: /dev/null
+==282178==    <inherited from parent>
+==282178== 
+==282178== Open file descriptor 1: /dev/null
+==282178==    <inherited from parent>
+==282178== 
+==282178== Open file descriptor 0: /tmp/tmp.tzdSXQSuOc/.heredoc_0.tmp (deleted)
+==282178==    at 0x49DF01B: dup2 (syscall-template.S:120)
+==282178==    by 0x404169: execute_heredoc (heredoc.c:78)
+==282178==    by 0x403717: start_heredoc (redirection.c:27)
+==282178==    by 0x403074: execute (execution.c:69)
+==282178==    by 0x401477: main_loop (main.c:53)
+==282178==    by 0x40153A: main (main.c:70)
+==282178== 
+==282178== 
+==282178== HEAP SUMMARY:
+==282178==     in use at exit: 4,192 bytes in 13 blocks
+==282178==   total heap usage: 180 allocs, 167 frees, 20,348 bytes allocated
+==282178== 
+==282178== LEAK SUMMARY:
+==282178==    definitely lost: 0 bytes in 0 blocks
+==282178==    indirectly lost: 0 bytes in 0 blocks
+==282178==      possibly lost: 0 bytes in 0 blocks
+==282178==    still reachable: 0 bytes in 0 blocks
+==282178==         suppressed: 4,192 bytes in 13 blocks
+==282178== 
+==282178== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
+--282178-- 
+--282178-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,192 bytes in 13 blocks
+==282178== 
+==282178== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)

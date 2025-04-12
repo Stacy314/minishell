@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 19:47:14 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/12 15:22:25 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	fork_and_exec(char *executable, char **args, t_data *data, char **paths)
 	pid_t	pid;
 	int		status;
 
+	parent_ignore_signals();
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), data->exit_status = 1);

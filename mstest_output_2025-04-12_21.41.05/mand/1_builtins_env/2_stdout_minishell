@@ -1,0 +1,4 @@
+HOME=/home/apechkov
+CARGO_HOME=/usr/share/rust/cargo
+RUSTUP_HOME=/usr/share/rust/rustup
+_=HOME

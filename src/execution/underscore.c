@@ -3,30 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   underscore.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgallyam <mgallyam@student.42vienna.com    +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/11 17:17:17 by mgallyam         ###   ########.fr       */
+/*   Updated: 2025/04/12 20:56:14 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+//char	*find_last_value(t_token **tokens)
+//{
+//	int		i;
+//	char	*last_value;
+
+//	last_value = NULL;
+//	i = 0;
+//	if (!tokens || !tokens[i] || !tokens[i]->value)
+//		return (last_value);
+//	while (tokens[i])
+//	{
+//		if (tokens[i] && tokens[i]->value)
+//			last_value = tokens[i]->value;
+//		i++;
+//	}
+//	return (last_value);
+//}
 
 char	*find_last_value(t_token **tokens)
 {
 	int		i;
 	char	*last_value;
 
+	if (!tokens || !tokens[0] || !tokens[0]->value)
+		return (NULL);
 	last_value = NULL;
 	i = 0;
 	while (tokens[i])
 	{
-		if (tokens[i]->value)
+		if (tokens[i] && tokens[i]->value)
 			last_value = tokens[i]->value;
 		i++;
 	}
 	return (last_value);
 }
+
 
 void	update_underscore(t_data *data, char *value)
 {

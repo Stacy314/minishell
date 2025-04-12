@@ -1,0 +1,189 @@
+==24087== Memcheck, a memory error detector
+==24087== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==24087== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==24087== Command: /home/apechkov/minishell/minishell
+==24087== Parent PID: 24086
+==24087== 
+==24087== Invalid read of size 8
+==24087==    at 0x40232B: free_array (clean.c:22)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a040 is 0 bytes inside a block of size 504 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40224A: init_env (initialization.c:83)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+==24087== Invalid read of size 8
+==24087==    at 0x40233E: free_array (clean.c:24)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a040 is 0 bytes inside a block of size 504 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40224A: init_env (initialization.c:83)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+==24087== Invalid free() / delete / delete[] / realloc()
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x402346: free_array (clean.c:24)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a280 is 0 bytes inside a block of size 12 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x402346: free_array (clean.c:24)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40A20D: ft_strdup (ft_strdup.c:25)
+==24087==    by 0x402299: init_env (initialization.c:89)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+==24087== Invalid free() / delete / delete[] / realloc()
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a040 is 0 bytes inside a block of size 504 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40224A: init_env (initialization.c:83)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+==24087== 
+==24087== FILE DESCRIPTORS: 2 open (1 std) at exit.
+==24087== Open file descriptor 3: /tmp/tmp.LPAQIA0b4a/tmp_valgrind_out
+==24087==    <inherited from parent>
+==24087== 
+==24087== Open file descriptor 2: /dev/null
+==24087==    <inherited from parent>
+==24087== 
+==24087== 
+==24087== HEAP SUMMARY:
+==24087==     in use at exit: 4,193 bytes in 5 blocks
+==24087==   total heap usage: 86 allocs, 144 frees, 17,423 bytes allocated
+==24087== 
+==24087== 120 bytes in 1 blocks are definitely lost in loss record 4 of 5
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x494A122: getdelim (iogetdelim.c:62)
+==24087==    by 0x485C410: readline (in /home/apechkov/42_minishell_tester/utils/libintercept/libintercept.so)
+==24087==    by 0x4012FA: read_line_and_check (main.c:31)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087== 
+==24087== LEAK SUMMARY:
+==24087==    definitely lost: 120 bytes in 1 blocks
+==24087==    indirectly lost: 0 bytes in 0 blocks
+==24087==      possibly lost: 0 bytes in 0 blocks
+==24087==    still reachable: 0 bytes in 0 blocks
+==24087==         suppressed: 4,073 bytes in 4 blocks
+==24087== 
+==24087== ERROR SUMMARY: 189 errors from 5 contexts (suppressed: 4 from 4)
+==24087== 
+==24087== 1 errors in context 1 of 5:
+==24087== Invalid free() / delete / delete[] / realloc()
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a040 is 0 bytes inside a block of size 504 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40224A: init_env (initialization.c:83)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+==24087== 
+==24087== 62 errors in context 2 of 5:
+==24087== Invalid free() / delete / delete[] / realloc()
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x402346: free_array (clean.c:24)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a280 is 0 bytes inside a block of size 12 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x402346: free_array (clean.c:24)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40A20D: ft_strdup (ft_strdup.c:25)
+==24087==    by 0x402299: init_env (initialization.c:89)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+==24087== 
+==24087== 62 errors in context 3 of 5:
+==24087== Invalid read of size 8
+==24087==    at 0x40233E: free_array (clean.c:24)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a040 is 0 bytes inside a block of size 504 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40224A: init_env (initialization.c:83)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+==24087== 
+==24087== 63 errors in context 4 of 5:
+==24087== Invalid read of size 8
+==24087==    at 0x40232B: free_array (clean.c:22)
+==24087==    by 0x402519: free_all (clean.c:70)
+==24087==    by 0x401548: main (main.c:90)
+==24087==  Address 0x4b2a040 is 0 bytes inside a block of size 504 free'd
+==24087==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40235D: free_array (clean.c:27)
+==24087==    by 0x401331: read_line_and_check (main.c:35)
+==24087==    by 0x401C34: prepare_input (utils_init.c:45)
+==24087==    by 0x40152A: main (main.c:88)
+==24087==  Block was alloc'd at
+==24087==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24087==    by 0x40A5A4: ft_calloc (ft_calloc.c:23)
+==24087==    by 0x40224A: init_env (initialization.c:83)
+==24087==    by 0x402128: init_data (initialization.c:102)
+==24087==    by 0x401507: main (main.c:83)
+==24087== 
+--24087-- 
+--24087-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,073 bytes in 4 blocks
+==24087== 
+==24087== ERROR SUMMARY: 189 errors from 5 contexts (suppressed: 4 from 4)

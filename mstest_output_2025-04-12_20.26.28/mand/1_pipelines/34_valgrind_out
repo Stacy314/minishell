@@ -1,0 +1,73 @@
+==89987== Memcheck, a memory error detector
+==89987== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==89987== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==89987== Command: /home/apechkov/minishell/minishell
+==89987== Parent PID: 89986
+==89987== 
+==89988== 
+==89988== FILE DESCRIPTORS: 3 open (1 std) at exit.
+==89988== Open file descriptor 4:
+==89988==    at 0x49DEFEB: dup (syscall-template.S:120)
+==89988==    by 0x40379A: start_heredoc (redirection.c:19)
+==89988==    by 0x403154: execute (execution.c:69)
+==89988==    by 0x401599: main_loop (main.c:118)
+==89988==    by 0x40163A: main (main.c:135)
+==89988== 
+==89988== Open file descriptor 3: /tmp/tmp.Rgr6hSSW4d/tmp_valgrind_out
+==89988==    <inherited from parent>
+==89988== 
+==89988== Open file descriptor 2: /dev/null
+==89988==    <inherited from parent>
+==89988== 
+==89988== 
+==89988== HEAP SUMMARY:
+==89988==     in use at exit: 4,083 bytes in 4 blocks
+==89988==   total heap usage: 150 allocs, 146 frees, 14,988 bytes allocated
+==89988== 
+==89988== LEAK SUMMARY:
+==89988==    definitely lost: 0 bytes in 0 blocks
+==89988==    indirectly lost: 0 bytes in 0 blocks
+==89988==      possibly lost: 0 bytes in 0 blocks
+==89988==    still reachable: 0 bytes in 0 blocks
+==89988==         suppressed: 4,083 bytes in 4 blocks
+==89988== 
+==89988== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
+--89988-- 
+--89988-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,083 bytes in 4 blocks
+==89988== 
+==89988== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
+==89987== 
+==89987== FILE DESCRIPTORS: 4 open (3 std) at exit.
+==89987== Open file descriptor 3: /tmp/tmp.Rgr6hSSW4d/tmp_valgrind_out
+==89987==    <inherited from parent>
+==89987== 
+==89987== Open file descriptor 2: /dev/null
+==89987==    <inherited from parent>
+==89987== 
+==89987== Open file descriptor 1: /dev/null
+==89987==    <inherited from parent>
+==89987== 
+==89987== Open file descriptor 0:
+==89987==    at 0x49DF01B: dup2 (syscall-template.S:120)
+==89987==    by 0x403895: start_heredoc (redirection.c:35)
+==89987==    by 0x403154: execute (execution.c:69)
+==89987==    by 0x401599: main_loop (main.c:118)
+==89987==    by 0x40163A: main (main.c:135)
+==89987== 
+==89987== 
+==89987== HEAP SUMMARY:
+==89987==     in use at exit: 4,134 bytes in 7 blocks
+==89987==   total heap usage: 122 allocs, 115 frees, 18,659 bytes allocated
+==89987== 
+==89987== LEAK SUMMARY:
+==89987==    definitely lost: 0 bytes in 0 blocks
+==89987==    indirectly lost: 0 bytes in 0 blocks
+==89987==      possibly lost: 0 bytes in 0 blocks
+==89987==    still reachable: 0 bytes in 0 blocks
+==89987==         suppressed: 4,134 bytes in 7 blocks
+==89987== 
+==89987== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
+--89987-- 
+--89987-- used_suppression:      4 libreadline /home/apechkov/42_minishell_tester/utils/minishell.supp:2 suppressed: 4,134 bytes in 7 blocks
+==89987== 
+==89987== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 4 from 4)
