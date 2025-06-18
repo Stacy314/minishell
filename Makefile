@@ -27,6 +27,8 @@ MAKEFLAGS += --no-print-directory
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
+SILENT = @
+
 ################################################################################
 #                                                                              #
 #	                                Rules                                      #
@@ -36,12 +38,12 @@ LIBFT = $(LIBFT_DIR)/libft.a
 all: $(LIBFT) $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -c $< -o $@
+	$(SILENT)@mkdir -p $(dir $@)
+	$(SILENT)@$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(LIBFT_DIR) -c $< -o $@
 
 
 $(NAME): $(OBJ_FILES)
-	 @$(CC) $(CFLAGS) -o $(NAME) $(OBJ_FILES) $(LIBFT) $(LDFLAGS)
+	$(SILENT)@$(CC) $(CFLAGS) -o $(NAME) $(OBJ_FILES) $(LIBFT) $(LDFLAGS)
 	@echo "███╗░░░███╗██╗███╗░░██╗██╗░██████╗██╗░░██╗███████╗██╗░░░░░██╗░░░░░"
 	@echo "████╗░████║██║████╗░██║██║██╔════╝██║░░██║██╔════╝██║░░░░░██║░░░░░"
 	@echo "██╔████╔██║██║██╔██╗██║██║╚█████╗░███████║█████╗░░██║░░░░░██║░░░░░"
@@ -49,15 +51,15 @@ $(NAME): $(OBJ_FILES)
 	@echo "██║░╚═╝░██║██║██║░╚███║██║██████╔╝██║░░██║███████╗███████╗███████╗"
 	@echo "╚═╝░░░░░╚═╝╚═╝╚═╝░░╚══╝╚═╝╚═════╝░╚═╝░░╚═╝╚══════╝╚══════╝╚══════╝"
 $(LIBFT):
-	 @$(MAKE) -C $(LIBFT_DIR)
+	$(SILENT)@$(MAKE) -C $(LIBFT_DIR)
 
 clean:
-	 @rm -rf $(OBJ_DIR)
-	 @$(MAKE) -C $(LIBFT_DIR) clean
+	$(SILENT)@rm -rf $(OBJ_DIR)
+	$(SILENT)@$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	 @rm -f $(NAME)
-	 @$(MAKE) -C $(LIBFT_DIR) fclean
+	$(SILENT)@rm -f $(NAME)
+	$(SILENT)@$(MAKE) -C $(LIBFT_DIR) fclean
 
 re:  fclean all
 
