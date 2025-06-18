@@ -19,11 +19,9 @@
     - `unset`  
     - `env`  
     - `exit`
-- Redirection operators:
-  - `<`, `>`, `>>`, `<<` (heredoc)
+- Redirection operators: `<`, `>`, `>>`, `<<` (heredoc)
 - Piping with `|`
-- Signal handling:
-  - `Ctrl-C`, `Ctrl-D`, `Ctrl-\`
+- Signal handling: `Ctrl-C`, `Ctrl-D`, `Ctrl-\`
 - Minimal use of global variables (only one allowed for signal handling)
 
 ## 🧠 Learning Objectives
@@ -44,7 +42,7 @@
   - Custom [`libft`](https://github.com/Stacy314/libft)  
 - **Tools**:  
   - `Makefile`  
-  - `GCC` with flags: `-Wall -Wextra -Werror`
+  - `CC` with flags: `-Wall -Wextra -Werror`
 
 ## 🚀 Getting Started
 
