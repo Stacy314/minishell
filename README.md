@@ -66,5 +66,5 @@ make
 ### 4. Enjoy our shell 👾
 
 ✅ Status
-✔️ Mandatory part fully implemented
-🔧 Bonus features (if any) in progress
+- ✔️ Mandatory part fully implemented
+- 🔧 Bonus features (if any) in progress
