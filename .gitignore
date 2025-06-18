@@ -1,0 +1,10 @@
+# Virtual environment
+.venv/
+
+# VSCode settings
+.vscode/
+
+# Mac OS system files (опційно, якщо на macOS)
+.DS_Store
+
+minishell
