@@ -66,3 +66,10 @@ make
 ✅ Status
 - ✔️ Mandatory part fully implemented
 - 🔧 Bonus features (if any) in progress
+
+## 📋 Testing
+Run test.sh
+
+```bash
+./test.sh
+```
