@@ -6,7 +6,7 @@
 /*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/12 16:57:31 by apechkov         ###   ########.fr       */
+/*   Updated: 2025/04/12 01:16:16 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ typedef struct s_data
 	t_cmd			*cmd;
 	bool			is_child;
 	int				heredoc_count;
-	int				saved_stdin;
 }					t_data;
 
 typedef struct s_redirect_append
@@ -136,7 +135,6 @@ int					prepare_input(t_data *data);
 int					read_line_and_check(t_data *data);
 int					tokenize_and_parse(t_data *data);
 int					is_delim(char c, const char *delim);
-void				close_fd_main(t_data *data);
 
 // free
 void				free_array(char **arr);
@@ -161,7 +159,6 @@ void				parent_restore_signals(void);
 void				handle_sigint_child(int sig);
 void				handle_sigquit_child(int sig);
 void				set_signals_child(void);
-void				set_signals_heredoc(void);
 
 // tokenization
 int					handle_expansion(t_tokenizer_state *state, const char *str,
@@ -307,9 +304,6 @@ pid_t				execute_last_command(t_token **tokens, t_cmd *current,
 						t_cmd *cmd, t_data *data);
 int					ensure_buffer_capacity(t_expand_ctx *ctx,
 						size_t required_size);
-void				start_heredoc(t_cmd *cmd, const char *input, t_data *data);
-void				update_underscore(t_data *data, char *value);
-char				*find_last_value(t_token **tokens);
 
 // expantion
 char				*expand_variable(const char *str, int *j, t_data *data);

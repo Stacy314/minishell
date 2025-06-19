@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/13 00:32:46 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/10 22:07:35 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	read_line_and_check(t_data *data)
 		return (INPUT_STOP);
 	}
 	if (*data->input == '\0' || ft_str_only_spaces(data->input))
-		return (free(data->input), INPUT_CONTINUE);
+		return (INPUT_CONTINUE);
 	if (g_signal_flag == SIGINT)
 	{
 		data->exit_status = 130;

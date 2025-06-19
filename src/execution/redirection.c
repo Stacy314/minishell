@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anastasiia <anastasiia@student.42.fr>      +#+  +:+       +#+        */
+/*   By: apechkov <apechkov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 16:28:58 by apechkov          #+#    #+#             */
-/*   Updated: 2025/04/13 00:38:20 by anastasiia       ###   ########.fr       */
+/*   Updated: 2025/04/13 12:51:07 by apechkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	redir_loop(t_cmd *cmd, const char *input, t_data *data)
 	}
 }
 
-void	start_heredoc(t_cmd *cmd, const char *input, t_data *data)
+static void	start_heredoc(t_cmd *cmd, const char *input, t_data *data)
 {
 	int	i;
 
